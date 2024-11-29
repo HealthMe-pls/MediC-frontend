@@ -21,18 +21,18 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # # Step 3: Set up Docker Buildx
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v3
+      # Step 3: Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      # # Step 4: Build and push multi-platform Docker image
-      # - name: Build and push Docker image
-      #   uses: docker/build-push-action@v6
-      #   with:
-      #     context: .
-      #     push: true
-      #     platforms: linux/amd64,linux/arm64
-      #     tags: apichayauwu/medic-app:latest
+      # Step 4: Build and push multi-platform Docker image
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: apichayauwu/medic-app:latest
 
       # Step 5: SSH into server and redeploy (Optional)
       # - name: SSH into server and redeploy
