@@ -1,24 +1,24 @@
-interface User {
-  ID: number;
-  Name: string;
-  Email: string;
-  Password: string;
-}
+import Link from "next/link";
+import { fetchUserById, fetchUsers, User } from "../utility/user";
 
 export default async function Home() {
-  const response = await fetch("http://localhost:8080/user", {
-    cache: "no-store",
-  });
-  const users: User[] = await response.json();
+  const users: User[] = await fetchUsers();
 
   return (
-    <div>
-      <h1>Users</h1>
-      <ul>
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-3xl font-bold text-center mb-6">Users</h1>
+      <ul className="space-y-4">
         {users.map((user) => (
-          <li key={user.ID}>
-            <strong>Name:</strong> {user.Name} <br />
-            <strong>Email:</strong> {user.Email}
+          <li
+            key={user.ID}
+            className="p-4 bg-white shadow-md rounded-lg hover:shadow-lg transition-shadow"
+          >
+            <Link href={`/user/${user.ID}`}>
+              <p className="text-xl font-semibold text-pink-500 hover:underline">
+                {user.Name}
+              </p>
+              <p className="text-gray-700">{user.Email}</p>
+            </Link>
           </li>
         ))}
       </ul>
