@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { fetchUserById, fetchUsers, User } from "../utility/user";
+import { fetchUsers, User } from "../utility/user";
 
 export default async function Home() {
   const users: User[] = await fetchUsers();
