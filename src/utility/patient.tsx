@@ -1,5 +1,5 @@
 export interface Patient {
-  ID: number;
+  ID?: number;
   Name: string;
   Email: string;
   Age: number;
@@ -35,8 +35,29 @@ export const fetchPatientById = async (id: number): Promise<Patient> => {
   return response.json();
 };
 
+export const createPatient = async (patient: Patient): Promise<void> => {
+  if (!patient) {
+    throw new Error("Patient data is required");
+  }
+
+  const response = await fetch(`${API_BASE_URL}/patient`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(patient),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(
+      `Failed to create patient: ${errorData.message || response.statusText}`
+    );
+  }
+};
+
 // Delete patient by ID
-export const deletePatientById = async (id: number): Promise<void> => {
+export const deletePatientById = async (id?: number): Promise<void> => {
   const response = await fetch(`${API_BASE_URL}/patient/${id}`, {
     method: "DELETE",
   });
