@@ -1,6 +1,7 @@
 import { fetchPatientById, Patient } from "../../../utility/patient";
 import PatientDetails from "./PatientDetails";
-import UploadImage from "../../UploadImageComponent";
+import UploadImage from "../../components/UploadImage";
+import PatientImages from "./PatientImages";
 
 interface Props {
   params: Promise<{ id: string }>; // Dynamic route parameter
@@ -22,8 +23,15 @@ export default async function PatientPage({ params }: Props) {
     const patient: Patient = await fetchPatientById(patientId);
     return (
       <>
-        <PatientDetails patient={patient} />
-        <UploadImage />
+        <div className="flex flex-row ">
+          <div>
+            <PatientDetails patient={patient} />
+            <UploadImage patientID={patientId} />
+          </div>
+          <div>
+            <PatientImages patientID={patientId} />
+          </div>
+        </div>
       </>
     );
   } catch (error) {

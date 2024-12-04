@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { uploadImage } from "./../utility/uploadImage";
+import { uploadImage } from "../../utility/image";
 
 const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8080";
 
-export default function UploadImage() {
+export default function UploadImage({ patientID }: { patientID: number }) {
   const [file, setFile] = useState<File | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -24,8 +24,10 @@ export default function UploadImage() {
     setError(null);
 
     try {
-      const uploadedPath = await uploadImage(file);
+      const uploadedPath = await uploadImage(file, patientID);
+      console.log(uploadedPath);
       const fullImageUrl = `${API_BASE_URL}/upload/${uploadedPath}`;
+      console.log(fullImageUrl);
       setUploadedImageUrl(fullImageUrl);
     } catch (err) {
       console.error(err);
