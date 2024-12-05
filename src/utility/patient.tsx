@@ -45,7 +45,7 @@ export const createPatient = async (patient: Patient): Promise<void> => {
     throw new Error("Patient data is required");
   }
   console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}`);
-  
+
   const response = await fetch(`${API_BASE_URL}/patient`, {
     method: "POST",
     headers: {
@@ -53,7 +53,13 @@ export const createPatient = async (patient: Patient): Promise<void> => {
     },
     body: JSON.stringify(patient),
   });
-  console.log(`${API_BASE_URL}/patient`);
+  console.log({
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(patient),
+  });
 
   if (!response.ok) {
     const errorData = await response.json();

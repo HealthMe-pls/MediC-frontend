@@ -1,59 +1,17 @@
-"use client";
-
-import { useState } from "react";
-import { createPatient } from "@/utility/patient";
-import { useRouter } from "next/navigation";
-
 export default function CreatePatient() {
-  const router = useRouter();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [age, setAge] = useState<number | undefined>(undefined);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSuccessMessage(null);
-    setErrorMessage(null);
-
-    try {
-      if (!name || !email || age === undefined) {
-        throw new Error("All fields are required");
-      }
-
-      const newPatient = {
-        Name: name,
-        Email: email,
-        Age: age,
-      };
-
-      await createPatient(newPatient);
-      setSuccessMessage("Patient created successfully!");
-      setName("");
-      setEmail("");
-      setAge(undefined);
-      router.push("/");
-    } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : "Failed to create patient"
-      );
-    }
-  };
-
   return (
     <div className="max-w-md mx-4 p-4">
       <h1 className="text-2xl font-bold mb-4">Create Patient</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form action="/api/patient" method="post" className="space-y-4">
         <div>
           <label htmlFor="name" className="block font-semibold">
             Name
           </label>
           <input
             id="name"
+            name="Name"
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            required
             className="w-full border rounded px-3 py-2"
             placeholder="Enter patient's name"
           />
@@ -64,9 +22,9 @@ export default function CreatePatient() {
           </label>
           <input
             id="email"
+            name="Email"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            required
             className="w-full border rounded px-3 py-2"
             placeholder="Enter patient's email"
           />
@@ -77,9 +35,9 @@ export default function CreatePatient() {
           </label>
           <input
             id="age"
+            name="Age"
             type="number"
-            value={age || ""}
-            onChange={(e) => setAge(Number(e.target.value))}
+            required
             className="w-full border rounded px-3 py-2"
             placeholder="Enter patient's age"
           />
@@ -91,10 +49,6 @@ export default function CreatePatient() {
           Create Patient
         </button>
       </form>
-      {successMessage && (
-        <p className="mt-4 text-green-500">{successMessage}</p>
-      )}
-      {errorMessage && <p className="mt-4 text-red-500">{errorMessage}</p>}
     </div>
   );
 }
