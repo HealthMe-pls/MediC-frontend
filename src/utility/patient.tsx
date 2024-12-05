@@ -18,6 +18,8 @@ export const fetchPatients = async (): Promise<Patient[]> => {
     throw new Error("Failed to fetch patients");
   }
 
+  console.log("fetch patients ok");
+
   // Transform the data to match the interface example code
   return response.json();
 };
@@ -31,6 +33,8 @@ export const fetchPatientById = async (id: number): Promise<Patient> => {
   if (!response.ok) {
     throw new Error(`Failed to fetch patient with ID: ${id}`);
   }
+
+  console.log("fetch patients by id ok");
 
   return response.json();
 };
