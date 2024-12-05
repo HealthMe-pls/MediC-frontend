@@ -40,6 +40,11 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=cache,target=/root/.npm \
     npm ci
 
+
+# Define build arguments
+ARG NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+
 # Copy the rest of the source files into the image.
 COPY . .
 # Run the build script.
@@ -52,6 +57,7 @@ FROM base as final
 
 # Use production node environment by default.
 ENV NODE_ENV production
+
 
 # Run the application as a non-root user.
 USER node
