@@ -5,13 +5,11 @@ export interface Patient {
   Age: number;
 }
 
-// Base URL for API
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080"; // Fallback for local development
+const NEXT_API = "http://localhost:3000";
 
 // All patients
 export const fetchPatients = async (): Promise<Patient[]> => {
-  const response = await fetch(`${API_BASE_URL}/patient`, {
+  const response = await fetch(`${NEXT_API}/api/patient`, {
     cache: "no-store", // Ensures fresh data
   });
 
@@ -19,15 +17,12 @@ export const fetchPatients = async (): Promise<Patient[]> => {
     throw new Error("Failed to fetch patients");
   }
 
-  console.log("fetch patients ok");
-
-  // Transform the data to match the interface example code
   return response.json();
 };
 
 // Fetch patient by ID
 export const fetchPatientById = async (id: number): Promise<Patient> => {
-  const response = await fetch(`${API_BASE_URL}/patient/${id}`, {
+  const response = await fetch(`${NEXT_API}/api/patient/${id}`, {
     cache: "no-store",
   });
 
@@ -46,7 +41,7 @@ export const createPatient = async (patient: Patient): Promise<void> => {
   }
   console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}`);
 
-  const response = await fetch(`${API_BASE_URL}/patient`, {
+  const response = await fetch(`${NEXT_API}/api/patient`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -71,7 +66,7 @@ export const createPatient = async (patient: Patient): Promise<void> => {
 
 // Delete patient by ID
 export const deletePatientById = async (id?: number): Promise<void> => {
-  const response = await fetch(`${API_BASE_URL}/patient/${id}`, {
+  const response = await fetch(`${NEXT_API}/api/patient/${id}`, {
     method: "DELETE",
   });
 

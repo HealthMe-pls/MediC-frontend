@@ -1,5 +1,29 @@
 import { NextResponse } from "next/server";
 
+// GET - Fetch all patients
+export async function GET() {
+  try {
+    // Call your Go API to fetch patients
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/patient`
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch patients");
+    }
+
+    const patients = await response.json();
+
+    return NextResponse.json(patients, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { message: "Failed to fetch patients" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const contentType = request.headers.get("content-type") || "";
@@ -48,10 +72,9 @@ export async function POST(request: Request) {
       throw new Error(errorData.message || "Failed to create patient");
     }
 
-    return NextResponse.json(
-      { message: "Patient created successfully!" },
-      { status: 201 }
-    );
+    // Use absolute URL for redirection
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"; // Default to localhost if not set
+    return NextResponse.redirect(`${siteUrl}/`, { status: 303 });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
