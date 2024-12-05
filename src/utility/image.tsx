@@ -1,4 +1,5 @@
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8080";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080"; // Fallback for local development
 
 export const uploadImage = async (file: File, id: number): Promise<string> => {
   if (!file) throw new Error("File is required to upload an image.");

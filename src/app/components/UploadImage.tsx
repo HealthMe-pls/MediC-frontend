@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { uploadImage } from "../../utility/image";
 
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8080";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080"; // Fallback for local development
 
 export default function UploadImage({ patientID }: { patientID: number }) {
   const [file, setFile] = useState<File | null>(null);

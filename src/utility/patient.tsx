@@ -6,7 +6,8 @@ export interface Patient {
 }
 
 // Base URL for API
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8080"; // Fallback for local development
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080"; // Fallback for local development
 
 // All patients
 export const fetchPatients = async (): Promise<Patient[]> => {

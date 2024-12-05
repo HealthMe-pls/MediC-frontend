@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { fetchPatientImages } from "../../../utility/image";
 
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8080";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080"; // Fallback for local development
 
 export default function PatientImages({ patientID }: { patientID: number }) {
   const [images, setImages] = useState<
