@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { fetchPatientImages } from "../../../utility/image";
+import UploadImage from "@/app/components/UploadImage";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080"; // Fallback for local development
@@ -27,6 +28,7 @@ export default function PatientImages({ patientID }: { patientID: number }) {
 
   return (
     <div>
+      <UploadImage patientID={patientID} />
       <h2>Patient Images</h2>
       {error && <p className="text-red-500">{error}</p>}
       <div className="grid grid-cols-3 gap-4">

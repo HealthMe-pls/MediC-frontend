@@ -1,6 +1,5 @@
 import { fetchPatientById, Patient } from "../../../utility/patient";
 import PatientDetails from "./PatientDetails";
-import UploadImage from "../../components/UploadImage";
 import PatientImages from "./PatientImages";
 
 interface Props {
@@ -26,7 +25,6 @@ export default async function PatientPage({ params }: Props) {
         <div className="flex flex-row ">
           <div>
             <PatientDetails patient={patient} />
-            <UploadImage patientID={patientId} />
           </div>
           <div>
             <PatientImages patientID={patientId} />

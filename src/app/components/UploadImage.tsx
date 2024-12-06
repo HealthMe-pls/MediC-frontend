@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { uploadImage } from "../../utility/image";
+import { useRouter } from "next/navigation";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080"; // Fallback for local development
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL; // Fallback for local development
 
 export default function UploadImage({ patientID }: { patientID: number }) {
+  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -25,11 +26,17 @@ export default function UploadImage({ patientID }: { patientID: number }) {
     setError(null);
 
     try {
-      const uploadedPath = await uploadImage(file, patientID);
-      console.log(uploadedPath);
-      const fullImageUrl = `${API_BASE_URL}/upload/${uploadedPath}`;
-      console.log(fullImageUrl);
+      // Upload image and get the returned filename (or image path)
+      const uploadedFilename = await uploadImage(file, patientID);
+      console.log("Uploaded filename:", uploadedFilename);
+
+      // Create the full image URL (e.g., assuming your backend serves images from a specific endpoint)
+      const fullImageUrl = `${API_BASE_URL}/upload/${uploadedFilename}`;
+      console.log("Full image URL:", fullImageUrl);
+
+      // Set the uploaded image URL to display it
       setUploadedImageUrl(fullImageUrl);
+      router.refresh();
     } catch (err) {
       console.error(err);
       setError("Failed to upload image.");
