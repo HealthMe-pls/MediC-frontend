@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     );
 
     if (!response.ok) {
-      throw new Error("Failed to create admin");
+      throw new Error("Failed to create admin frontend1");
     }
 
     const newAdmin = await response.json();
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { message: "Failed to create admin" },
+      { message: "Failed to create admin frontend2" },
       { status: 500 }
     );
   }

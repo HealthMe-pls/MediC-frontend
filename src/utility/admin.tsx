@@ -15,7 +15,7 @@ const apiBaseUrl = "http://localhost:3000/api";
 export async function fetchAdmins(): Promise<Admin[]> {
   try {
     const response = await fetch(`http://localhost:8080/admin`);
-    console.log("fetch admin response" + response.json());
+    // console.log("fetch admin response" + response.json());
     if (!response.ok) {
       throw new Error("Failed to fetch admins");
     }
