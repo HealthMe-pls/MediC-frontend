@@ -1,8 +1,51 @@
+"use client";
+
+import { useState } from "react";
+
 export default function CreateAdmin() {
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    title: "",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/admin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create admin");
+      }
+
+      const newAdmin = await response.json();
+      console.log("Admin created successfully:", newAdmin);
+    } catch (error) {
+      console.error("Error creating admin:", error);
+    }
+  };
+
   return (
     <div className="max-w-md mx-4 p-4">
       <h1 className="text-2xl font-bold mb-4">Create Admin</h1>
-      <form action="/api/admin" method="post" className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="username" className="block font-semibold">
             Username
@@ -14,6 +57,8 @@ export default function CreateAdmin() {
             required
             className="w-full border rounded px-3 py-2"
             placeholder="Enter admin's username"
+            value={formData.username}
+            onChange={handleChange}
           />
         </div>
         <div>
@@ -27,6 +72,8 @@ export default function CreateAdmin() {
             required
             className="w-full border rounded px-3 py-2"
             placeholder="Enter admin's password"
+            value={formData.password}
+            onChange={handleChange}
           />
         </div>
         <div>
@@ -40,6 +87,8 @@ export default function CreateAdmin() {
             required
             className="w-full border rounded px-3 py-2"
             placeholder="Enter admin's title"
+            value={formData.title}
+            onChange={handleChange}
           />
         </div>
         <div>
@@ -53,6 +102,8 @@ export default function CreateAdmin() {
             required
             className="w-full border rounded px-3 py-2"
             placeholder="Enter admin's first name"
+            value={formData.first_name}
+            onChange={handleChange}
           />
         </div>
         <div>
@@ -65,6 +116,8 @@ export default function CreateAdmin() {
             type="text"
             className="w-full border rounded px-3 py-2"
             placeholder="Enter admin's middle name"
+            value={formData.middle_name}
+            onChange={handleChange}
           />
         </div>
         <div>
@@ -78,6 +131,8 @@ export default function CreateAdmin() {
             required
             className="w-full border rounded px-3 py-2"
             placeholder="Enter admin's last name"
+            value={formData.last_name}
+            onChange={handleChange}
           />
         </div>
         <button
