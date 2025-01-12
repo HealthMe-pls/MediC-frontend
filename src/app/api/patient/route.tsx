@@ -14,6 +14,7 @@ export async function GET() {
 
     const patients = await response.json();
 
+    console.log(patients);
     return NextResponse.json(patients, { status: 200 });
   } catch (error) {
     console.error(error);
