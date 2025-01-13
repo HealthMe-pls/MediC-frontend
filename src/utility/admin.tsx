@@ -9,12 +9,12 @@ export interface Admin {
   last_name: string;
 }
 
-const apiBaseUrl = "http://localhost:3000/api";
+const apiBaseUrl = "http://localhost:3000";
 
 // Fetch all admins
 export async function fetchAdmins(): Promise<Admin[]> {
   try {
-    const response = await fetch(`http://localhost:8080/admin`);
+    const response = await fetch(`http://127.0.0.1:8080/admin`);
     // console.log("fetch admin response" + response.json());
     if (!response.ok) {
       throw new Error("Failed to fetch admins");
