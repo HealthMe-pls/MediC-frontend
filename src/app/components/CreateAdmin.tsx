@@ -37,6 +37,8 @@ export default function CreateAdmin() {
 
       const newAdmin = await response.json();
       console.log("Admin created successfully:", newAdmin);
+      // Refresh the page
+      window.location.reload();
     } catch (error) {
       console.error("Error creating admin:", error);
     }
