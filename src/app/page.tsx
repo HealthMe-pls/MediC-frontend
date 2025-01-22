@@ -1,21 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import CircularShops from './components/CircularShops';
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../utility/maps";
-import { fetchPatients, Patient } from "../utility/patient";
 
 export default function Home() {
   const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
-  const [patients, setPatients] = useState<Patient[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedBlock, setSelectedBlock] = useState<number | null>(null);
-
-  useEffect(() => {
-    fetchPatients()
-      .then((data) => setPatients(data))
-      .catch((error) => console.error("Error fetching patients:", error));
-  }, []);
 
   // Fetch market map data on component mount
   useEffect(() => {
@@ -27,6 +20,9 @@ export default function Home() {
   const handleBlockClick = (blockId: number) => {
     setSelectedBlock(blockId);
   };
+
+  const [innerShops, setInnerShops] = useState(8);
+  const [outerShops, setOuterShops] = useState(12);
 
   return (
     <div className="h-screen flex flex-col">
@@ -51,6 +47,8 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      
 
       {/* Menu Drawer */}
       {isMenuOpen && (
@@ -81,6 +79,11 @@ export default function Home() {
         <div className="bg-yellow-400 py-4 text-center text-black font-bold mb-6">
           <h2>Highlight Workshop - Special Offers this Week!</h2>
         </div>
+        <Link href="/adminPage">
+        <button className="px-4 py-2 bg-blue-500 text-white rounded">
+          Go to Admin Page
+        </button>
+      </Link>
 
         {/* Search & Filter Section */}
         <div className="flex justify-between mb-6">
@@ -103,7 +106,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Market Map */}
+        {/* //Market Map */}
         <div className="flex justify-center mb-6">
           <div className="relative w-72 h-72 rounded-full border-4 border-gray-500 overflow-hidden">
             <div
@@ -133,6 +136,31 @@ export default function Home() {
           </div>
         </div>
 
+{/* <div>
+        <h1>Shop Circle Layout</h1>
+        <div>
+          <label>
+            Inner Shops:
+            <input
+              type="number"
+              value={innerShops}
+              onChange={(e) => setInnerShops(Number(e.target.value))}
+              min="1"
+            />
+          </label>
+          <label>
+            Outer Shops:
+            <input
+              type="number"
+              value={outerShops}
+              onChange={(e) => setOuterShops(Number(e.target.value))}
+              min="1"
+            />
+          </label>
+        </div>
+        <CircularShops innerShopCount={innerShops} outerShopCount={outerShops} />
+      </div> */}
+
         {/* Details of Selected Block */}
         {selectedBlock && (
           <div className="bg-gray-100 p-6 rounded-md shadow-md mb-6">
@@ -146,32 +174,18 @@ export default function Home() {
           </div>
         )}
 
-        {/* Store Details Section */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold mb-4">Store Details</h2>
-          <ul>
-            {patients.map((patient, index) => (
-              <li
-                key={`${patient.ID}-${index}`}
-                className="p-4 bg-white shadow-md rounded-lg min-w-[200px] hover:shadow-lg transition-shadow"
-              >
-                <Link href={`/patient/${patient.ID}`}>
-                  <p className="text-xl font-semibold text-pink-500 hover:underline">
-                    {patient.Name}
-                  </p>
-                  <p className="text-gray-700">{patient.Age}</p>
-                  <p className="text-gray-700">{patient.Email}</p>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
       </main>
 
       {/* Footer Section */}
       <footer className="bg-gray-800 text-white py-4 text-center">
         <p>&copy; 2025 Bamboo Family Market. All rights reserved.</p>
       </footer>
+    
+
+
+    
     </div>
+
+    
   );
 }
