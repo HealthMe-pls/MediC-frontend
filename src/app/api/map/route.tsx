@@ -1,3 +1,4 @@
+import { setCorsHeaders } from "@/utility/corsUtils";
 import { NextResponse } from "next/server";
 
 // GET - Fetch all map
@@ -8,12 +9,13 @@ export async function GET() {
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch maps");
+      throw new Error("Failed to fetch maps in api route");
     }
 
     const maps = await response.json();
-
-    return NextResponse.json(maps, { status: 200 });
+    const headers = new Headers();
+    setCorsHeaders(headers);
+    return NextResponse.json(maps, { status: 200, headers });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
