@@ -1,9 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import CircularShops from './components/CircularShops';
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../utility/maps";
+import SearchInput from "./components/SearchInput";
+// import CircularShops from "./components/CircularShops";
+import Footer from "./components/Footer";
+import HighlightBanner from "./components/HighlightBanner";
+import FilterSelect from "./components/FilterSelect";
 
 export default function Home() {
   const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
@@ -21,8 +25,8 @@ export default function Home() {
     setSelectedBlock(blockId);
   };
 
-  const [innerShops, setInnerShops] = useState(8);
-  const [outerShops, setOuterShops] = useState(12);
+  // const [innerShops, setInnerShops] = useState(8);
+  // const [outerShops, setOuterShops] = useState(12);
 
   return (
     <div className="h-screen flex flex-col">
@@ -47,8 +51,6 @@ export default function Home() {
           </div>
         </div>
       </header>
-
-      
 
       {/* Menu Drawer */}
       {isMenuOpen && (
@@ -76,37 +78,26 @@ export default function Home() {
       {/* Content Section */}
       <main className="flex-1 overflow-auto p-6 bg-gray-50">
         {/* Highlight Banner */}
-        <div className="bg-yellow-400 py-4 text-center text-black font-bold mb-6">
-          <h2>Highlight Workshop - Special Offers this Week!</h2>
-        </div>
+        <HighlightBanner />
+
+        {/* Admin Page Button */}
         <Link href="/adminPage">
-        <button className="px-4 py-2 bg-blue-500 text-white rounded">
-          Go to Admin Page
-        </button>
-      </Link>
+          <button className="px-4 py-2 bg-blue-500 text-white rounded">
+            Go to Admin Page
+          </button>
+        </Link>
 
         {/* Search & Filter Section */}
         <div className="flex justify-between mb-6">
           <div className="flex-1 mr-4">
-            <input
-              type="text"
-              className="w-full p-3 border border-gray-300 rounded-md"
-              placeholder="Search..."
-            />
+            <SearchInput />
           </div>
           <div className="flex-1 ml-4">
-            <select
-              className="w-full p-3 border border-gray-300 rounded-md"
-              defaultValue=""
-            >
-              <option value="">Select Filter</option>
-              <option value="type1">Filter Type 1</option>
-              <option value="type2">Filter Type 2</option>
-            </select>
+            <FilterSelect />
           </div>
         </div>
 
-        {/* //Market Map */}
+        {/* Market Map */}
         <div className="flex justify-center mb-6">
           <div className="relative w-72 h-72 rounded-full border-4 border-gray-500 overflow-hidden">
             <div
@@ -136,7 +127,7 @@ export default function Home() {
           </div>
         </div>
 
-{/* <div>
+        {/* <div>
         <h1>Shop Circle Layout</h1>
         <div>
           <label>
@@ -173,19 +164,10 @@ export default function Home() {
             </p>
           </div>
         )}
-
       </main>
 
       {/* Footer Section */}
-      <footer className="bg-gray-800 text-white py-4 text-center">
-        <p>&copy; 2025 Bamboo Family Market. All rights reserved.</p>
-      </footer>
-    
-
-
-    
+      <Footer />
     </div>
-
-    
   );
 }
