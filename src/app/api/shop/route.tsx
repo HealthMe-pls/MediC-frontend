@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 
-// GET - Fetch all map
+// GET - Fetch all shop
 export async function GET() {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/mapdetail`
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/shopdetail`
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch maps");
+      throw new Error("Failed to fetch shops");
     }
 
     const maps = await response.json();
@@ -17,7 +17,7 @@ export async function GET() {
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { message: "Failed to fetch maps" },
+      { message: "Failed to fetch shops" },
       { status: 500 }
     );
   }

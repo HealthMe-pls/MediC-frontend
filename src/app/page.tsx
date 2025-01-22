@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import CircularShops from './components/CircularShops';
+import CircularShops from "./components/CircularShops";
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../utility/maps";
+import Shoplist from "./components/ShopList";
 
 export default function Home() {
   const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
@@ -48,8 +49,6 @@ export default function Home() {
         </div>
       </header>
 
-      
-
       {/* Menu Drawer */}
       {isMenuOpen && (
         <div className="absolute top-0 right-0 bg-blue-600 p-4 w-48 h-full">
@@ -80,10 +79,10 @@ export default function Home() {
           <h2>Highlight Workshop - Special Offers this Week!</h2>
         </div>
         <Link href="/adminPage">
-        <button className="px-4 py-2 bg-blue-500 text-white rounded">
-          Go to Admin Page
-        </button>
-      </Link>
+          <button className="px-4 py-2 bg-blue-500 text-white rounded">
+            Go to Admin Page
+          </button>
+        </Link>
 
         {/* Search & Filter Section */}
         <div className="flex justify-between mb-6">
@@ -136,7 +135,7 @@ export default function Home() {
           </div>
         </div>
 
-{/* <div>
+        {/* <div>
         <h1>Shop Circle Layout</h1>
         <div>
           <label>
@@ -174,18 +173,16 @@ export default function Home() {
           </div>
         )}
 
+        {/*ShopList*/}
+        <div className="mt-6">
+          <Shoplist />
+        </div>
       </main>
 
       {/* Footer Section */}
       <footer className="bg-gray-800 text-white py-4 text-center">
         <p>&copy; 2025 Bamboo Family Market. All rights reserved.</p>
       </footer>
-    
-
-
-    
     </div>
-
-    
   );
 }
