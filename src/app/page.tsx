@@ -4,6 +4,9 @@ import Link from "next/link";
 import CircularShops from './components/CircularShops';
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../utility/maps";
+import Map from './components/ShopMap';
+import '../styles/global.css';
+
 
 export default function Home() {
   const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
@@ -29,7 +32,7 @@ export default function Home() {
       {/* Header Section */}
       <header className="bg-blue-600 text-white py-4 flex justify-between items-center">
         <div className="flex items-center space-x-2">
-          <img src="/logo.png" alt="Logo" className="h-8" />
+          <img src="../assets/logo.png" alt="Logo" className="h-8" />
           <h1 className="text-3xl font-bold">Bamboo Family Market</h1>
         </div>
         <div className="flex items-center space-x-6">
@@ -47,8 +50,6 @@ export default function Home() {
           </div>
         </div>
       </header>
-
-      
 
       {/* Menu Drawer */}
       {isMenuOpen && (
@@ -106,8 +107,52 @@ export default function Home() {
           </div>
         </div>
 
+      <Map></Map>
+ 
+ {/* <div className="absolute inset-0 flex justify-center items-center">
+  {Array.from({ length: 26 }).map((_, i) => (
+    <div
+      key={`A${i + 1}`}
+      className="point-a"
+      style={{
+        transform: `rotate(${i * 13.85}deg) translate(240px) rotate(-${i * 13.85}deg)`,
+      }}
+    >
+      <span className="text-black text-xs">{`A${i + 1}`}</span> {}
+    </div>
+  ))}
+</div>
+
+<div className="absolute inset-0 flex justify-center items-center">
+  {Array.from({ length: 15 }).map((_, i) => (
+    <div
+      key={`B${i + 1}`}
+      className="point-b"
+      style={{
+        transform: `rotate(${i * 24}deg) translate(200px) translateY(-10px) rotate(-${i * 24}deg)`,
+      }}
+    >
+      <span className="text-black text-xs">{`B${i + 1}`}</span> {}
+    </div>
+  ))}
+</div>
+
+<div className="absolute inset-0 flex justify-center items-center">
+  {Array.from({ length: 13 }).map((_, i) => (
+    <div
+      key={`C${i + 1}`}
+      className="point-c"
+      style={{
+        transform: `rotate(${i * 27.69}deg) translate(160px) translateY(-10px) rotate(-${i * 27.69}deg)`,
+      }}
+    >
+      <span className="text-black text-xs">{`C${i + 1}`}</span> {}
+    </div>
+  ))}
+</div> */}        
+
         {/* //Market Map */}
-        <div className="flex justify-center mb-6">
+        {/* <div className="flex justify-center mb-6">
           <div className="relative w-72 h-72 rounded-full border-4 border-gray-500 overflow-hidden">
             <div
               className="absolute top-10 left-10 w-16 h-16 bg-blue-600 text-white flex items-center justify-center rounded-full cursor-pointer"
@@ -134,7 +179,7 @@ export default function Home() {
               Block 4
             </div>
           </div>
-        </div>
+        </div> */}
 
 {/* <div>
         <h1>Shop Circle Layout</h1>

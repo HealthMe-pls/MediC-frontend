@@ -1,0 +1,62 @@
+.point-a {
+  width: 25px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.point-b {
+  width: 25px;
+  height: 20px;
+  background-color: orange;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.point-c {
+  width: 25px;
+  height: 20px;
+  background-color: yellow;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.point-a, .point-b, .point-c {
+  z-index: 10;
+}
+
+.point-a span,
+.point-b span,
+.point-c span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ellipse.a { background-color: #FFEF9E; }
+.ellipse.b { background-color: #D5EBD6; }
+.ellipse.c { background-color: #CAE5F3; }
+
+
+.ellipse {
+  position: absolute;
+  width: 17px;
+  height: 17px;
+  background-color: #FFEF9E;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-50%, -50%) scale(1); 
+}
+
+.ellipse-text {
+  font-family: 'Lexend', sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 10px;
+  line-height: 16px;
+  color: #4C4343;
+}

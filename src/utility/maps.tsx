@@ -1,7 +1,8 @@
 export interface MapDetail {
-    block_id: number;
-    shop_id: number;
-    shop_name: string;
+  block_id: number;
+  blok_name: string;
+  shop_id: number;
+  shop_name: string;
 }
   
 const NEXT_API = "http://localhost:3000";
