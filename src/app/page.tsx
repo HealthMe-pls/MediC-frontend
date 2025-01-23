@@ -7,6 +7,7 @@ import { fetchMapDetail, MapDetail } from "../utility/maps";
 import Map from "./components/ShopMap";
 import "../styles/global.css";
 import Shoplist from "./components/ShopList";
+import "./globals.css";
 
 export default function Home() {
   const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
@@ -28,7 +29,7 @@ export default function Home() {
   const [outerShops, setOuterShops] = useState(12);
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <div className="h-screen flex flex-col">
       {/* Header Section */}
       <header className="bg-blue-600 text-white py-4 flex justify-between items-center">
         <div className="flex items-center space-x-2">
@@ -75,7 +76,7 @@ export default function Home() {
       )}
 
       {/* Content Section */}
-      <main className="flex-1 overflow-auto p-6 bg-gray-50">
+      <main className="flex-1 overflow-auto p-6">
         {/* Highlight Banner */}
         <div className="bg-yellow-400 py-4 text-center text-black font-bold mb-6">
           <h2>Highlight Workshop - Special Offers this Week!</h2>
@@ -107,7 +108,9 @@ export default function Home() {
           </div>
         </div>
 
-        <Map></Map>
+        <div className="sm:hidden">
+          <Map></Map>
+        </div>
 
         {/* <div className="absolute inset-0 flex justify-center items-center">
   {Array.from({ length: 26 }).map((_, i) => (

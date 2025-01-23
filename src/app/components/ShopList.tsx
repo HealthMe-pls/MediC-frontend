@@ -57,7 +57,7 @@ const Shoplist: React.FC = () => {
                     : index === 1
                     ? "bg-[#D5EBD6] text-[#4C4343]"
                     : "bg-[#CAE5F3] text-[#4C4343]"
-                  : "bg-white-200 text-gray-700"
+                  : "bg-[#FFFFFF]  text-gray-700"
               } ${
                 index === 0
                   ? "rounded-l-full"
