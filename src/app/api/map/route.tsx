@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
-
+// import { NextApiRequest, NextApiResponse } from "next";
 // GET - Fetch all map
 export async function GET() {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/map`
-    );
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/map`);
 
     if (!response.ok) {
       throw new Error("Failed to fetch maps");
@@ -22,3 +20,4 @@ export async function GET() {
     );
   }
 }
+

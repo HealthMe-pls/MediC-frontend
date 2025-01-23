@@ -4,10 +4,11 @@ import Link from "next/link";
 import CircularShops from './components/CircularShops';
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../utility/maps";
+import Header from "./layouts/Header";
 
 export default function Home() {
   const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedBlock, setSelectedBlock] = useState<number | null>(null);
 
   // Fetch market map data on component mount
@@ -26,52 +27,7 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col">
-      {/* Header Section */}
-      <header className="bg-blue-600 text-white py-4 flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-          <img src="/logo.png" alt="Logo" className="h-8" />
-          <h1 className="text-3xl font-bold">Bamboo Family Market</h1>
-        </div>
-        <div className="flex items-center space-x-6">
-          <div className="text-lg">
-            <button className="hover:text-gray-300">EN</button> |{" "}
-            <button className="hover:text-gray-300">TH</button>
-          </div>
-          <div
-            className="cursor-pointer"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <div className="w-6 h-0.5 bg-white mb-1"></div>
-            <div className="w-6 h-0.5 bg-white mb-1"></div>
-            <div className="w-6 h-0.5 bg-white"></div>
-          </div>
-        </div>
-      </header>
-
-      
-
-      {/* Menu Drawer */}
-      {isMenuOpen && (
-        <div className="absolute top-0 right-0 bg-blue-600 p-4 w-48 h-full">
-          <ul className="text-white space-y-4">
-            <li>
-              <Link href="/label1" className="hover:text-gray-300">
-                Label 1
-              </Link>
-            </li>
-            <li>
-              <Link href="/label2" className="hover:text-gray-300">
-                Label 2
-              </Link>
-            </li>
-            <li>
-              <Link href="/label3" className="hover:text-gray-300">
-                Label 3
-              </Link>
-            </li>
-          </ul>
-        </div>
-      )}
+      <Header />
 
       {/* Content Section */}
       <main className="flex-1 overflow-auto p-6 bg-gray-50">
