@@ -174,7 +174,7 @@ export default function Home() {
         )}
 
         {/*ShopList*/}
-        <div className="mt-6">
+        <div className="mt-6 sm:hidden">
           <Shoplist />
         </div>
       </main>

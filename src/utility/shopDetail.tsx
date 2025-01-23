@@ -43,6 +43,7 @@ export interface ShopDetail {
 
 const NEXT_API = "http://127.0.0.1:3000";
 
+// ฟังก์ชันดึงข้อมูลร้านค้าทั้งหมด
 export async function fetchShopDetail(): Promise<ShopDetail[]> {
   try {
     const response = await fetch(`${NEXT_API}/api/shop`);
@@ -52,6 +53,32 @@ export async function fetchShopDetail(): Promise<ShopDetail[]> {
     return await response.json();
   } catch (error) {
     console.error("Error fetching shop:", error);
+    throw error;
+  }
+}
+
+// ฟังก์ชันดึงข้อมูลร้านค้าตาม shopId
+// export async function fetchShopById(shopId: number): Promise<ShopDetail> {
+//   try {
+//     const response = await fetch(`http://127.0.0.1:8080/shop/${shopId}`);
+//     if (!response.ok) {
+//       throw new Error(`Failed to fetch shop with ID: ${shopId}`);
+//     }
+//     return await response.json();
+//   } catch (error) {
+//     console.error(`Error fetching shop with ID ${shopId}:`, error);
+//     throw error;
+//   }
+// }
+export async function fetchShopById(shopId: number): Promise<ShopDetail> {
+  try {
+    const response = await fetch(`${NEXT_API}/api/shop/${shopId}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch shop with ID: ${shopId}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching shop with ID ${shopId}:`, error);
     throw error;
   }
 }
