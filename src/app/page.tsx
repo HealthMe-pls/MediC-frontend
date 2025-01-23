@@ -26,7 +26,7 @@ export default function Home() {
   const [outerShops, setOuterShops] = useState(12);
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col bg-background">
       {/* Header Section */}
       <header className="bg-blue-600 text-white py-4 flex justify-between items-center">
         <div className="flex items-center space-x-2">
