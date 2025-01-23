@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
 import { fetchShopDetail, ShopDetail } from "@/utility/shopDetail";
 import { format } from "date-fns";
-import { parseISO } from "date-fns";
-import { enUS, th } from "date-fns/locale";
+import { th } from "date-fns/locale";
 
-const formatDateTime = (isoString: string): string => {
-  const date = parseISO(isoString);
-  return format(date, "EEEE HH:mm"); // ใช้ locale "th" สำหรับภาษาไทย
+const formatDate = (isoString: string): string => {
+  const date = new Date(isoString); // ใช้ new Date() แทน parseISO
+  return format(date, "EEEE dd MMMM yyyy");
 };
-
+const formatTime = (isoString: string): string => {
+  const date = new Date(isoString); // ใช้ new Date() แทน parseISO
+  return format(date, "HH:mm");
+};
 const Shoplist: React.FC = () => {
   const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
   const [shopDetails, setShopDetails] = useState<ShopDetail[]>([]);
@@ -105,9 +107,9 @@ const Shoplist: React.FC = () => {
                 {Array.isArray(selectedShopDetail.shop_open_dates) &&
                   selectedShopDetail.shop_open_dates.map((date, index) => (
                     <li key={index}>
-                      {`${formatDateTime(date.start_time)} - ${formatDateTime(
-                        date.end_time
-                      )}`}
+                      {`${formatDate(date.start_time)} ${formatTime(
+                        date.start_time
+                      )} - ${formatTime(date.end_time)}`}
                     </li>
                   ))}
               </ul>
