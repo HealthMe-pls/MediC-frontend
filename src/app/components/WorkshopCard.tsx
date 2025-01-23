@@ -21,7 +21,10 @@ const formatFullDate = (isoString: string): string => {
   const date = new Date(isoString);
   return format(date, 'EEEE dd MMMM yyyy');
 };
-
+const formatTime = (isoString: string): string => {
+  const date = new Date(isoString); // ใช้ new Date() แทน parseISO
+  return format(date, "HH:mm");
+};
 const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
   return (
     <div
@@ -37,7 +40,7 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
         Language: {workshop.language}
       </p>
       <p className="text-gray-500 mt-1">
-        Date: {formatFullDate(workshop.date)} ({workshop.start_time} - {workshop.end_time})
+        Date: {formatFullDate(workshop.date)} ({formatTime(workshop.start_time)} - {formatTime(workshop.end_time)})
       </p>
       <p className="text-blue-600 font-bold mt-2">
         ${workshop.price.toFixed(2)}
