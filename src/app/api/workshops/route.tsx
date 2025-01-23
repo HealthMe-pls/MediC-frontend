@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+
 // // GET - Fetch all workshops
 export async function GETWorkshop() {
   console.log("Fetching workshops from backend...");

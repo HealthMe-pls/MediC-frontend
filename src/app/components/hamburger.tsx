@@ -16,11 +16,11 @@ const Hamburger: React.FC<HamburgerProps> = ({ isMenuOpen, setIsMenuOpen }) => {
           <ul className="text-white space-y-4">
             <li>
               <Link
-                href="/adminPage"
+                href="./"
                 className="hover:text-gray-300"
                 onClick={() => setIsMenuOpen(false)} // Close menu on click
               >
-                admin page
+                home
               </Link>
             </li>
             <li>
@@ -34,11 +34,11 @@ const Hamburger: React.FC<HamburgerProps> = ({ isMenuOpen, setIsMenuOpen }) => {
             </li>
             <li>
               <Link
-                href="/label3"
+                href="/adminPage"
                 className="hover:text-gray-300"
                 onClick={() => setIsMenuOpen(false)} // Close menu on click
               >
-                Label 3
+                admin page
               </Link>
             </li>
             {/* Close Tab */}
