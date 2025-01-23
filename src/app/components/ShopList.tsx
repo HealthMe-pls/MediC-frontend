@@ -1,29 +1,49 @@
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
+import { fetchShopDetail, ShopDetail } from "@/utility/shopDetail";
+import { format } from "date-fns";
+import { th } from "date-fns/locale";
 
+const formatDate = (isoString: string): string => {
+  const date = new Date(isoString); // ใช้ new Date() แทน parseISO
+  return format(date, "EEEE dd MMMM yyyy");
+};
+const formatTime = (isoString: string): string => {
+  const date = new Date(isoString); // ใช้ new Date() แทน parseISO
+  return format(date, "HH:mm");
+};
 const Shoplist: React.FC = () => {
-  const [mapDetails, setMapDetails] = useState<MapDetail[]>([]); // ข้อมูลร้านค้า
-  const [selectedZone, setSelectedZone] = useState<string | null>("A"); // Block ที่เลือก
-  const [selectedBlock, setSelectedBlock] = useState<MapDetail | null>(null); // ร้านที่เลือก
-  const [isShopListVisible, setShopListVisible] = useState<boolean>(false); // ควบคุมการแสดง Block
+  const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
+  const [shopDetails, setShopDetails] = useState<ShopDetail[]>([]);
+  const [selectedZone, setSelectedZone] = useState<string | null>("A");
+  const [selectedBlock, setSelectedBlock] = useState<MapDetail | null>(null);
+  const [isShopListVisible, setShopListVisible] = useState<boolean>(false);
 
   useEffect(() => {
-    // ดึงข้อมูลร้านค้า
     fetchMapDetail()
       .then((data) => setMapDetails(data))
       .catch((error) => console.error("Error fetching map details:", error));
   }, []);
 
-  // ดึง Zone ทั้งหมด
+  useEffect(() => {
+    fetchShopDetail()
+      .then((data) => setShopDetails(data))
+      .catch((error) => console.error("Error fetching shop details:", error));
+  }, []);
+
   const zone = Array.from(
     new Set(mapDetails.map((detail) => detail.block_zone))
   );
 
-  // กรอง Block ใน Zone ที่เลือก
   const filteredBlock =
     selectedZone !== null
       ? mapDetails.filter((detail) => detail.block_zone === selectedZone)
       : [];
+
+  // กรองข้อมูลร้านค้าที่ตรงกับชื่อของ selectedBlock
+  const selectedShopDetail =
+    selectedBlock &&
+    shopDetails.find((shop) => shop.name === selectedBlock.shop_name);
 
   return (
     <div className="p-4 bg-gray-100 rounded-md shadow-md">
@@ -31,7 +51,7 @@ const Shoplist: React.FC = () => {
       <div className="mb-4 flex space-x-4">
         {zone.map((zone, index) => (
           <button
-            key={`${zone}-${index}`} // ใช้ block ร่วมกับ index เพื่อเพิ่มความเป็นเอกลักษณ์
+            key={`${zone}-${index}`}
             className={`px-4 py-2 rounded ${
               selectedZone === zone
                 ? "bg-yellow-400 text-white"
@@ -49,29 +69,27 @@ const Shoplist: React.FC = () => {
       {/* Toggle Shop List */}
       <button
         className="mb-4 px-4 py-2 bg-gray-200 rounded text-gray-700"
-        onClick={() => setShopListVisible(!isShopListVisible)} // Toggle การแสดงผล
+        onClick={() => setShopListVisible(!isShopListVisible)}
       >
         Shop List {isShopListVisible ? "▲" : "▼"}
       </button>
       {/* แสดง Block */}
       {isShopListVisible && (
-        <>
-          <div className="grid grid-cols-5 gap-4 mb-4">
-            {filteredBlock.map((block, index) => (
-              <button
-                key={`shop-${block.block_id}-${index}`} // ใช้ shop_id ร่วมกับ index
-                className={`p-2 rounded border ${
-                  selectedBlock?.shop_id === block.block_id
-                    ? "bg-blue-500 text-white"
-                    : "bg-white"
-                }`}
-                onClick={() => setSelectedBlock(block)}
-              >
-                {block.block_name}
-              </button>
-            ))}
-          </div>
-        </>
+        <div className="grid grid-cols-5 gap-4 mb-4">
+          {filteredBlock.map((block, index) => (
+            <button
+              key={`shop-${block.block_id}-${index}`}
+              className={`p-2 rounded border ${
+                selectedBlock?.block_id === block.block_id
+                  ? "bg-blue-500 text-white"
+                  : "bg-white"
+              }`}
+              onClick={() => setSelectedBlock(block)}
+            >
+              {block.block_name}
+            </button>
+          ))}
+        </div>
       )}
 
       {/* รายละเอียดร้านค้า */}
@@ -79,18 +97,43 @@ const Shoplist: React.FC = () => {
         <div className="p-4 bg-white rounded shadow-md">
           <h3 className="text-xl font-bold mb-2">{selectedBlock.shop_name}</h3>
           <p className="text-gray-600">{selectedBlock.block_name}</p>
-          <p className="text-green-500 mt-2 font-medium">Status: Open</p>
+          <p className="text-green-500 mt-2 font-medium">
+            Status: {selectedShopDetail?.status ? "Open" : "Closed"}
+          </p>
           <div className="mt-4">
             <h4 className="font-semibold">Business Hours</h4>
-            <p>25/01/2025 Saturday 09:00 - 20:00</p>
-            <p>26/01/2025 Sunday 09:00 - 20:00</p>
+            {selectedShopDetail?.shop_open_dates ? (
+              <ul>
+                {Array.isArray(selectedShopDetail.shop_open_dates) &&
+                  selectedShopDetail.shop_open_dates.map((date, index) => (
+                    <li key={index}>
+                      {`${formatDate(date.start_time)} ${formatTime(
+                        date.start_time
+                      )} - ${formatTime(date.end_time)}`}
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              <p>Not available</p>
+            )}
           </div>
+
           <div className="mt-4">
             <h4 className="font-semibold">Social Media</h4>
-            <p>Facebook: Cotton Farm</p>
-            <p>Instagram: cotton_farm</p>
-            <p>Tiktok: Cotton Farm</p>
+            {selectedShopDetail?.social_media ? (
+              <ul>
+                {Array.isArray(selectedShopDetail.social_media) &&
+                  selectedShopDetail.social_media.map((media, index) => (
+                    <li key={index}>
+                      {media.platform}: <a href={media.link}>{media.link}</a>
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              <p>Not available</p>
+            )}
           </div>
+
           <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
             See More
           </button>
