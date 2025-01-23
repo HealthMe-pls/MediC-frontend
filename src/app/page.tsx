@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import CircularShops from "./components/CircularShops";
+// import CircularShops from "./components/CircularShops";
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../utility/maps";
 import Shoplist from "./components/ShopList";
@@ -22,8 +22,8 @@ export default function Home() {
     setSelectedBlock(blockId);
   };
 
-  const [innerShops, setInnerShops] = useState(8);
-  const [outerShops, setOuterShops] = useState(12);
+  // const [innerShops, setInnerShops] = useState(8);
+  // const [outerShops, setOuterShops] = useState(12);
 
   return (
     <div className="h-screen flex flex-col">
