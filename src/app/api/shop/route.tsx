@@ -12,10 +12,10 @@ export async function GET() {
       throw new Error("Failed to fetch shop in api route");
     }
 
-    const maps = await response.json();
+    const shops = await response.json();
     const headers = new Headers();
     setCorsHeaders(headers);
-    return NextResponse.json(maps, { status: 200, headers });
+    return NextResponse.json(shops, { status: 200, headers });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
