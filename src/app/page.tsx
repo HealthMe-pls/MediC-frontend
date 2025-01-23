@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import CircularShops from './components/CircularShops';
+import CircularShops from "./components/CircularShops";
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../utility/maps";
-import Map from './components/ShopMap';
-import '../styles/global.css';
-
+import Map from "./components/ShopMap";
+import "../styles/global.css";
+import Shoplist from "./components/ShopList";
 
 export default function Home() {
   const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
@@ -28,7 +28,7 @@ export default function Home() {
   const [outerShops, setOuterShops] = useState(12);
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col bg-background">
       {/* Header Section */}
       <header className="bg-blue-600 text-white py-4 flex justify-between items-center">
         <div className="flex items-center space-x-2">
@@ -81,10 +81,10 @@ export default function Home() {
           <h2>Highlight Workshop - Special Offers this Week!</h2>
         </div>
         <Link href="/adminPage">
-        <button className="px-4 py-2 bg-blue-500 text-white rounded">
-          Go to Admin Page
-        </button>
-      </Link>
+          <button className="px-4 py-2 bg-blue-500 text-white rounded">
+            Go to Admin Page
+          </button>
+        </Link>
 
         {/* Search & Filter Section */}
         <div className="flex justify-between mb-6">
@@ -107,9 +107,9 @@ export default function Home() {
           </div>
         </div>
 
-      <Map></Map>
- 
- {/* <div className="absolute inset-0 flex justify-center items-center">
+        <Map></Map>
+
+        {/* <div className="absolute inset-0 flex justify-center items-center">
   {Array.from({ length: 26 }).map((_, i) => (
     <div
       key={`A${i + 1}`}
@@ -149,7 +149,7 @@ export default function Home() {
       <span className="text-black text-xs">{`C${i + 1}`}</span> {}
     </div>
   ))}
-</div> */}        
+</div> */}
 
         {/* //Market Map */}
         {/* <div className="flex justify-center mb-6">
@@ -181,7 +181,7 @@ export default function Home() {
           </div>
         </div> */}
 
-{/* <div>
+        {/* <div>
         <h1>Shop Circle Layout</h1>
         <div>
           <label>
@@ -219,18 +219,16 @@ export default function Home() {
           </div>
         )}
 
+        {/*ShopList*/}
+        <div className="mt-6 sm:hidden">
+          <Shoplist />
+        </div>
       </main>
 
       {/* Footer Section */}
       <footer className="bg-gray-800 text-white py-4 text-center">
         <p>&copy; 2025 Bamboo Family Market. All rights reserved.</p>
       </footer>
-    
-
-
-    
     </div>
-
-    
   );
 }
