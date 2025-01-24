@@ -35,6 +35,16 @@
   transform: translate(-50%, -50%);
 }
 
+.filter {
+  position: absolute;
+  width: 170px;
+  height: auto;
+  top: 11%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .ellipse.a { background-color: #FFEF9E; }
 .ellipse.b { background-color: #D5EBD6; }
 .ellipse.c { background-color: #CAE5F3; }

@@ -67,6 +67,11 @@ export default function Map() {
                 alt="Map"
                 className="w-full max-w-lg z-0"
             />
+            <img
+                src="/assets/fork.png"
+                alt="fork"
+                className="w-full max-w-lg z-0 filter"
+            />
             {points.map((point) => (
                 <div
                     key={point.name}
