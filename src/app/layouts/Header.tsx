@@ -14,10 +14,10 @@ const Header = () => {
 
   return (
     <div>
-    <Bar/>
+      <Bar />
 
       {/* <div className={styles.header}> */}
-      <div className="flex justify-between p-4">
+      <div className="flex justify-between p-4 bg-white">
         <div className="flex-none justify-start">
           {/* <div className={styles.logoContainer}> */}
           <img src="/assets/logo.png" alt="Logo" className="w-[86px]" />
