@@ -2,40 +2,70 @@
 
 import { useState } from "react";
 import Hamburger from "../components/hamburger";
-
+import styles from "../../styles/Header.module.css";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("Eng");
+
+  const handleLanguageChange = (language: string) => {
+    setSelectedLanguage(language);
+  };
 
   return (
     <div>
-      <header className="bg-blue-600 text-white py-3 sm:py-4 flex justify-between items-center px-4 sm:px-6">
-        <div className="flex items-center space-x-2 sm:space-x-4">
-          <img 
-            src="/assets/logo.png" 
-            alt="Logo" 
-            className="h-6 sm:h-8 w-6 sm:w-8 object-contain"
-          />
-          <h1 className="text-xl sm:text-3xl font-bold">
+      <img
+        src="/assets/headerbar.png"
+        alt="Header Bar"
+        // className="w-[1440px] h-[40px]"
+        className="{styles.fixed-size-image}"
+      />
+
+      {/* <div className={styles.header}> */}
+      <div className="flex justify-between p-4">
+        <div className="flex-none justify-start">
+          {/* <div className={styles.logoContainer}> */}
+          <img src="/assets/logo.png" alt="Logo" className="w-[86px]" />
+          {/* <h1 className="text-xl sm:text-3xl font-bold">
             Bamboo Family Market
-          </h1>
+          </h1> */}
         </div>
-        <div className="flex items-center space-x-3 sm:space-x-6">
-          <div className="text-sm sm:text-lg hidden sm:block">
-            <button className="hover:text-gray-300 mr-1 sm:mr-2">EN</button>|
-            <button className="hover:text-gray-300 ml-1 sm:ml-2">TH</button>
+        <div className="flex justify-aroud ">
+          {/* <div className="text-sm sm:text-lg flex"> */}
+          <div className="flex">
+            <button
+              className={`${
+                selectedLanguage === "Eng"
+                  ? "text-[#4C4343]  font-bold"
+                  : "hover:text-[#9C9C9C]"
+              } mr-1 sm:mr-2`}
+              onClick={() => handleLanguageChange("Eng")}
+            >
+              English
+            </button>
           </div>
+          <div className="flex mt-5">| </div>
+          <div className="flex">
+            <button
+              className={`${
+                selectedLanguage === "TH"
+                  ? "text-[#4C4343] font-bold"
+                  : "hover:text-[#9C9C9C]"
+              } ml-1 sm:ml-2`}
+              onClick={() => handleLanguageChange("TH")}
+            >
+              TH
+            </button>
+          </div>
+          {/* </div> */}
           <div
-            className="cursor-pointer flex flex-col justify-center space-y-1"
+            className="cursor-pointer flex justify-around mt-6 ml-5"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            <div className="w-4 sm:w-6 h-0.5 bg-white"></div>
-            <div className="w-4 sm:w-6 h-0.5 bg-white"></div>
-            <div className="w-4 sm:w-6 h-0.5 bg-white"></div>
+            {/* <div  onClick={() => setIsMenuOpen(!isMenuOpen)}> */}
+            <Hamburger isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
           </div>
         </div>
-      </header>
-
-      <Hamburger isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+      </div>
     </div>
   );
 };

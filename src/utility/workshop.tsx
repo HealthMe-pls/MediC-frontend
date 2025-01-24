@@ -25,40 +25,23 @@ export async function fetchWorkshops(): Promise<Workshop[]> {
       throw new Error("Failed to fetch workshops from the route");
     }
 
-    const workshops = await response.json(); // Read JSON directly
-    console.log("Backend Response:", workshops); // Log parsed response
-    return workshops;
+  return await response.json(); 
   } catch (error) {
     console.error("Error fetching workshops:", error);
     throw error;
   }
 }
 
+export async function fetchWorkshopsById(workshopId: number): Promise<Workshop> {
+  try {
+    const response = await fetch(`${NEXT_API}/api/workshops/${workshopId}`); // Fetch from your route
 
-// export async function fetchWorkshops(): Promise<Workshop[]> {
-//   try {
-//     const response = await fetch(`${NEXT_API}/api/workshops`); // Fetch from your route
-//     console.log("Backend Response:", await response.text());
-
-//     if (!response.ok) {
-//       throw new Error("Failed to fetch workshops from the route");
-//     }
-//     return await response.json();
-//   } catch (error) {
-//     console.error("Error fetching workshops:", error);
-//     throw error;
-//   }
-// }
-
-// export async function fetchWorkshops(): Promise<Workshop[]> {
-//     try {
-//       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/workshops`);
-//       if (!response.ok) {
-//         throw new Error("Failed to fetch workshops");
-//       }
-//       return await response.json();
-//     } catch (error) {
-//       console.error("Error fetching workshops:", error);
-//       throw error;
-//     }
-//   }
+    if (!response.ok) {
+      throw new Error("Failed to fetch workshops from the route");
+    }
+ return await response.json();
+  } catch (error) {
+    console.error("Error fetching workshops with ID ${shopId}:", error);
+    throw error;
+  }
+}

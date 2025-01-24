@@ -1,0 +1,54 @@
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  width: 30%;
+}
+.linkHamburger {
+  border-radius: 10px;
+  border: 1px solid #f5f5f5;
+  background-color: #f5f5f5;
+  padding: 12px;
+  width: 95%;
+  height: 10%;
+}
+.header {
+  background-color: white; /* bg-white */
+  color: black; /* text-black */
+  padding: 0.75rem 1rem; /* py-3 px-4 */
+  display: flex; /* flex */
+  justify-content: space-between; /* justify-between */
+  align-items: center; /* items-center */
+}
+.fixed-size-image {
+  width: 1440px; /* Fixed width */
+  height: 40px; /* Fixed height */
+  position: fixed; /* Fixes the position of the element */
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  bottom: 40px;
+  right: 1440px;
+  z-index: 40px;
+}
+.logoImage {
+  height: 2rem;
+  width: 2rem;
+  object-fit: contain;
+  transition: transform 0.2s;
+}
+
+.logoImage:hover {
+  transform: scale(1.1);
+}
+
+.logoText {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  transition: color 0.2s;
+}
+
+.logoText:hover {
+  color: #007bff;
+}
