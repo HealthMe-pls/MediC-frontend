@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import CardProductDetail from "@/app/components/CardProductDetail";
 import Link from "next/link";
 import BackButton from "@/app/components/BackButton";
-
+import Footer from "../../layouts/Footer";
 const formatDate = (isoString: string): string => {
   const date = new Date(isoString); // ใช้ new Date() แทน parseISO
   return format(date, "dd/MM/yyyy EEEE");
@@ -189,6 +189,7 @@ const ShopPage = () => {
       ) : (
         <p>No shop details found</p>
       )}
+      <Footer/>
     </div>
   );
 };
