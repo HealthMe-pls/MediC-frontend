@@ -1,6 +1,6 @@
 import { setCorsHeaders } from "@/utility/corsUtils";
 import { NextResponse } from "next/server";
-
+// import { NextApiRequest, NextApiResponse } from "next";
 // GET - Fetch all map
 export async function GET() {
   try {
@@ -24,3 +24,4 @@ export async function GET() {
     );
   }
 }
+

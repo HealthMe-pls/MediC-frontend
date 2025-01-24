@@ -22,8 +22,8 @@ const lexend = Lexend({
 });
 
 export const metadata: Metadata = {
-  title: "MediC App",
-  description: "for MonkolKeeRee Clinic",
+  title: "Bamboo Family Market",
+  description: "for Sangadee space",
 };
 
 export default function RootLayout({

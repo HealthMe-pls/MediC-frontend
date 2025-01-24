@@ -4,7 +4,7 @@ import { fetchShopDetail, ShopDetail } from "@/utility/shopDetail";
 import { format } from "date-fns";
 import Link from "next/link";
 import { th } from "date-fns/locale";
-import CardMenu from "./CardMenu";
+import CardMenuSL from "./CardMenuSL";
 
 const formatDate = (isoString: string): string => {
   const date = new Date(isoString); // ใช้ new Date() แทน parseISO
@@ -116,11 +116,11 @@ const Shoplist: React.FC = () => {
 
       {/* แสดง Block */}
       {isShopListVisible && (
-        <div className="grid grid-cols-6 gap-4 mb-4">
+        <div className="grid grid-cols-6 gap-2 mb-4">
           {filteredBlock.map((block, index) => (
             <button
               key={`shop-${block.block_id}-${index}`}
-              className={`p-2 border font-light ${
+              className={`px-auto py-2 border font-light  ${
                 selectedBlock?.block_id === block.block_id
                   ? // Change color based on the selected zone
                     block.block_zone === "A"
@@ -206,7 +206,7 @@ const Shoplist: React.FC = () => {
                 style={{
                   display: "flex",
                   overflowX: "auto",
-                  gap: "16px",
+                  gap: "2px",
                   scrollbarWidth: "none", // สำหรับ Firefox
                   msOverflowStyle: "none", // สำหรับ Internet Explorer
                 }}
@@ -219,7 +219,7 @@ const Shoplist: React.FC = () => {
                       flexShrink: 0,
                     }}
                   >
-                    <CardMenu menu={menu} />
+                    <CardMenuSL menu={menu} />
                   </div>
                 ))}
               </div>
@@ -293,7 +293,7 @@ const Shoplist: React.FC = () => {
 
           <Link href={`/shop/${selectedBlock.shop_id}`}>
             <div className="mt-4 flex justify-center pb-2">
-              <button className="w-[266px] h-[30px] rounded-[15px] bg-[#F0F0F0] font-light text-[14px]">
+              <button className="w-[100%] h-[30px] rounded-[15px] bg-[#F0F0F0] font-light text-[14px]">
                 See More
               </button>
             </div>
