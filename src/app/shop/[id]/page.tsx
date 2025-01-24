@@ -50,17 +50,19 @@ const ShopPage = () => {
       <BackButton href="../../" />
 
       {shopDetail ? (
-        <div className=" font-lexend text-[#4C4343] mt-[55px]">
-          <div className="p-4">
+        <div className=" font-lexend text-[#4C4343]">
+          <div className="p-4 mt-[55px]">
             {shopDetail.photos?.length > 0 && (
-              <ImageBanner
-                photos={shopDetail.photos}
-                basePath="http://127.0.0.1:3000/"
-              />
+              <div className="">
+                <ImageBanner
+                  photos={shopDetail.photos}
+                  basePath="http://127.0.0.1:3000/"
+                />
+              </div>
             )}
           </div>
 
-          <div className="m-5">
+          <div className="mx-5">
             <div className="flex justify-between items-center">
               <div>
                 <p className=" font-regular text-[21px] ">{shopDetail.name}</p>
