@@ -10,11 +10,14 @@ import Footer from "./layouts/Footer";
 import Map from "./components/ShopMap";
 import "../styles/global.css";
 import "./globals.css";
+import { fetchShopCategory, ShopCategory } from "@/utility/shopcate";
 
 export default function Home() {
   const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
   // const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedBlock, setSelectedBlock] = useState<number | null>(null);
+  // const [selectedBlock, setSelectedBlock] = useState<number | null>(null);
+  const [shopCategory, setCategory] = useState<ShopCategory[]>([]);
+  const [selectedCate, setSelectedCate] = useState<number>(0);
 
   // Fetch market map data on component mount
   useEffect(() => {
@@ -23,9 +26,20 @@ export default function Home() {
       .catch((error) => console.error("Error fetching market maps:", error));
   }, []);
 
-  const handleBlockClick = (blockId: number) => {
-    setSelectedBlock(blockId);
+  useEffect(() => {
+    fetchShopCategory()
+      .then((data) => setCategory(data))
+      .catch((error) => console.error("Error fetching shopcate:", error));
+  }, []);
+
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedId = Number(event.target.value); // Convert value to a number
+    setSelectedCate(selectedId);
   };
+
+  // const handleBlockClick = (blockId: number) => {
+  //   setSelectedBlock(blockId);
+  // };
 
   // const [innerShops, setInnerShops] = useState(8);
   // const [outerShops, setOuterShops] = useState(12);
@@ -55,15 +69,22 @@ export default function Home() {
               placeholder="Search..."
             />
           </div>
-          <div className="flex-1 ml-4">
+          <div>
             <select
               className="w-full p-3 border border-gray-300 rounded-md"
-              defaultValue=""
+              value={selectedCate}
+              onChange={handleChange}
             >
-              <option value="">Select Filter</option>
-              <option value="type1">Filter Type 1</option>
-              <option value="type2">Filter Type 2</option>
+              <option value={0}>Select Filter</option>
+              {shopCategory.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
             </select>
+            <p className="mt-4">
+              Selected Category ID: {selectedCate !== 0 ? selectedCate : "None"}
+            </p>
           </div>
         </div>
 
@@ -71,105 +92,8 @@ export default function Home() {
           <Map></Map>
         </div>
 
-        {/* <div className="absolute inset-0 flex justify-center items-center">
-  {Array.from({ length: 26 }).map((_, i) => (
-    <div
-      key={`A${i + 1}`}
-      className="point-a"
-      style={{
-        transform: `rotate(${i * 13.85}deg) translate(240px) rotate(-${i * 13.85}deg)`,
-      }}
-    >
-      <span className="text-black text-xs">{`A${i + 1}`}</span> {}
-    </div>
-  ))}
-</div>
-
-<div className="absolute inset-0 flex justify-center items-center">
-  {Array.from({ length: 15 }).map((_, i) => (
-    <div
-      key={`B${i + 1}`}
-      className="point-b"
-      style={{
-        transform: `rotate(${i * 24}deg) translate(200px) translateY(-10px) rotate(-${i * 24}deg)`,
-      }}
-    >
-      <span className="text-black text-xs">{`B${i + 1}`}</span> {}
-    </div>
-  ))}
-</div>
-
-<div className="absolute inset-0 flex justify-center items-center">
-  {Array.from({ length: 13 }).map((_, i) => (
-    <div
-      key={`C${i + 1}`}
-      className="point-c"
-      style={{
-        transform: `rotate(${i * 27.69}deg) translate(160px) translateY(-10px) rotate(-${i * 27.69}deg)`,
-      }}
-    >
-      <span className="text-black text-xs">{`C${i + 1}`}</span> {}
-    </div>
-  ))}
-</div> */}
-
-        {/* //Market Map */}
-        {/* <div className="flex justify-center mb-6">
-          <div className="relative w-72 h-72 rounded-full border-4 border-gray-500 overflow-hidden">
-            <div
-              className="absolute top-10 left-10 w-16 h-16 bg-blue-600 text-white flex items-center justify-center rounded-full cursor-pointer"
-              onClick={() => handleBlockClick(1)}
-            >
-              Block 1
-            </div>
-            <div
-              className="absolute top-10 right-10 w-16 h-16 bg-red-600 text-white flex items-center justify-center rounded-full cursor-pointer"
-              onClick={() => handleBlockClick(2)}
-            >
-              Block 2
-            </div>
-            <div
-              className="absolute bottom-10 left-10 w-16 h-16 bg-green-600 text-white flex items-center justify-center rounded-full cursor-pointer"
-              onClick={() => handleBlockClick(3)}
-            >
-              Block 3
-            </div>
-            <div
-              className="absolute bottom-10 right-10 w-16 h-16 bg-yellow-600 text-white flex items-center justify-center rounded-full cursor-pointer"
-              onClick={() => handleBlockClick(4)}
-            >
-              Block 4
-            </div>
-          </div>
-        </div> */}
-
-        {/* <div>
-        <h1>Shop Circle Layout</h1>
-        <div>
-          <label>
-            Inner Shops:
-            <input
-              type="number"
-              value={innerShops}
-              onChange={(e) => setInnerShops(Number(e.target.value))}
-              min="1"
-            />
-          </label>
-          <label>
-            Outer Shops:
-            <input
-              type="number"
-              value={outerShops}
-              onChange={(e) => setOuterShops(Number(e.target.value))}
-              min="1"
-            />
-          </label>
-        </div>
-        <CircularShops innerShopCount={innerShops} outerShopCount={outerShops} />
-      </div> */}
-
         {/* Details of Selected Block */}
-        {selectedBlock && (
+        {/* {selectedBlock && (
           <div className="bg-gray-100 p-6 rounded-md shadow-md mb-6">
             <h3 className="text-2xl font-semibold mb-4">
               Shop of Block {selectedBlock}
@@ -179,7 +103,7 @@ export default function Home() {
                 ?.shop_name || "No shop details available for this block."}
             </p>
           </div>
-        )}
+        )} */}
 
         {/*ShopList*/}
         <div className="mt-6 sm:hidden">
