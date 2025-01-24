@@ -6,7 +6,7 @@ function fillRepeatingText(): void {
   const container = document.getElementById("repeating-text") as HTMLElement;
   const word = "\u00A0SangGaDee Space \u00A0\u00A0 ✸ ";
   const containerWidth = container.offsetWidth;
-  const wordWidth = getTextWidth(word, "16px Arial");
+  const wordWidth = getTextWidth(word, "16px lexend");
 
   // Calculate how many times the word needs to be repeated to fill the width
   const repeatCount = Math.ceil(containerWidth / wordWidth);

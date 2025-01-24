@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { fetchWorkshopsById, Workshop } from "@/utility/workshop";
-
+import Footer from "@/app/layouts/Footer";
 const WorkshopDetail = () => {
   const { id } = useParams();
   const [workshopDetail, setWorkshopDetail] = useState<Workshop | null>(null);
