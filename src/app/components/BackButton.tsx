@@ -6,7 +6,10 @@ interface BackButtonProps {
 
 const BackButton: React.FC<BackButtonProps> = ({ href }) => {
   return (
-    <div className="bg-white w-[100%] h-[50px]">
+    <div
+      className="bg-white w-full h-[50px] fixed top-0 left-0 z-50 shadow-md"
+      style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
+    >
       <Link href={href}>
         <div className="pt-4 pl-4">
           <svg

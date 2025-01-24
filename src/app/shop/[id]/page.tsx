@@ -7,7 +7,8 @@ import { format } from "date-fns";
 import CardProductDetail from "@/app/components/CardProductDetail";
 import Link from "next/link";
 import BackButton from "@/app/components/BackButton";
-import Footer from "../../layouts/Footer";
+import ImageBanner from "@/app/components/ImageBanner";
+import Footer from "@/app/layouts/Footer";
 const formatDate = (isoString: string): string => {
   const date = new Date(isoString); // ใช้ new Date() แทน parseISO
   return format(date, "dd/MM/yyyy EEEE");
@@ -46,9 +47,21 @@ const ShopPage = () => {
   return (
     <div>
       <BackButton href="../../" />
+
       {shopDetail ? (
         <div className=" font-lexend text-[#4C4343]">
-          <div className="m-5">
+          <div className="p-4 mt-[55px]">
+            {shopDetail.photos?.length > 0 && (
+              <div className="">
+                <ImageBanner
+                  photos={shopDetail.photos}
+                  basePath="http://127.0.0.1:3000/"
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="mx-5">
             <div className="flex justify-between items-center">
               <div>
                 <p className=" font-regular text-[21px] ">{shopDetail.name}</p>
