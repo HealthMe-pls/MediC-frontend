@@ -33,8 +33,8 @@ export default function Home() {
   }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedId = Number(event.target.value); // Convert value to a number
-    setSelectedCate(selectedId);
+    const selectedCate = Number(event.target.value); // Convert value to a number
+    setSelectedCate(selectedCate);
   };
 
   // const handleBlockClick = (blockId: number) => {
@@ -82,9 +82,6 @@ export default function Home() {
                 </option>
               ))}
             </select>
-            <p className="mt-4">
-              Selected Category ID: {selectedCate !== 0 ? selectedCate : "None"}
-            </p>
           </div>
         </div>
 
@@ -107,7 +104,7 @@ export default function Home() {
 
         {/*ShopList*/}
         <div className="mt-6 sm:hidden">
-          <Shoplist />
+          <Shoplist label="" onChange={handleChange} id={selectedCate} />
         </div>
       </main>
 

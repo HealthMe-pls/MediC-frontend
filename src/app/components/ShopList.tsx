@@ -6,6 +6,12 @@ import Link from "next/link";
 import { th } from "date-fns/locale";
 import CardMenuSL from "./CardMenuSL";
 
+interface CateID {
+  label: string;
+  id: number;
+  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void; // ใช้ event type ที่ถูกต้อง
+}
+
 const formatDate = (isoString: string): string => {
   const date = new Date(isoString); // ใช้ new Date() แทน parseISO
   return format(date, "dd/MM/yyyy EEEE");
@@ -14,12 +20,14 @@ const formatTime = (isoString: string): string => {
   const date = new Date(isoString); // ใช้ new Date() แทน parseISO
   return format(date, "HH:mm");
 };
-const Shoplist: React.FC = () => {
+const Shoplist: React.FC<CateID> = ({ label, onChange, id = 0 }) => {
   const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
   const [shopDetails, setShopDetails] = useState<ShopDetail[]>([]);
   const [selectedZone, setSelectedZone] = useState<string | null>("A");
   const [selectedBlock, setSelectedBlock] = useState<MapDetail | null>(null);
   const [isShopListVisible, setShopListVisible] = useState<boolean>(false);
+
+  console.log(id);
 
   useEffect(() => {
     fetchMapDetail()
@@ -35,7 +43,11 @@ const Shoplist: React.FC = () => {
 
   const filteredBlock =
     selectedZone !== null
-      ? mapDetails.filter((detail) => detail.block_zone === selectedZone)
+      ? mapDetails.filter(
+          (detail) =>
+            detail.block_zone === selectedZone &&
+            (detail.category_id === id || id === 0)
+        )
       : [];
 
   const selectedShopDetail =
