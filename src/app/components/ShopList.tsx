@@ -3,7 +3,7 @@ import { fetchMapDetail, MapDetail } from "../../utility/maps";
 import { fetchShopDetail, ShopDetail } from "@/utility/shopDetail";
 import { format } from "date-fns";
 import Link from "next/link";
-import { th } from "date-fns/locale";
+// import { th } from "date-fns/locale";
 import CardMenuSL from "./CardMenuSL";
 
 interface CateID {

@@ -87,7 +87,7 @@ export default function Home() {
           </div>
 
           {/* Details of Selected Block */}
-          {selectedBlock && (
+          {/* {selectedBlock && (
             <div className="bg-gray-100 p-6 rounded-md shadow-md mb-6">
               <h3 className="text-2xl font-semibold mb-4">
                 Shop of Block {selectedBlock}
@@ -97,11 +97,15 @@ export default function Home() {
                   ?.shop_name || "No shop details available for this block."}
               </p>
             </div>
-          )}
+          )} */}
 
           {/*ShopList*/}
           <div className="mt-6 sm:hidden">
-            <Shoplist />
+            <Shoplist
+              label="Shop Category"
+              id={selectedCate}
+              onChange={handleChange}
+            />
           </div>
         </div>
         <div className="bg-white">
