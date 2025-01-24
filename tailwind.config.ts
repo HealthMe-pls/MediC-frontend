@@ -17,5 +17,11 @@ export default {
       },
     },
   },
+  variants: {
+    extend: {
+      backgroundColor: ["checked"], // รองรับ checked:bg
+      borderColor: ["checked"], // รองรับ checked:border
+    },
+  },
   plugins: [],
 } satisfies Config;

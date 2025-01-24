@@ -16,11 +16,17 @@ const CardProductDetail: React.FC<CardMenuProps> = ({ menu }) => {
         {/* รูปภาพของสินค้า */}
         <div className="w-[100px] h-[100px] flex-shrink-0">
           {menu.photos?.length ? (
-            <img
-              src={`${NEXT_API}/${menu.photos[0]?.pathfile}`}
-              alt={menu.product_name}
-              className="w-full h-full object-cover rounded-[10px]"
-            />
+            (() => {
+              const imageUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/upload/${menu.photos[0]?.pathfile}`;
+              console.log(imageUrl); // Console log URL ของรูปภาพ
+              return (
+                <img
+                  src={imageUrl}
+                  alt={menu.product_name}
+                  className="w-full h-full object-cover rounded-[10px]"
+                />
+              );
+            })()
           ) : (
             <div className="w-full h-full object-cover rounded-[10px] bg-[#F0F0F0] flex items-center justify-center">
               <span>No Image</span>
