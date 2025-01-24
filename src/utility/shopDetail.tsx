@@ -30,6 +30,7 @@ export interface Menu {
 export interface ShopDetail {
   brief_description: string;
   category: string;
+  category_id: number;
   entrepreneur: string;
   entrepreneur_id: number;
   full_description: string;
