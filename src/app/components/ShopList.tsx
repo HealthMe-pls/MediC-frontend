@@ -4,6 +4,7 @@ import { fetchShopDetail, ShopDetail } from "@/utility/shopDetail";
 import { format } from "date-fns";
 import Link from "next/link";
 import { th } from "date-fns/locale";
+import CardMenu from "./CardMenu";
 
 const formatDate = (isoString: string): string => {
   const date = new Date(isoString); // ใช้ new Date() แทน parseISO
@@ -201,43 +202,17 @@ const Shoplist: React.FC = () => {
               Featured Menu
             </p>
             {selectedShopDetail?.menus?.length ? (
-              <ul>
+              <div className="flex">
                 {/* ดึงเฉพาะ 3 รายการแรก */}
-                {selectedShopDetail.menus.slice(0, 3).map((menu, index) => (
-                  <li key={menu.id} className="text-[14px] font-light mb-4">
-                    <div className="flex items-start gap-4">
-                      {/* รูปภาพของสินค้า */}
-                      {menu.photo?.length ? (
-                        <img
-                          src={menu.photo[0]?.path_file}
-                          alt={menu.product_name}
-                          className="w-16 h-16 object-cover rounded"
-                        />
-                      ) : (
-                        <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
-                          <span>No Image</span>
-                        </div>
-                      )}
-
-                      {/* รายละเอียดของสินค้า */}
-                      <div>
-                        <h5 className="font-semibold">{menu.product_name}</h5>
-                        <p className="text-sm text-gray-600">
-                          {menu.product_description}
-                        </p>
-                        <p className="font-medium text-primary">
-                          ${menu.price.toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
-                  </li>
+                {selectedShopDetail.menus.slice(0, 3).map((menu) => (
+                  <CardMenu key={menu.id} menu={menu} />
                 ))}
-              </ul>
+              </div>
             ) : (
-              <p className="text-[14px] font-light">No menu available</p>
+              <p>No menus available</p>
             )}
           </div>
-          <div className="mt-4">
+          <div className="mt-2">
             <p className="text-[15px] font-regular flex items-center">
               <svg
                 width="18"
