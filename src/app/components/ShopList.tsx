@@ -202,10 +202,25 @@ const Shoplist: React.FC = () => {
               Featured Menu
             </p>
             {selectedShopDetail?.menus?.length ? (
-              <div className="flex">
-                {/* ดึงเฉพาะ 3 รายการแรก */}
-                {selectedShopDetail.menus.slice(0, 3).map((menu) => (
-                  <CardMenu key={menu.id} menu={menu} />
+              <div
+                style={{
+                  display: "flex",
+                  overflowX: "auto",
+                  gap: "16px",
+                  scrollbarWidth: "none", // สำหรับ Firefox
+                  msOverflowStyle: "none", // สำหรับ Internet Explorer
+                }}
+                className="hide-scrollbar"
+              >
+                {selectedShopDetail.menus.slice(0, 4).map((menu) => (
+                  <div
+                    key={menu.id}
+                    style={{
+                      flexShrink: 0,
+                    }}
+                  >
+                    <CardMenu menu={menu} />
+                  </div>
                 ))}
               </div>
             ) : (
