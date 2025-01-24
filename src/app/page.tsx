@@ -82,11 +82,14 @@ export default function Home() {
                 </option>
               ))}
             </select>
+            {/* <p className="mt-4">
+              Selected Category ID: {selectedCate !== 0 ? selectedCate : "None"}
+            </p> */}
           </div>
         </div>
 
         <div className="sm:hidden">
-          <Map></Map>
+          <Map selectedCate={selectedCate}></Map>
         </div>
 
         {/* Details of Selected Block */}
