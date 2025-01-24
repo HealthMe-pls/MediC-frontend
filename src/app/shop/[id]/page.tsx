@@ -5,6 +5,8 @@ import { useParams } from "next/navigation";
 import { fetchShopById, ShopDetail } from "@/utility/shopDetail";
 import { format } from "date-fns";
 import CardProductDetail from "@/app/components/CardProductDetail";
+import Link from "next/link";
+import BackButton from "@/app/components/BackButton";
 
 const formatDate = (isoString: string): string => {
   const date = new Date(isoString); // ใช้ new Date() แทน parseISO
@@ -43,6 +45,7 @@ const ShopPage = () => {
 
   return (
     <div>
+      <BackButton href="../../" />
       {shopDetail ? (
         <div className=" font-lexend text-[#4C4343]">
           <div className="m-5">
