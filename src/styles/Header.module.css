@@ -12,6 +12,7 @@
   width: 95%;
   height: 10%;
 }
+
 .header {
   background-color: white; /* bg-white */
   color: black; /* text-black */
@@ -34,7 +35,7 @@
 /* Header.module.css */
 .repeatingText {
   width: 100%; /* Full width */
-  background-color: #52A794; /* Green background */
+  background-color: #52a794; /* Green background */
   color: white; /* Text color */
   font-size: 16px; /* Adjust font size */
   height: 40px; /* Height of the container */
@@ -44,4 +45,3 @@
   white-space: nowrap; /* Prevent wrapping */
   padding: 0 20px;
 }
-

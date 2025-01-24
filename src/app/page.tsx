@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../utility/maps";
 import Header from "./layouts/Header";
 import Shoplist from "./components/ShopList";
-
+import Footer from "./layouts/Footer";
 export default function Home() {
   const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
   // const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -138,9 +138,7 @@ export default function Home() {
       </main>
 
       {/* Footer Section */}
-      <footer className="bg-gray-800 text-white py-4 text-center">
-        <p>&copy; 2025 Bamboo Family Market. All rights reserved.</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

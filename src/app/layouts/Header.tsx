@@ -14,10 +14,7 @@ const Header = () => {
 
   return (
     <div>
-
     <Bar/>
-
-
 
       {/* <div className={styles.header}> */}
       <div className="flex justify-between p-4">

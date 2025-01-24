@@ -27,11 +27,11 @@ const Hamburger: React.FC<HamburgerProps> = ({ isMenuOpen, setIsMenuOpen }) => {
       {/* Menu Drawer */}
       {isMenuOpen && (
         <div
-          className={`${
+          className={`{styles.menu-drawer}${
             isMenuOpen
-              ? "block fixed top-[40px] left-0 z-50 bg-white text-black p-6"
+              ? "block fixed top-[40px] right-0 z-50 bg-white text-black p-6"
               : "hidden"
-          } w-full h-full sm:w-64 sm:h-auto sm:right-0 sm:top-0`}
+          } w-full h-full sm:w-[350px] sm:h-[100%] sm:right-0 sm:top-0`}
         >
           <ul className="space-y-4">
             <li>
