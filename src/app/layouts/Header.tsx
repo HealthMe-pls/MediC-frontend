@@ -31,8 +31,8 @@ const Header = () => {
             <button
               className={`${
                 selectedLanguage === "Eng"
-                  ? "text-[#9C9C9C]  "
-                  : "hover:text-[#4C4343]"
+                  ? "text-[#4C4343] "
+                  : "text-[#9C9C9C]"
               } mr-1 sm:mr-2`}
               onClick={() => handleLanguageChange("Eng")}
             >
@@ -43,9 +43,7 @@ const Header = () => {
           <div className="flex">
             <button
               className={`${
-                selectedLanguage === "TH"
-                  ? "text-[#9C9C9C] "
-                  : "hover:text-[#4C4343]"
+                selectedLanguage === "TH" ? "text-[#4C4343] " : "text-[#9C9C9C]"
               } ml-1 sm:ml-2`}
               onClick={() => handleLanguageChange("TH")}
             >
