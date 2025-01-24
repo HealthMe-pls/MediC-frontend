@@ -10,7 +10,7 @@ interface ImageBannerProps {
   basePath?: string;
 }
 
-const NEXT_API = "http://127.0.0.1:3000";
+// const NEXT_API = "http://127.0.0.1:3000";
 
 const ImageBanner: React.FC<ImageBannerProps> = ({ photos, basePath = "" }) => {
   const [currentIndex, setCurrentIndex] = useState(0);

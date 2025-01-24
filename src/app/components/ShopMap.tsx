@@ -1,6 +1,6 @@
 import React from 'react';
 import '../../styles/global.css';
-import Shop from '../../styles/Map.svg'
+// import Shop from '../../styles/Map.svg'
 
 export default function Map() {
     const points = [
