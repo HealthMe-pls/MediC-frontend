@@ -8,7 +8,7 @@ export async function GET(
   try {
     const { id: shopId } = params;
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/shop/${shopId}`
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/shopdetail/${shopId}`
     );
 
     if (!response.ok) {

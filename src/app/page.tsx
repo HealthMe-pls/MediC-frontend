@@ -7,6 +7,10 @@ import { fetchMapDetail, MapDetail } from "../utility/maps";
 import Header from "./layouts/Header";
 import Shoplist from "./components/ShopList";
 import Footer from "./layouts/Footer";
+import Map from "./components/ShopMap";
+import "../styles/global.css";
+import "./globals.css";
+
 export default function Home() {
   const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
   // const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,7 +35,7 @@ export default function Home() {
       <Header />
 
       {/* Content Section */}
-      <main className="flex-1 overflow-auto p-6 bg-gray-50">
+      <main className="flex-1 overflow-auto p-6">
         {/* Highlight Banner */}
         <div className="bg-yellow-400 py-4 text-center text-black font-bold mb-6">
           <h2>Highlight Workshop - Special Offers this Week!</h2>
@@ -63,8 +67,54 @@ export default function Home() {
           </div>
         </div>
 
+        <div className="sm:hidden">
+          <Map></Map>
+        </div>
+
+        {/* <div className="absolute inset-0 flex justify-center items-center">
+  {Array.from({ length: 26 }).map((_, i) => (
+    <div
+      key={`A${i + 1}`}
+      className="point-a"
+      style={{
+        transform: `rotate(${i * 13.85}deg) translate(240px) rotate(-${i * 13.85}deg)`,
+      }}
+    >
+      <span className="text-black text-xs">{`A${i + 1}`}</span> {}
+    </div>
+  ))}
+</div>
+
+<div className="absolute inset-0 flex justify-center items-center">
+  {Array.from({ length: 15 }).map((_, i) => (
+    <div
+      key={`B${i + 1}`}
+      className="point-b"
+      style={{
+        transform: `rotate(${i * 24}deg) translate(200px) translateY(-10px) rotate(-${i * 24}deg)`,
+      }}
+    >
+      <span className="text-black text-xs">{`B${i + 1}`}</span> {}
+    </div>
+  ))}
+</div>
+
+<div className="absolute inset-0 flex justify-center items-center">
+  {Array.from({ length: 13 }).map((_, i) => (
+    <div
+      key={`C${i + 1}`}
+      className="point-c"
+      style={{
+        transform: `rotate(${i * 27.69}deg) translate(160px) translateY(-10px) rotate(-${i * 27.69}deg)`,
+      }}
+    >
+      <span className="text-black text-xs">{`C${i + 1}`}</span> {}
+    </div>
+  ))}
+</div> */}
+
         {/* //Market Map */}
-        <div className="flex justify-center mb-6">
+        {/* <div className="flex justify-center mb-6">
           <div className="relative w-72 h-72 rounded-full border-4 border-gray-500 overflow-hidden">
             <div
               className="absolute top-10 left-10 w-16 h-16 bg-blue-600 text-white flex items-center justify-center rounded-full cursor-pointer"
@@ -91,7 +141,7 @@ export default function Home() {
               Block 4
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* <div>
         <h1>Shop Circle Layout</h1>

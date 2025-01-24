@@ -2,3 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* globals.css */
+body {
+  background-color: #fff7eb !important;
+}

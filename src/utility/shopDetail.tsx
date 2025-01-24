@@ -1,7 +1,7 @@
 // Interface สำหรับข้อมูล Social Media
 export interface Photo {
-  id: number;
-  path_file: string;
+  pathfile: string;
+  photo_id: number;
 }
 
 export interface SocialMedia {
@@ -20,7 +20,7 @@ export interface ShopOpenDates {
 // Interface สำหรับข้อมูลเมนูร้านค้า (กรณีที่ต้องการรายละเอียดเมนู)
 export interface Menu {
   id: string;
-  photo: Photo[];
+  photos: Photo[];
   price: number;
   product_description: string;
   product_name: string;
