@@ -35,6 +35,7 @@ export interface ShopDetail {
   full_description: string;
   menus: Menu[]; // เปลี่ยนเป็น array ของเมนู
   name: string;
+  photos: Photo[];
   shop_id: number;
   shop_open_dates: ShopOpenDates; // ใช้ interface ของเวลาเปิด-ปิด
   social_media: SocialMedia; // ใช้ interface ของ Social Media
