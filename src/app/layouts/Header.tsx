@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Hamburger from "../components/hamburger";
 import styles from "../../styles/Header.module.css";
+import Bar from "./bar";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("Eng");
@@ -13,12 +14,10 @@ const Header = () => {
 
   return (
     <div>
-      <img
-        src="/assets/headerbar.png"
-        alt="Header Bar"
-        // className="w-[1440px] h-[40px]"
-        className="{styles.fixed-size-image}"
-      />
+
+    <Bar/>
+
+
 
       {/* <div className={styles.header}> */}
       <div className="flex justify-between p-4">
