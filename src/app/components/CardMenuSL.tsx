@@ -4,7 +4,7 @@ interface CardMenuProps {
   menu: Menu; // ใช้ Interface Menu เพื่อกำหนดรูปแบบของ menu prop
 }
 
-const CardMenu: React.FC<CardMenuProps> = ({ menu }) => {
+const CardMenuSL: React.FC<CardMenuProps> = ({ menu }) => {
   return (
     <div key={menu.id} className="text-[14px] font-light mb-4">
       <div className="flex-col items-start gap-4 m-2">
@@ -24,11 +24,13 @@ const CardMenu: React.FC<CardMenuProps> = ({ menu }) => {
         {/* รายละเอียดของสินค้า */}
         <div className="my-1">
           <h5 className="font-light text-[14px]">{menu.product_name}</h5>
-          <p className="font-medium text-[13px]">${menu.price.toFixed(2)}</p>
+          <p className="font-medium text-[13px]">
+            {menu.price.toFixed(2)} Baht
+          </p>
         </div>
       </div>
     </div>
   );
 };
 
-export default CardMenu;
+export default CardMenuSL;
