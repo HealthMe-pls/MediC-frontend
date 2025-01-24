@@ -62,25 +62,27 @@ export default function Map() {
 
     return (
         <div className="relative flex justify-center items-center">
-            <img
-                src="/assets/the_earth_tree.png"
-                alt="Map"
-                className="w-full max-w-lg z-0"
-            />
-            <img
-                src="/assets/fork.png"
-                alt="fork"
-                className="w-full max-w-lg z-0 filter"
-            />
-            {points.map((point) => (
-                <div
-                    key={point.name}
-                    className={`ellipse ${point.name[0].toLowerCase()}`}
-                    style={{ top: point.top, left: point.left }}
-                >
-                    <span className="ellipse-text">{point.name}</span>
-                </div>
-            ))}
+          {/* Responsive map image */}
+          <img
+            src="/assets/the_earth_tree.png"
+            alt="Map"
+            className="w-full max-w-xl h-auto z-0"
+          />
+          <img
+            src="/assets/fork.png"
+            alt="fork"
+            className="w-full max-w-xl h-auto z-0 forks"
+          />
+          {points.map((point) => (
+            <div
+              key={point.name}
+              className={`ellipse ${point.name[0].toLowerCase()}`}
+              style={{ top: point.top, left: point.left }}
+            >
+              <span className="ellipse-text">{point.name}</span>
+            </div>
+          ))}
         </div>
-    );
+      );
+      
 }
