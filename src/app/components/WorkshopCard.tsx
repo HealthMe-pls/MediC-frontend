@@ -2,7 +2,7 @@
 
 import React from "react";
 import { format } from "date-fns";
-
+import Link from "next/link";
 // Define Workshop interface for type safety
 interface Workshop {
   id: number;
@@ -71,6 +71,14 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
           </div>
         )}
       </div>
+
+      <Link href={`/workshop/${workshop.id}`}>
+        <div className="mt-4 flex justify-center pb-2">
+          <button className="w-[100%] h-[30px] rounded-[15px] bg-[#F0F0F0] font-light text-[14px]">
+            See More
+          </button>
+        </div>
+      </Link>
     </div>
   );
 };

@@ -22,7 +22,7 @@ export async function GET(
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { message: "Failed to fetch workshop" },
+      { message: "Failed to fetch workshop id in api route" },
       { status: 500 }
     );
   }

@@ -25,23 +25,40 @@ export async function fetchWorkshops(): Promise<Workshop[]> {
       throw new Error("Failed to fetch workshops from the route");
     }
 
-  return await response.json(); 
+    return await response.json();
   } catch (error) {
     console.error("Error fetching workshops:", error);
     throw error;
   }
 }
-
-export async function fetchWorkshopsById(workshopId: number): Promise<Workshop> {
+export const fetchWorkshopsById = async (
+  id: number
+): Promise<Workshop | null> => {
   try {
-    const response = await fetch(`${NEXT_API}/api/workshops/${workshopId}`); // Fetch from your route
-
+    const response = await fetch(`http://127.0.0.1:3000/api/workshops/${id}`);
     if (!response.ok) {
-      throw new Error("Failed to fetch workshops from the route");
+      console.error(`Failed to fetch workshop: ${response.status}`);
+      return null; // Return null for non-200 status codes
     }
- return await response.json();
+
+    const data = await response.json();
+    return data || null; // Return null if the response is empty
   } catch (error) {
-    console.error("Error fetching workshops with ID ${shopId}:", error);
-    throw error;
+    console.error("Error fetching workshop:", error);
+    return null; // Return null on network errors or exceptions
   }
-}
+};
+
+// export async function fetchWorkshopsById(workshopId: number): Promise<Workshop> {
+//   try {
+//     const response = await fetch(`${NEXT_API}/api/workshops/${workshopId}`); // Fetch from your route
+
+//     if (!response.ok) {
+//       throw new Error("Failed to fetch workshops from the route");
+//     }
+//  return await response.json();
+//   } catch (error) {
+//     console.error("Error fetching workshops with ID ${shopId}:", error);
+//     throw error;
+//   }
+// }
