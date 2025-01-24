@@ -49,7 +49,7 @@ const ShopPage = () => {
       <BackButton href="../../" />
 
       {shopDetail ? (
-        <div className=" font-lexend text-[#4C4343]">
+        <div className=" font-lexend text-[#4C4343] bg-[#FFF7EB]">
           <div className="p-4 mt-[55px]">
             {shopDetail.photos?.length > 0 && (
               <div className="">
@@ -202,7 +202,7 @@ const ShopPage = () => {
       ) : (
         <p>No shop details found</p>
       )}
-      <Footer/>
+      <Footer />
     </div>
   );
 };
