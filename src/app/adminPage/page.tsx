@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
-
+import Header from "../layouts/Header";
 export default function AdminPage() {
   const [blocks, setBlocks] = useState<Record<number, string>>({});
   const [shopSet, setShopSet] = useState<MapDetail[]>([]);
@@ -65,6 +65,7 @@ export default function AdminPage() {
 
   return (
     <div className="h-screen flex flex-col">
+      <Header />
       <header className="bg-blue-600 text-white py-4 text-center">
         <h1 className="text-3xl font-bold">Admin - Edit Market Map</h1>
       </header>
