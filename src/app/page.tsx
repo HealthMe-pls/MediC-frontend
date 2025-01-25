@@ -57,7 +57,7 @@ export default function Home() {
 
       {/* Content Section */}
 
-      <main className="flex-1 overflow-auto p-6">
+      <main className="flex-1 overflow-auto p-6 bg-[#FFF7EB]">
         {/* Highlight Banner */}
         <div className="bg-yellow-400 py-4 text-center text-black  mb-6">
           <h2>Highlight Workshop - Special Offers this Week!</h2>
@@ -125,7 +125,6 @@ export default function Home() {
                   <span className="text-gray-800">All</span>
                 </label>
 
-
                 {/* ตัวเลือกจาก shopCategory */}
                 {shopCategory.map((category) => (
                   <label
@@ -180,5 +179,4 @@ export default function Home() {
       <Footer />
     </div>
   );
-
 }
