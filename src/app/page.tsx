@@ -56,6 +56,7 @@ export default function Home() {
       <Header />
 
       {/* Content Section */}
+
       <main className="flex-1 overflow-auto p-6">
         {/* Highlight Banner */}
         <div className="bg-yellow-400 py-4 text-center text-black  mb-6">
@@ -124,6 +125,7 @@ export default function Home() {
                   <span className="text-gray-800">All</span>
                 </label>
 
+
                 {/* ตัวเลือกจาก shopCategory */}
                 {shopCategory.map((category) => (
                   <label
@@ -141,7 +143,6 @@ export default function Home() {
                   </label>
                 ))}
               </div>
-
               {/* ปุ่มยืนยันและปิด Modal */}
               <div className="flex justify-end gap-4">
                 <button
@@ -179,4 +180,5 @@ export default function Home() {
       <Footer />
     </div>
   );
+
 }

@@ -56,6 +56,7 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
           : "Price not available"}
       </p>
       <div className="mt-4">
+
         <div className="mt-4">
           {workshop.photos?.length ? (
             <img
@@ -66,6 +67,7 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
           ) : null}{" "}
           {/* Show nothing if no photos are found */}
         </div>
+
       </div>
 
       <Link href={`/workshop/${workshop.id}`}>

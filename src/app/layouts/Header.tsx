@@ -17,7 +17,7 @@ const Header = () => {
       <Bar />
 
       {/* <div className={styles.header}> */}
-      <div className="flex justify-between p-4 bg-white">
+      <div className="flex justify-between p-4 bg-white font-lexend">
         <div className="flex-none justify-start">
           {/* <div className={styles.logoContainer}> */}
           <img src="/assets/logo.png" alt="Logo" className="w-[86px]" />
@@ -31,8 +31,8 @@ const Header = () => {
             <button
               className={`${
                 selectedLanguage === "Eng"
-                  ? "text-[#4C4343]  font-bold"
-                  : "hover:text-[#9C9C9C]"
+                  ? "text-[#4C4343] "
+                  : "text-[#9C9C9C]"
               } mr-1 sm:mr-2`}
               onClick={() => handleLanguageChange("Eng")}
             >
@@ -43,13 +43,11 @@ const Header = () => {
           <div className="flex">
             <button
               className={`${
-                selectedLanguage === "TH"
-                  ? "text-[#4C4343] font-bold"
-                  : "hover:text-[#9C9C9C]"
+                selectedLanguage === "TH" ? "text-[#4C4343] " : "text-[#9C9C9C]"
               } ml-1 sm:ml-2`}
               onClick={() => handleLanguageChange("TH")}
             >
-              TH
+              Thai
             </button>
           </div>
           {/* </div> */}
