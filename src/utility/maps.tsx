@@ -2,6 +2,7 @@ export interface MapDetail {
   block_id: number;
   block_name: string;
   block_zone: string;
+  category_id: number;
   shop_id: number;
   shop_name: string;
 }

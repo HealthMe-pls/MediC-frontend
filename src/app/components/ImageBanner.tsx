@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 
 export interface Photo {
@@ -69,7 +70,7 @@ const ImageBanner: React.FC<ImageBannerProps> = ({ photos, basePath = "" }) => {
       >
         {photos.length > 0 ? (
           <img
-            src={`${basePath}${photos[currentIndex]?.pathfile}`}
+            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/upload/${photos[currentIndex]?.pathfile}`}
             alt={`Slide ${currentIndex + 1}`}
             className="w-full h-full object-cover transition-all duration-500 rounded-[10px]"
           />

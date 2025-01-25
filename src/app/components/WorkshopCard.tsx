@@ -56,20 +56,18 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
           : "Price not available"}
       </p>
       <div className="mt-4">
-        {workshop.photos?.length ? (
-          workshop.photos.map((photo) => (
+
+        <div className="mt-4">
+          {workshop.photos?.length ? (
             <img
-              key={photo.photo_id}
-              src={photo.pathfile}
-              alt={`Workshop ${workshop.name || "Image"}`}
-              className="w-full h-32 object-cover rounded mb-2"
+              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/upload/${workshop.photos[0]?.pathfile}`}
+              alt={`Slide 1`}
+              className="w-full h-full object-cover transition-all duration-500 rounded-[10px]"
             />
-          ))
-        ) : (
-          <div className="w-full h-32 object-cover rounded bg-gray-200 flex items-center justify-center">
-            <span>No Images Available</span>
-          </div>
-        )}
+          ) : null}{" "}
+          {/* Show nothing if no photos are found */}
+        </div>
+
       </div>
 
       <Link href={`/workshop/${workshop.id}`}>
