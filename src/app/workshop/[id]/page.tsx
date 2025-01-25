@@ -6,11 +6,7 @@ import { fetchWorkshopsById, Workshop } from "@/utility/workshop";
 import { format } from "date-fns";
 import Footer from "@/app/layouts/Footer";
 import BackButton from "@/app/components/BackButton";
-<<<<<<< HEAD
 import ImageBanner from "@/app/components/ImageBanner";
-=======
-
->>>>>>> workshopdetail
 const formatDate = (isoString: string | null): string => {
   if (!isoString) return "N/A";
   const date = new Date(isoString);
@@ -51,7 +47,6 @@ const WorkshopDetail = () => {
 
   return (
     <div className="font-lexend text-[#4C4343] bg-[#FFF7EB]">
-
       <BackButton href="./" />
       {workshopDetail ? (
         <div className=" font-lexend text-[#4C4343]">
