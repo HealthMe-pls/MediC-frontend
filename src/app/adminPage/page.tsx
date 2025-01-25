@@ -6,8 +6,8 @@ import Header from "../layouts/Header";
 export default function AdminPage() {
   const [blocks, setBlocks] = useState<Record<number, string>>({});
   const [shopSet, setShopSet] = useState<MapDetail[]>([]);
-  const [selectedBlock, setSelectedBlock] = useState<number | null>(null);
-  const [selectedShop, setSelectedShop] = useState("");
+  // const [selectedBlock, setSelectedBlock] = useState<number | null>(null);
+  // const [selectedShop, setSelectedShop] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,20 +29,20 @@ export default function AdminPage() {
     fetchData();
   }, []);
 
-  const handleBlockClick = (blockId: number) => {
-    setSelectedBlock(blockId);
-    setSelectedShop(blocks[blockId] || "");
-  };
+  // const handleBlockClick = (blockId: number) => {
+  //   setSelectedBlock(blockId);
+  //   setSelectedShop(blocks[blockId] || "");
+  // };
 
-  const handleShopChange = () => {
-    if (selectedBlock !== null) {
-      setBlocks((prevBlocks) => ({
-        ...prevBlocks,
-        [selectedBlock]: selectedShop,
-      }));
-      setSelectedBlock(null);
-    }
-  };
+  // const handleShopChange = () => {
+  //   if (selectedBlock !== null) {
+  //     setBlocks((prevBlocks) => ({
+  //       ...prevBlocks,
+  //       [selectedBlock]: selectedShop,
+  //     }));
+  //     setSelectedBlock(null);
+  //   }
+  // };
 
   const handleRemoveShop = (blockId: number) => {
     const confirmRemove = window.confirm(`Remove shop from block ${blockId}?`);
@@ -77,7 +77,10 @@ export default function AdminPage() {
           style={{ position: "relative" }}
         >
           {Object.keys(blocks).map((blockId, index) => {
-            const { x, y } = generateBlockPosition(index, Object.keys(blocks).length);
+            const { x, y } = generateBlockPosition(
+              index,
+              Object.keys(blocks).length
+            );
             return (
               <div
                 key={blockId}
@@ -93,7 +96,6 @@ export default function AdminPage() {
           })}
         </div>
 
-        
         {/* Table Section */}
         <div className="mt-8 w-full">
           <h2 className="text-xl font-bold mb-4">Manage Shops</h2>
@@ -135,9 +137,10 @@ export default function AdminPage() {
                     </select>
                   </td>
                   <td className="border border-gray-300 px-4 py-2 text-center">
-                    <button 
+                    <button
                       onClick={() => handleRemoveShop(Number(blockId))}
-                      className="className = p-2 bg-red-500 text-white rounded">
+                      className="className = p-2 bg-red-500 text-white rounded"
+                    >
                       remove
                     </button>
                   </td>

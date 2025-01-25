@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { setCorsHeaders } from "@/utility/corsUtils";
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -30,7 +30,7 @@ export async function GET(
 
 // DELETE - Delete shop by ID
 export async function DELETE(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {

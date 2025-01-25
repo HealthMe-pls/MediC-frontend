@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { fetchWorkshopsById, Workshop } from "@/utility/workshop";
-import Footer from "@/app/layouts/Footer";
+// import Footer from "@/app/layouts/Footer";
 const WorkshopDetail = () => {
   const { id } = useParams();
   const [workshopDetail, setWorkshopDetail] = useState<Workshop | null>(null);
@@ -16,6 +16,7 @@ const WorkshopDetail = () => {
         try {
           const data = await fetchWorkshopsById(Number(id));
           setWorkshopDetail(data);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           setError("Failed to fetch workshop details by id (useeffect)");
         } finally {

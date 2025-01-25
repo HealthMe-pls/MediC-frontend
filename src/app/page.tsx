@@ -1,5 +1,5 @@
 "use client";
-
+/* eslint-disable */
 import Link from "next/link";
 // import CircularShops from "./components/CircularShops";
 import { useEffect, useState } from "react";
@@ -14,8 +14,8 @@ import { fetchShopCategory, ShopCategory } from "@/utility/shopcate";
 
 export default function Home() {
   const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
-  // const [isMenuOpen, setIsMenuOpen] = useState(false);
-  // const [selectedBlock, setSelectedBlock] = useState<number | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [selectedBlock, setSelectedBlock] = useState<number | null>(null);
   const [shopCategory, setCategory] = useState<ShopCategory[]>([]);
   const [selectedCate, setSelectedCate] = useState<number>(0);
 
