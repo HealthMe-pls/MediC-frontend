@@ -20,6 +20,7 @@ const formatTime = (isoString: string): string => {
   const date = new Date(isoString); // ใช้ new Date() แทน parseISO
   return format(date, "HH:mm");
 };
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Shoplist: React.FC<CateID> = ({ label, onChange, id = 0 }) => {
   const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
   const [shopDetails, setShopDetails] = useState<ShopDetail[]>([]);

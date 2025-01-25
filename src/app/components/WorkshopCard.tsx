@@ -58,6 +58,7 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
       <div className="mt-4">
         {workshop.photos?.length ? (
           workshop.photos.map((photo) => (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               key={photo.photo_id}
               src={photo.pathfile}

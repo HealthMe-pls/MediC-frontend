@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { fetchShopById, ShopDetail } from "@/utility/shopDetail";
 import { format } from "date-fns";
 import CardProductDetail from "@/app/components/CardProductDetail";
-import Link from "next/link";
+// import Link from "next/link";
 import BackButton from "@/app/components/BackButton";
 import ImageBanner from "@/app/components/ImageBanner";
 import Footer from "@/app/layouts/Footer";
@@ -30,6 +30,7 @@ const ShopPage = () => {
         try {
           const data = await fetchShopById(Number(id));
           setShopDetail(data);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           setError("Failed to fetch shop details");
         } finally {

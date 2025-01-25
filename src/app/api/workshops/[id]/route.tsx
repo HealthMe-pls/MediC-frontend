@@ -3,10 +3,10 @@ import { setCorsHeaders } from "@/utility/corsUtils";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: workshopId } = params;
+    const workshopId = (await context.params).id;
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/workshops/${workshopId}`
     );
