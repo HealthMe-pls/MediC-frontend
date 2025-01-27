@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../utility/maps";
 import Header from "./layouts/Header";
 import Shoplist from "./components/ShopList";
+import HighlightBanner from "./components/HighlightBanner";
 import Footer from "./layouts/Footer";
 import Map from "./components/ShopMap";
 import "../styles/global.css";
@@ -58,16 +59,6 @@ export default function Home() {
       {/* Content Section */}
 
       <main className="flex-1 overflow-auto p-6 bg-[#FFF7EB]">
-        {/* Highlight Banner */}
-        <div className="bg-yellow-400 py-4 text-center text-black  mb-6">
-          <h2>Highlight Workshop - Special Offers this Week!</h2>
-        </div>
-        <Link href="/adminPage">
-          <button className="px-4 py-2 bg-blue-500 text-white rounded">
-            Go to Admin Page
-          </button>
-        </Link>
-
         {/* Filter Button */}
         <div className="mb-6 mt-2">
           {/* Search Bar */}
@@ -168,7 +159,9 @@ export default function Home() {
         <div className="sm:hidden">
           <Map selectedCate={selectedCate}></Map>
         </div>
-
+        {/* <div>
+          <HighlightBanner />
+        </div> */}
         {/*ShopList*/}
         <div className="mt-6 sm:hidden">
           <Shoplist label="" onChange={handleChange} id={selectedCate} />
