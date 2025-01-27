@@ -54,15 +54,13 @@ const HighlightBanner = () => {
   if (error) return <div>Error loading workshops: {error}</div>;
 
   return (
-    <div className="bg-yellow-400 py-4 text-center text-black mb-6">
-      <h2 className="text-xl md:text-2xl font-semibold">
-        Highlight Workshop - Special Offers this Week!
-      </h2>
+    <div className="font-lexend bg-[#FFF7EB] border-[1px] rounded-lg border-black py-4 text-center text-black mb-6">
+      <h2 className="text-xl md:text-2xl">Highlight Workshop and Events</h2>
       <div className="relative w-full mt-4">
         {/* Carousel Container */}
         <div
           ref={carouselRef}
-          className="flex overflow-hidden"
+          className="flex overflow-hidden "
           style={{
             scrollBehavior: "smooth",
             display: "flex",
@@ -91,9 +89,9 @@ const HighlightBanner = () => {
                 </div>
               </div>
               <div className="p-4">
-                <h3 className="font-bold text-lg truncate">{workshop.name}</h3>
-                <Link href={`/workshops/${workshop.id}`}>
-                  <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                <h3 className="text-lg truncate">{workshop.name}</h3>
+                <Link href={`/workshop/${workshop.id}`}>
+                  <button className="mt-2 px-4 py-2 bg-[#52A794] text-white rounded-md hover:bg-blue-600">
                     View Details
                   </button>
                 </Link>
@@ -109,7 +107,7 @@ const HighlightBanner = () => {
               key={index}
               className={`w-3 h-3 rounded-full ${
                 index === currentIndex
-                  ? "bg-blue-500"
+                  ? "bg-[#52A794]"
                   : "bg-gray-400 hover:bg-gray-500"
               }`}
               onClick={() => setCurrentIndex(index)}

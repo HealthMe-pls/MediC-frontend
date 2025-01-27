@@ -159,9 +159,9 @@ export default function Home() {
         <div className="sm:hidden">
           <Map selectedCate={selectedCate}></Map>
         </div>
-        {/* <div>
+        <div>
           <HighlightBanner />
-        </div> */}
+        </div>
         {/*ShopList*/}
         <div className="mt-6 sm:hidden">
           <Shoplist label="" onChange={handleChange} id={selectedCate} />
