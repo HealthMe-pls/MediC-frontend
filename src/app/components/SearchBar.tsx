@@ -99,7 +99,7 @@ export default function SearchBar({
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(-1)}
             >
-              {shop?.matchWord} (ID: {shop?.shop_id})
+              {shop?.matchWord}
             </li>
           ))}
         </ul>

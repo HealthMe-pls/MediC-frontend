@@ -156,38 +156,45 @@ const Shoplist: React.FC<CateID> = ({
 
       {/* แสดง Block */}
       {isShopListVisible && (
-        <div className="grid grid-cols-6 gap-2 mb-4">
-          {filteredBlock
-            .filter((block) => block.shop_id !== null) // กรอง block ที่ไม่มี shop_id
-            .map((block, index) => (
-              <button
-                key={`shop-${block.block_id}-${index}`}
-                className={`px-auto py-2 border font-light  
-            ${
-              selectedBlock?.block_id === block.block_id
-                ? block.block_zone === "A"
-                  ? "bg-[#FFEF9E]"
-                  : block.block_zone === "B"
-                  ? "bg-[#D5EBD6] "
-                  : block.block_zone === "C"
-                  ? "bg-[#CAE5F3]"
-                  : "bg-gray-200"
-                : "bg-white text-black border-[#D0D0D0]"
-            }`}
-                onClick={() => {
-                  setSelectedBlock(block);
-                  setMatchShopID(0);
-                }}
-              >
-                {block.block_name}
-              </button>
-            ))}
+        <div className="mb-4">
+          {filteredBlock.filter((block) => block.shop_id !== null).length >
+          0 ? (
+            <div className="grid grid-cols-6 gap-2">
+              {filteredBlock
+                .filter((block) => block.shop_id !== null) // กรอง block ที่ไม่มี shop_id
+                .map((block, index) => (
+                  <button
+                    key={`shop-${block.block_id}-${index}`}
+                    className={`px-auto py-2 border font-light  
+              ${
+                selectedBlock?.block_id === block.block_id
+                  ? block.block_zone === "A"
+                    ? "bg-[#FFEF9E]"
+                    : block.block_zone === "B"
+                    ? "bg-[#D5EBD6] "
+                    : block.block_zone === "C"
+                    ? "bg-[#CAE5F3]"
+                    : "bg-gray-200"
+                  : "bg-white text-black border-[#D0D0D0]"
+              }`}
+                    onClick={() => {
+                      setSelectedBlock(block);
+                      setMatchShopID(0);
+                    }}
+                  >
+                    {block.block_name}
+                  </button>
+                ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center py-2">No shop available</p>
+          )}
         </div>
       )}
 
       {/* รายละเอียดร้านค้า */}
       {isShopListVisible &&
-        // selectedBlock &&
+        selectedBlock &&
         (matchShopDetail?.category_id === Cateid || Cateid === 0) && (
           <div className="pt-4 px-4 bg-white rounded-[10] shadow-md">
             <div className="flex justify-between items-center">
