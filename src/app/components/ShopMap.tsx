@@ -3,7 +3,7 @@ import '../../styles/global.css';
 import { fetchShopCategory, ShopCategory } from '@/utility/shopcate';
 import { fetchMapDetail, MapDetail } from '@/utility/maps';
 
-export default function Map({ selectedCate, setSelectedBlock }: { selectedCate: number; setSelectedBlock: (block: string) => void }) {
+export default function Map({ selectedCate, setSelectedBlock, matchShopID }: { selectedCate: number; setSelectedBlock: (block: string) => void; matchShopID: number }) {
   const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
 
   useEffect(() => {
@@ -11,7 +11,7 @@ export default function Map({ selectedCate, setSelectedBlock }: { selectedCate: 
       .then((data) => setMapDetails(data))
       .catch((error) => console.error("Error fetching map details:", error));
   }, []);
-    
+
   const points = [
     { name: "A1", top: "82.5%", left: "56%"     },
     { name: "A2", top: "80%", left: "65%"       },
@@ -69,20 +69,15 @@ export default function Map({ selectedCate, setSelectedBlock }: { selectedCate: 
     { name: "C13", top: "69%", left: "43.5%"    },
   ];
 
-  const getStyleForPoint = (pointName: string, categoryId: number, shopId: number | null) => {
+  const getStyleForPoint = (pointName: string, categoryId: number, shopId: number | null, matchShopID: number) => {
     let style: React.CSSProperties = {};
-
+  
     const pointLetter = pointName[0];
   
-    if (selectedCate === 0) {
-        if (pointLetter === 'A') {
-          style = { ...style, backgroundColor: '#FFEF9E' };
-        } else if (pointLetter === 'B') {
-          style = { ...style, backgroundColor: '#D5EBD6' };
-        } else if (pointLetter === 'C') {
-          style = { ...style, backgroundColor: '#CAE5F3' };
-        }
-      } else if (categoryId === selectedCate) {
+    if (shopId === null) {
+      style = { ...style, opacity: 0, pointerEvents: 'none' };
+    } else if (matchShopID === 0) {
+      if (categoryId === selectedCate || selectedCate === 0) {
         if (pointLetter === 'A') {
           style = { ...style, backgroundColor: '#FFEF9E' };
         } else if (pointLetter === 'B') {
@@ -91,43 +86,52 @@ export default function Map({ selectedCate, setSelectedBlock }: { selectedCate: 
           style = { ...style, backgroundColor: '#CAE5F3' };
         }
       } else {
-        style = { ...style, backgroundColor: '#F0F0F0',opacity: 0,pointerEvents: 'none'};
+        style = { ...style, opacity: 0, pointerEvents: 'none' };
       }
-  
-    if (shopId === null) {
-      style = { ...style, opacity: 0 ,pointerEvents: 'none'};
+    } else {
+      if (shopId === matchShopID) {
+        if (pointLetter === 'A') {
+          style = { ...style, backgroundColor: '#FFEF9E' };
+        } else if (pointLetter === 'B') {
+          style = { ...style, backgroundColor: '#D5EBD6' };
+        } else if (pointLetter === 'C') {
+          style = { ...style, backgroundColor: '#CAE5F3' };
+        }
+      } else {
+        style = { ...style, opacity: 0, pointerEvents: 'none' };
+      }
     }
   
     return style;
   };
-
+  
   return (
     <div className="relative flex justify-center items-center">
       <img src="/assets/the_earth_tree.png" alt="Map" className="w-full max-w-full max-w-xl h-auto z-0" />
       <img src="/assets/fork.png" alt="fork" className="w-full max-w-xl h-auto z-0 forks" />
       {points.map((point) => {
-        const mapDetail = mapDetails.find(detail => detail.block_name === point.name);
-        const categoryId = mapDetail?.category_id ?? 0;
-        const shopId = mapDetail?.shop_id ?? null;
+  const mapDetail = mapDetails.find(detail => detail.block_name === point.name);
+  const categoryId = mapDetail?.category_id ?? 0;
+  const shopId = mapDetail?.shop_id ?? null;
 
-        return (
-          <button
-              key={point.name}
-              className={`ellipse ${point.name[0].toLowerCase()} sm:cursor-pointer sm:pointer-events-auto pointer-events-none transition-transform`}
-              style={{
-                top: point.top,
-                left: point.left,
-                ...getStyleForPoint(point.name, categoryId, shopId),
-              }}
-              onClick={() => {
-                console.log(`Clicked on ${point.name}`);
-                setSelectedBlock(point.name);
-              }}
-            >
-              <span className="ellipse-text">{point.name}</span>
-            </button>
-            );
-          })}
-        </div>
+  return (
+    <button
+      key={point.name}
+      className={`ellipse ${point.name[0].toLowerCase()} sm:cursor-pointer sm:pointer-events-auto pointer-events-none transition-transform`}
+      style={{
+        top: point.top,
+        left: point.left,
+        ...getStyleForPoint(point.name, categoryId, shopId, matchShopID),
+      }}
+      onClick={() => {
+        console.log(`Clicked on ${point.name}`);
+        setSelectedBlock(point.name);
+      }}
+    >
+      <span className="ellipse-text">{point.name}</span>
+    </button>
+  );
+})}
+    </div>
   );
 }

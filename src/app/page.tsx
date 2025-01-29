@@ -17,7 +17,7 @@ import Filter from "./components/Filter";
 import Shopside from "./components/ShopSide";
 
 export default function Home() {
-  const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
+  const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]);
   const [shopCategory, setCategory] = useState<ShopCategory[]>([]);
   const [selectedCate, setSelectedCate] = useState<number>(0);
   const [matchShopID, setMatchShopID] = useState<number>(0);
@@ -28,18 +28,13 @@ export default function Home() {
   const [showGif, setShowGif] = useState(true); 
   
   const handleCloseGif = () => {
-    setShowGif(false);  // ปิดการแสดง GIF
-  };
-
-  const handleSearchChange = (newSelectedCate) => {
-    setSelectedCate(newSelectedCate);
+    setShowGif(false);
   };
 
 
   useEffect(() => {
     if (matchShopID !== 0) {
       setTimeout(() => {
-        // Smooth scroll to the element referenced by shopListRef
         shopListRef.current?.scrollIntoView({
           behavior: "smooth",
           block: "start",
@@ -50,7 +45,7 @@ export default function Home() {
           top: 850,
           behavior: "smooth",
         });
-      }, 300); // Increased delay for smoother transition
+      }, 300);
     }
   }, [matchShopID]);
 
@@ -59,7 +54,7 @@ export default function Home() {
     fetchMapDetail()
       .then((data) => setMarketMaps(data))
       .catch((error) => console.error("Error fetching market maps:", error));
-  }, []);
+  }, [selectedCate]);
 
   useEffect(() => {
     fetchShopCategory()
@@ -67,14 +62,44 @@ export default function Home() {
       .catch((error) => console.error("Error fetching shopcate:", error));
   }, []);
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedCate = Number(event.target.value); // Convert value to a number
-    setSelectedCate(selectedCate);
+  useEffect(() => {
+    const fetchMaps = async () => {
+      try {
+        const data = await fetchMapDetail();
+        if (selectedCate === 0) {
+          setMarketMaps(data.filter(map => map.shop_id !== null));
+        } else if (matchShopID !== 0) {
+          setMarketMaps(data.filter(map => map.shop_id === matchShopID));
+        } else {
+          setMarketMaps(data.filter(map => map.category_id === selectedCate));
+        }
+      } catch (error) {
+        console.error("Error fetching market maps:", error);
+      }
+    };
+  
+    fetchMaps();
+  }, [selectedCate, matchShopID]);
+  
+  
+  const handleSearchChange = (newSelectedCate: number) => {
+    setSelectedCate(newSelectedCate);
+    setMatchShopID(0);
+  };
+  
+  const handleCategorySelect = (categoryId: number) => {
+    setSelectedCate(categoryId); 
+    setMatchShopID(0);
   };
 
-  const handleCategorySelect = (categoryId: number) => {
-    setSelectedCate(categoryId);
-  };
+  useEffect(() => {
+    if (matchShopID !== 0) {
+      const matchedShop = marketMaps.find(shop => shop.shop_id === matchShopID);
+      if (matchedShop) {
+        setSelectedBlock(matchedShop.block_name);
+      }
+    }
+  }, [matchShopID, marketMaps]);
 
   useEffect(() => {
     console.log("selectedBlock:", selectedBlock);
@@ -113,20 +138,30 @@ export default function Home() {
 
         <div className="sm:flex hidden w-full gap-32 flex-wrap justify-center">
   <div className="w-[600px] min-w-[600px] flex justify-center">
-    <Map
-      selectedCate={selectedCate}
-      setSelectedBlock={setSelectedBlock}
-    />
+      <Map
+        selectedCate={selectedCate}
+        setSelectedBlock={setSelectedBlock}
+        matchShopID={matchShopID}
+      />
+
   </div>
 
   <div className="w-[570px] min-w-[500px] flex justify-center flex-wrap flex-col">
-    <div className="w-full">
+    <div className="flex flex-wrap">
+    <div className="flex-1">
       <SearchBar
         setSelectedCate={setSelectedCate}
         setMatchShopID={setMatchShopID}
       />
     </div>
-
+    <div className="flex-1">
+      <Filter
+        shopCategory={shopCategory}
+        selectedCate={selectedCate}
+        onSelectCategory={handleCategorySelect}
+        setMatchShopID={setMatchShopID}
+      /></div>
+    </div>
     <div className="w-full">
     {showGif && !selectedBlock ? (
         <div className="relative w-full">
@@ -153,10 +188,11 @@ export default function Home() {
 </div>
 
 <div className="sm:hidden block">
-  <Map
-    selectedCate={selectedCate}
-    setSelectedBlock={setSelectedBlock}
-  />
+      <Map
+        selectedCate={selectedCate}
+        setSelectedBlock={setSelectedBlock}
+        matchShopID={matchShopID}
+      />
 </div>
 
         <div className="mt-6 sm:hidden ref={shopListRef}">
@@ -174,7 +210,6 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Footer Section */}
       <Footer />
     </div>
   );
