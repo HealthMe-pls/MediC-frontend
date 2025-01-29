@@ -97,7 +97,7 @@ const Shoplist: React.FC<CateID> = ({
               className={`flex-1 h-[30px] border border-gray-300 flex items-center justify-center cursor-pointer ${
                 selectedZone === zone
                   ? index === 0
-                    ? "bg-[#FFEF9E] text-[#4C4343]"
+                    ? "bg-[#FFEF9E] text-[#4C4343] "
                     : index === 1
                     ? "bg-[#D5EBD6] text-[#4C4343]"
                     : "bg-[#CAE5F3] text-[#4C4343]"
