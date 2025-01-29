@@ -24,8 +24,20 @@ export default function Home() {
 
   useEffect(() => {
     if (matchShopID !== 0) {
-      shopListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      window.scrollTo(0, document.body.scrollHeight); 
+      setTimeout(() => {
+        // Smooth scroll to the element referenced by shopListRef
+        shopListRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest", // optional: adjust the horizontal alignment if needed
+        });
+
+        // Smooth scroll to the bottom of the page but leave 210px space
+        window.scrollTo({
+          top: document.documentElement.scrollHeight, // Use document.documentElement.scrollHeight
+          behavior: "smooth", // Use smooth scrolling for window scroll as well
+        });
+      }, 300); // Increased delay for smoother transition
     }
   }, [matchShopID]);
 
@@ -82,10 +94,7 @@ export default function Home() {
         <div className="sm:hidden">
           <Map selectedCate={selectedCate}></Map>
         </div>
-        {/* <div>
-          <HighlightBanner />
-        </div> */}
-        {/*ShopList*/}
+
         <div className="mt-6 sm:hidden ref={shopListRef}">
           <Shoplist
             label=""
@@ -94,6 +103,9 @@ export default function Home() {
             setMatchShopID={setMatchShopID}
             matchShop={matchShopID}
           />
+        </div>
+        <div>
+          <HighlightBanner />
         </div>
       </main>
 
