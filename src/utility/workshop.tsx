@@ -49,16 +49,3 @@ export const fetchWorkshopsById = async (
   }
 };
 
-// export async function fetchWorkshopsById(workshopId: number): Promise<Workshop> {
-//   try {
-//     const response = await fetch(`${NEXT_API}/api/workshops/${workshopId}`); // Fetch from your route
-
-//     if (!response.ok) {
-//       throw new Error("Failed to fetch workshops from the route");
-//     }
-//  return await response.json();
-//   } catch (error) {
-//     console.error("Error fetching workshops with ID ${shopId}:", error);
-//     throw error;
-//   }
-// }

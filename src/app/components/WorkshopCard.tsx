@@ -56,7 +56,6 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
           : "Price not available"}
       </p>
       <div className="mt-4">
-
         <div className="mt-4">
           {workshop.photos?.length ? (
             <img
@@ -67,10 +66,9 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
           ) : null}{" "}
           {/* Show nothing if no photos are found */}
         </div>
-
       </div>
 
-      <Link href={`/workshop/${workshop.id}`}>
+      <Link href={`/workshops/${workshop.id}`}>
         <div className="mt-4 flex justify-center pb-2">
           <button className="w-[100%] h-[30px] rounded-[15px] bg-[#F0F0F0] font-light text-[14px]">
             See More
