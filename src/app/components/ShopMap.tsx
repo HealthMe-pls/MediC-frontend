@@ -91,11 +91,11 @@ export default function Map({ selectedCate, setSelectedBlock }: { selectedCate: 
           style = { ...style, backgroundColor: '#CAE5F3' };
         }
       } else {
-        style = { ...style, backgroundColor: '#F0F0F0' };
+        style = { ...style, backgroundColor: '#F0F0F0',opacity: 0,pointerEvents: 'none'};
       }
   
     if (shopId === null) {
-      style = { ...style, opacity: 0.5 };
+      style = { ...style, opacity: 0 ,pointerEvents: 'none'};
     }
   
     return style;

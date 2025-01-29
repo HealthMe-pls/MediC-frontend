@@ -10,6 +10,11 @@
   align-items: center;
 }
 
+.shoplistformmap{
+  top: 400px;
+  left: 750px;
+}
+
   @media (max-width: 1050px) {
     .mapguide-hidden {
       display: none;

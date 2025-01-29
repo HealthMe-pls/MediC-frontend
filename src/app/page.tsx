@@ -100,17 +100,25 @@ export default function Home() {
             />
           </div>
 
-          {/* <div className="w-[570px] min-w-[500px] flex justify-center">
+          <div className="w-[570px] min-w-[500px] flex justify-center">
+          {!selectedBlock && (
             <img
               src="../assets/Mapguide.gif"
               alt="GIF"
               className="w-full h-auto max-h-[570px] object-contain mapguide-hidden"
             />
-          </div> */}
-          <Shopside blockName={selectedBlock} />
+          )}
+
+          </div>
+            <div className="absolute z-10 shoplistformmap mapguide-hidden">
+              <Shopside blockName={selectedBlock} />
+            </div>
+
+            {/* <Shopside blockName={selectedBlock} /> */}
+            
         </div>
 
-        <div className="sm:hidden block">
+        <div className="sm:hidden block"> 
           <Map
             selectedCate={selectedCate}
             setSelectedBlock={setSelectedBlock}
