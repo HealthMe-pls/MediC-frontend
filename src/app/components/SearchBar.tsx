@@ -67,8 +67,8 @@ export default function SearchBar({
       <div className="mt-2">
         <input
           type="text"
-          className="w-full p-3 border border-gray-300 rounded-md"
-          placeholder="Search..."
+          className="w-full p-3 border  rounded-[30px]"
+          placeholder="Search for a shop name or interest...    "
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           onKeyDown={handleKeyDown} // รองรับปุ่มลูกศรและ Enter
