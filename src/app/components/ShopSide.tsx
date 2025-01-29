@@ -43,7 +43,7 @@ const Shopside: React.FC<block> = ({ blockName }) => {
   );
 
   return (
-    <div className="p-4 font-lexend text-[#4C4343]">
+    <div className="p-4 font-lexend text-[#4C4343] h-[100%]">
       {/* รายละเอียดร้านค้า */}
       {selectedBlock && (
         <div className="pt-4 px-4 bg-white rounded-[10] shadow-md">

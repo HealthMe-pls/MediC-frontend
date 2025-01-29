@@ -40,7 +40,7 @@ const Filter: React.FC<FilterProps> = ({
   return (
     <div className="mb-6 mt-2">
       {/* Filter Button */}
-      <div className="flex justify-end">
+      <div className="">
         <button
           className="bg-[#FFFFFF] w-[89px] h-[35px] px-4 text-[#929292] text-light rounded-[30px] flex items-center"
           onClick={toggleModal} // Open modal

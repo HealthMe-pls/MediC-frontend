@@ -73,10 +73,13 @@ export default function Home() {
 
       <main className="flex-1 overflow-auto p-6 bg-[#FFF7EB]">
         {/* Filter Button */}
-        <div className="mb-6 mt-2">
+
+        <h2 className="text-[25px] text-[#4C4343] mb-4 text-center sm:hidden">
+          Market Map
+        </h2>
+        <div className="mb-6 mt-2 sm:hidden">
           {/* Search Bar */}
           <div>
-            <h2 className="text-xl font-semibold mb-4">Shop Search</h2>
             <SearchBar
               setSelectedCate={setSelectedCate}
               setMatchShopID={setMatchShopID}
@@ -101,24 +104,30 @@ export default function Home() {
           </div>
 
           <div className="w-[570px] min-w-[500px] flex justify-center">
-          {!selectedBlock && (
-            <img
-              src="../assets/Mapguide.gif"
-              alt="GIF"
-              className="w-full h-auto max-h-[570px] object-contain mapguide-hidden"
-            />
-          )}
-
+            {!selectedBlock && (
+              <img
+                src="../assets/Mapguide.gif"
+                alt="GIF"
+                className="w-full h-auto max-h-[570px] object-contain mapguide-hidden"
+              />
+            )}
           </div>
-            <div className="absolute z-10 shoplistformmap mapguide-hidden">
+          <div className="z-10 shoplistformmap mapguide-hidden">
+            <div className="absolute">
+              <SearchBar
+                setSelectedCate={setSelectedCate}
+                setMatchShopID={setMatchShopID}
+              />
+            </div>
+            <div className="mt-20 h-[100%]">
               <Shopside blockName={selectedBlock} />
             </div>
+          </div>
 
-            {/* <Shopside blockName={selectedBlock} /> */}
-            
+          {/* <Shopside blockName={selectedBlock} /> */}
         </div>
 
-        <div className="sm:hidden block"> 
+        <div className="sm:hidden block">
           <Map
             selectedCate={selectedCate}
             setSelectedBlock={setSelectedBlock}
