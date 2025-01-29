@@ -65,7 +65,6 @@ export default function Home() {
     setSelectedCate(categoryId); // อัปเดต selectedCate
   };
 
-
   return (
     <div className="flex flex-col font-lexend">
       <Header />
@@ -95,7 +94,10 @@ export default function Home() {
 
         <div className="sm:flex hidden w-full max-w-[1100px] gap-4">
           <div className="w-[600px] min-w-[600px]">
-          <Map selectedCate={selectedCate} setSelectedBlock={setSelectedBlock} />
+            <Map
+              selectedCate={selectedCate}
+              setSelectedBlock={setSelectedBlock}
+            />
           </div>
 
           {/* <div className="w-[570px] min-w-[500px] flex justify-center">
@@ -105,13 +107,15 @@ export default function Home() {
               className="w-full h-auto max-h-[570px] object-contain mapguide-hidden"
             />
           </div> */}
-          <Shopside blockName="A2" />
+          <Shopside blockName={selectedBlock} />
         </div>
 
         <div className="sm:hidden block">
-          <Map selectedCate={selectedCate} setSelectedBlock={setSelectedBlock} />
+          <Map
+            selectedCate={selectedCate}
+            setSelectedBlock={setSelectedBlock}
+          />
         </div>
-
 
         <div className="mt-6 sm:hidden ref={shopListRef}">
           <Shoplist
