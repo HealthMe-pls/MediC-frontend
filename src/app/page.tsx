@@ -14,6 +14,7 @@ import "./globals.css";
 import Mapguide from "../../public/assets/MapGuide.gif";
 import { fetchShopCategory, ShopCategory } from "@/utility/shopcate";
 import Filter from "./components/Filter";
+import Shopside from "./components/ShopSide";
 
 export default function Home() {
   const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
@@ -90,15 +91,19 @@ export default function Home() {
           />
         </div>
 
-        
         <div className="sm:flex hidden w-full max-w-[1100px] gap-4">
           <div className="w-[600px] min-w-[600px]">
             <Map selectedCate={selectedCate} />
           </div>
-          
-          <div className="w-[570px] min-w-[500px] flex justify-center">
-            <img src="../assets/Mapguide.gif" alt="GIF" className="w-full h-auto max-h-[570px] object-contain mapguide-hidden" />
-          </div>
+
+          {/* <div className="w-[570px] min-w-[500px] flex justify-center">
+            <img
+              src="../assets/Mapguide.gif"
+              alt="GIF"
+              className="w-full h-auto max-h-[570px] object-contain mapguide-hidden"
+            />
+          </div> */}
+          <Shopside blockName="A2" />
         </div>
 
         <div className="sm:hidden block">
@@ -114,7 +119,6 @@ export default function Home() {
             matchShop={matchShopID}
           />
         </div>
-
 
         <div>
           <HighlightBanner />
