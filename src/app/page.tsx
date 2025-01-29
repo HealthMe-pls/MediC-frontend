@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { fetchMapDetail, MapDetail } from "../utility/maps";
 import Header from "./layouts/Header";
 import Shoplist from "./components/ShopList";
@@ -20,11 +20,14 @@ export default function Home() {
   const [selectedCate, setSelectedCate] = useState<number>(0);
   const [matchShopID, setMatchShopID] = useState<number>(0);
 
+  const shopListRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    window.onload = () => {
+    if (selectedCate !== 0 || matchShopID !== 0) {
+      shopListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       window.scrollTo(0, document.body.scrollHeight);
-    };
-  }, []);
+    }
+  }, [selectedCate, matchShopID]);
 
   useEffect(() => {
     fetchMapDetail()
@@ -83,7 +86,7 @@ export default function Home() {
           <HighlightBanner />
         </div> */}
         {/*ShopList*/}
-        <div className="mt-6 sm:hidden">
+        <div className="mt-6 sm:hidden ref={shopListRef}">
           <Shoplist
             label=""
             onCateChange={handleChange}
