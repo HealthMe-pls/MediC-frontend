@@ -79,26 +79,29 @@ const Shoplist: React.FC<CateID> = ({
       const selectedBlock =
         mapDetails.find((block) => block.shop_id === matchShop) || null;
       setSelectedBlock(selectedBlock);
+      if (selectedBlock) {
+        setSelectedZone(selectedBlock.block_zone);
+      }
     }
   }, [matchShop]);
 
   return (
     <div className="p-4 font-lexend text-[#4C4343]">
       {/* Dropdown Block */}
-      <div className="py-2">
+      <div className="p-4 font-lexend text-[#4C4343]">
         {/* Dropdown Block */}
         <div className="flex space-x-0">
           {["A", "B", "C"].map((zone, index) => (
-            <button
+            <div
               key={zone}
-              className={`flex-1 h-[30px] border border-gray-300 text-[#4C4343]-center ${
+              className={`flex-1 h-[30px] border border-gray-300 flex items-center justify-center cursor-pointer ${
                 selectedZone === zone
                   ? index === 0
                     ? "bg-[#FFEF9E] text-[#4C4343]"
                     : index === 1
                     ? "bg-[#D5EBD6] text-[#4C4343]"
                     : "bg-[#CAE5F3] text-[#4C4343]"
-                  : "bg-[#FFFFFF]  text-gray-700"
+                  : "bg-[#FFFFFF] text-gray-700"
               } ${
                 index === 0
                   ? "rounded-l-full"
@@ -112,7 +115,7 @@ const Shoplist: React.FC<CateID> = ({
               }}
             >
               {zone}
-            </button>
+            </div>
           ))}
         </div>
       </div>
