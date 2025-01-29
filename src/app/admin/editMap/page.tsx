@@ -5,6 +5,7 @@ import { fetchMapDetail, MapDetail } from "../../../utility/maps";
 import { fetchShopDetail,ShopDetail, ShopIdName } from "../../../utility/shop";
 import { ChangeMap } from "../../../utility/maps";
 import "./adminPage.css";
+import { createCategory, DeleteCatagory, fetchShopCategory, ShopCategory } from "@/utility/shopcategory";
 
 export default function AdminPage() {
   const [blocks, setBlocks] = useState<Record<number, { blockName: string; shopName: string |null; shopId: number|null }>>({});
@@ -15,13 +16,25 @@ export default function AdminPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isEdit, setIsEdit] = useState(false);
 
+  //manage category
+  const [isPopUpOpen,setIsPopUpOpen] = useState(false);
+  const [shopCategory,setShopCategory] = useState<ShopCategory[]>([]);
+  const [isAddingCat,setIsAddingCat] = useState(false);
+  const [categorySearchTerm, setCategorySearchTerm] = useState("");
+
   // Fetch map and shop data
   const fetchData = async () => {
     try {
-      const [mapData, shopData] = await Promise.all([fetchMapDetail(),fetchShopDetail()]);
+      const [mapData, shopData, categoryData] = await Promise.all([
+        fetchMapDetail(),
+        fetchShopDetail(),
+        fetchShopCategory()
+      ]);
+
       setShopSet(mapData);
       setShops(shopData);
-      console.log("shop data : ", shopData);
+      setShopCategory(categoryData);
+      //console.log("category data : ", categoryData);
 
       const initialBlocks = mapData.reduce((acc, mapDetail) => {
         acc[mapDetail.block_id] = {
@@ -40,7 +53,7 @@ export default function AdminPage() {
         shop_name : item.name
       }));
 
-      console.log("shopIdNameRecord = ",shopIdNameRecord)
+      //console.log("shopIdNameRecord = ",shopIdNameRecord)
       
       setShopIdName(shopIdNameRecord);
 
@@ -54,22 +67,27 @@ export default function AdminPage() {
   }, []);
 
   // Focus input when editing
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement|null>(null);
   useEffect(() => {
     if (editingBlock !== null && inputRef.current) {
       inputRef.current.focus();
     }
   }, [editingBlock]);
 
+  useEffect(() => {
+    console.log("isEdit changed:", isEdit);
+  }, [isEdit]);
+  
+
+
   const handleEditClick = (blockId: number) => {
     if (editingBlock === blockId) {
       setEditingBlock(null);
       setSearchTerm(""); // Reset search term when exiting edit mode
-      setIsEdit(false);
+
     } else {
       setEditingBlock(blockId);
       setSearchTerm(""); // Clear search term when entering edit mode
-      setIsEdit(true);
     }
   };
 
@@ -83,7 +101,7 @@ export default function AdminPage() {
         shopId: selectedShop.shop_id,
       },
     }));
-
+    setIsEdit(true);
     setEditingBlock(null);
   };
 
@@ -100,6 +118,7 @@ export default function AdminPage() {
         [blockId]: { blockName: prevBlocks[blockId]?.blockName || "", shopName: null, shopId: null },
       }));
     }
+    setIsEdit(true);
   };
 
   const generateBlockPosition = (index: number, total: number) => {
@@ -119,23 +138,78 @@ export default function AdminPage() {
       }));
 
       await ChangeMap(mapChangedData);
+      setIsEdit(false);
       alert("Changes saved successfully!");
-      setIsEdit(true);
+      
     } catch (error) {
       console.error("Error saving changes:", error);
       alert("Failed to save changes. Please try again.");
     }
   };
 
-  const handleResetChanges = async () => {
+  const handleCancelChanges = async () => {
     await fetchData();
+    setIsEdit(false);
   };
 
+  const handleManageCategory = () =>{
+    if(isPopUpOpen){
+      setIsPopUpOpen(false);
+    }else{
+      setIsPopUpOpen(true);
+    }
+  }
+
+  const categoryInputRef = useRef<HTMLInputElement|null>(null);
+  const handleAddCategories = () => {
+    setIsAddingCat(true);
+    setCategorySearchTerm
+    categoryInputRef.current?.focus();
+  }
+
+  const handleConfirmCat = async (name:string) => {
+    try{
+      const category = {
+        name : name
+      }
+      await createCategory(category);
+      setIsAddingCat(false);
+      setIsPopUpOpen(false);  // Close the popup
+      fetchData();
+      setIsPopUpOpen(true);   // Reopen the popup
+      setCategorySearchTerm('');
+    } catch (error) {
+      console.error("Error adding category:", error);
+    }
+  }
+
+  const handleCancelAdd = () => {
+    setIsAddingCat(false);
+  }
+
+  const handleDeleteCat = async (id: number,name:string) => {
+    const confirmRemove = window.confirm(`Remove Category ${name}?`);
+    if (confirmRemove) {
+      try{
+        await DeleteCatagory(id);
+        setIsPopUpOpen(false);  // Close the popup
+        fetchData();
+        setIsPopUpOpen(true);   // Reopen the popup
+        alert("Category removed successfully!");
+      }catch(error){
+        console.error("Error removing category:", error);
+        alert("An error occurred while removing the category.");
+      }
+    }
+  }
+
+
   //debug
-    console.log("Shops:", Shops);
-    console.log("ShopIdName:", ShopIdName);
-    console.log("Search Term:", searchTerm);
-    console.log("Filtered Shops:", filteredShops);
+    // console.log("Shops:", Shops);
+    // console.log("ShopIdName:", ShopIdName);
+    // console.log("Search Term:", searchTerm);
+    // console.log("Filtered Shops:", filteredShops);
+    //console.log("shopCategory: ", shopCategory);
 
 
   return (
@@ -166,19 +240,104 @@ export default function AdminPage() {
           })}
         </div>
 
-        {/* Edit Table */}
-        <div className="mt-8 w-full">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold mb-4">Manage Shops</h2>
-            <div className="mb-1">
-              <button disabled={!isEdit} onClick={handleSaveChanges} className="p-1 bg-green-500 text-white rounded">
-                Save Changes
-              </button>
-              <button disabled={!isEdit} onClick={handleResetChanges} className="p-1 m-2 bg-gray-500 text-white rounded">
-                Cancel
+        {isPopUpOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+            <div className="flex justify-between">
+              <h2 className="text-xl font-bold mb-4">Manage Categories</h2>
+              {/* Close Button */}
+              <button
+                onClick={handleManageCategory}
+                className="p-2 text-black rounded"
+              >
+                x
               </button>
             </div>
+            
+              {isAddingCat ? (
+              <ul>
+                <div>
+                {shopCategory.map((category) => (
+                  <li key={category.id} className="p-2 border-b">
+                    {category.name}
+                  </li>
+                ))}
+                <input
+                  type="text"
+                  value={categorySearchTerm}
+                  onChange={(e) => setCategorySearchTerm(e.target.value)}
+                  ref={categoryInputRef}
+                  className="m-2 p-2"
+                  placeholder="Add Category..."
+                />
+                  <button
+                    className="align-middle"
+                    onClick={()=>handleConfirmCat(categorySearchTerm)}>
+                      ✔
+                  </button>
+                  <button
+                    className="align-middle ml-3"
+                    onClick={handleCancelAdd}>
+                      ❌
+                  </button>
+                </div>
+              </ul>
+              ) : (
+                <ul>
+                  {shopCategory.map((category) => (
+                  <li key={category.id} className="p-2 border-b">
+                    <button 
+                      onClick={()=>handleDeleteCat(category.id,category.name)}
+                      className=" mr-3">
+                      ✖
+                    </button>
+                    {category.name}
+                  </li>
+                  ))}
+                </ul>
+              )}
+            {!isAddingCat && (
+            <button 
+              onClick={handleAddCategories}
+              className="mt-5 px-5 bg-green-200 rounded">
+              Add
+            </button>
+            )}
+
+            
           </div>
+        </div>
+      )}
+
+        {/* Edit Table */}
+        <div className="mt-8 w-full">
+        {isEdit ? (
+          <div>
+            <div className="flex justify-between">
+              <h2 className="text-xl font-bold mb-4">Manage Shops</h2>
+              <button onClick={handleManageCategory} className="m-1 p-3 bg-gray-300 rounded">
+                Manage catagory
+              </button>
+            </div>
+              <div className="mb-1 flex justify-end">
+                <button disabled={!isEdit} onClick={handleSaveChanges} className="p-3 mr-2 bg-green-500 text-white rounded">
+                  Save Changes
+                </button>
+                <button disabled={!isEdit} onClick={handleCancelChanges} className="p-3 bg-gray-500 text-white rounded">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ):(
+            <div>
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-bold mb-4">Manage Shops</h2>
+                <button onClick={handleManageCategory} className="m-3 p-3 bg-gray-300 rounded">
+                  Manage catagory
+                </button>
+              </div>
+            </div>
+          )}
           <div className="table-container">
             <table className="w-full border-collapse border border-gray-300 bg-white ">
               <thead>
