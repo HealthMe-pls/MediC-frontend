@@ -8,6 +8,7 @@ import Shoplist from "./components/ShopList";
 import HighlightBanner from "./components/HighlightBanner";
 import Footer from "./layouts/Footer";
 import Map from "./components/ShopMap";
+import SearchBar from "./components/SearchBar";
 import "../styles/global.css";
 import "./globals.css";
 import { fetchShopCategory, ShopCategory } from "@/utility/shopcate";
@@ -62,12 +63,9 @@ export default function Home() {
         {/* Filter Button */}
         <div className="mb-6 mt-2">
           {/* Search Bar */}
-          <div className="mb-4">
-            <input
-              type="text"
-              className="w-full p-3 border border-gray-300 rounded-md"
-              placeholder="Search..."
-            />
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Shop Search</h2>
+            <SearchBar></SearchBar>
           </div>
 
           {/* Filter Button */}
@@ -159,9 +157,9 @@ export default function Home() {
         <div className="sm:hidden">
           <Map selectedCate={selectedCate}></Map>
         </div>
-        <div>
+        {/* <div>
           <HighlightBanner />
-        </div>
+        </div> */}
         {/*ShopList*/}
         <div className="mt-6 sm:hidden">
           <Shoplist label="" onChange={handleChange} id={selectedCate} />
