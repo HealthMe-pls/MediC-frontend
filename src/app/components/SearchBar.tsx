@@ -62,54 +62,94 @@ export default function SearchBar({
   };
 
   return (
-    <div className="mb-4">
+    <div className="mb-1">
       {/* Search Bar */}
       <div className="mt-2">
         <input
           type="text"
-          className="w-full p-3 border  rounded-[30px]"
-          placeholder="Search for a shop name or interest...    "
+          className="w-full p-3 border rounded-[30px]"
+          placeholder="Search for a shop name or interest..."
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           onKeyDown={handleKeyDown} // รองรับปุ่มลูกศรและ Enter
         />
       </div>
 
-      {/* Results */}
-      {keyword.length > 2 && results.length === 0 && !isSearching && (
-        <p className="bg-white border border-gray-200 rounded-md font-light text-[14px] p-2">
-          No shops/products found
-        </p>
-      )}
+      {/* Results on mobile */}
+      <div className="sm:hidden">
+        {keyword.length > 2 && results.length === 0 && !isSearching && (
+          <p className="bg-white border border-gray-200 rounded-md font-light text-[14px] p-2">
+            No shops/products found
+          </p>
+        )}
 
-      {results.length > 0 && (
-        <ul className="bg-white border border-gray-200 rounded-md font-light text-[14px]">
-          {results.map((shop, index) => (
-            <li
-              key={shop?.shop_id}
-              className={`p-2 border-b last:border-none cursor-pointer 
-                ${highlightedIndex === index ? "bg-gray-200" : ""}
-                ${
-                  hoveredIndex === index && highlightedIndex !== index
-                    ? "bg-gray-100"
-                    : ""
-                }
-              `}
-              onClick={() => handleSelectShop(shop?.shop_id!)}
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(-1)}
-            >
-              {shop?.matchWord}
-            </li>
-          ))}
-        </ul>
-      )}
+        {results.length > 0 && (
+          <ul className="bg-white border border-gray-200 rounded-md font-light text-[14px]">
+            {results.map((shop, index) => (
+              <li
+                key={shop?.shop_id}
+                className={`p-2 border-b last:border-none cursor-pointer 
+                  ${highlightedIndex === index ? "bg-gray-200" : ""}
+                  ${
+                    hoveredIndex === index && highlightedIndex !== index
+                      ? "bg-gray-100"
+                      : ""
+                  }
+                `}
+                onClick={() => handleSelectShop(shop?.shop_id!)}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(-1)}
+              >
+                {shop?.matchWord}
+              </li>
+            ))}
+          </ul>
+        )}
 
-      {isSearching && keyword.length > 2 && (
-        <p className="bg-white border border-gray-200 rounded-md font-light text-[14px]">
-          Searching...
-        </p>
-      )}
+        {isSearching && keyword.length > 2 && (
+          <p className="bg-white border border-gray-200 rounded-md font-light text-[14px]">
+            Searching...
+          </p>
+        )}
+      </div>
+
+      {/* Dropdown Results on desktop */}
+      <div className="hidden sm:block relative">
+        {keyword.length > 2 && results.length === 0 && !isSearching && (
+          <p className="bg-white border border-gray-200 rounded-md font-light text-[14px] p-2">
+            No shops/products found
+          </p>
+        )}
+
+        {results.length > 0 && (
+          <ul className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-md font-light text-[14px]">
+            {results.map((shop, index) => (
+              <li
+                key={shop?.shop_id}
+                className={`p-2 border-b last:border-none cursor-pointer 
+                  ${highlightedIndex === index ? "bg-gray-200" : ""}
+                  ${
+                    hoveredIndex === index && highlightedIndex !== index
+                      ? "bg-gray-100"
+                      : ""
+                  }
+                `}
+                onClick={() => handleSelectShop(shop?.shop_id!)}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(-1)}
+              >
+                {shop?.matchWord}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {isSearching && keyword.length > 2 && (
+          <p className="bg-white border border-gray-200 rounded-md font-light text-[14px]">
+            Searching...
+          </p>
+        )}
+      </div>
     </div>
   );
 }
