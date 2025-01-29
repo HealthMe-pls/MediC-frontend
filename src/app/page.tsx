@@ -23,11 +23,11 @@ export default function Home() {
   const shopListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (selectedCate !== 0 || matchShopID !== 0) {
+    if (matchShopID !== 0) {
       shopListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      window.scrollTo(0, document.body.scrollHeight);
+      window.scrollTo(0, document.body.scrollHeight); 
     }
-  }, [selectedCate, matchShopID]);
+  }, [matchShopID]);
 
   useEffect(() => {
     fetchMapDetail()
