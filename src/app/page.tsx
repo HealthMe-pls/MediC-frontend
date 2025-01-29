@@ -21,7 +21,7 @@ export default function Home() {
   const [shopCategory, setCategory] = useState<ShopCategory[]>([]);
   const [selectedCate, setSelectedCate] = useState<number>(0);
   const [matchShopID, setMatchShopID] = useState<number>(0);
-  const [selectedBlock, setSelectedBlock] = useState<string>("");
+  const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
 
   const shopListRef = useRef<HTMLDivElement>(null);
 
@@ -92,38 +92,35 @@ export default function Home() {
           />
         </div>
 
-        <div className="sm:flex hidden w-full max-w-[1100px] gap-4">
-          <div className="w-[600px] min-w-[600px]">
-            <Map
-              selectedCate={selectedCate}
-              setSelectedBlock={setSelectedBlock}
-            />
-          </div>
+        <div className="sm:flex hidden w-full gap-4 flex-wrap justify-center">
+  {/* Map Section */}
+  <div className="w-[600px] min-w-[600px] flex justify-center">
+    <Map
+      selectedCate={selectedCate}
+      setSelectedBlock={setSelectedBlock}
+    />
+  </div>
 
-          <div className="w-[570px] min-w-[500px] flex justify-center">
-          {!selectedBlock && (
-            <img
-              src="../assets/Mapguide.gif"
-              alt="GIF"
-              className="w-full h-auto max-h-[570px] object-contain mapguide-hidden"
-            />
-          )}
+  {/* Conditional Rendering for ShopSide or GIF */}
+  <div className="w-[570px] min-w-[500px] flex justify-center flex-wrap">
+    {!selectedBlock ? (
+      <img
+        src="../assets/Mapguide.gif"
+        alt="GIF"
+        className="w-full h-auto max-h-[570px] object-contain mapguide-hidden"
+      />
+    ) : (
+      <Shopside blockName={selectedBlock} />
+    )}
+  </div>
+</div>
 
-          </div>
-            <div className="absolute z-10 shoplistformmap mapguide-hidden">
-              <Shopside blockName={selectedBlock} />
-            </div>
-
-            {/* <Shopside blockName={selectedBlock} /> */}
-            
-        </div>
-
-        <div className="sm:hidden block"> 
-          <Map
-            selectedCate={selectedCate}
-            setSelectedBlock={setSelectedBlock}
-          />
-        </div>
+<div className="sm:hidden block flex justify-center">
+  <Map
+    selectedCate={selectedCate}
+    setSelectedBlock={setSelectedBlock}
+  />
+</div>
 
         <div className="mt-6 sm:hidden ref={shopListRef}">
           <Shoplist
