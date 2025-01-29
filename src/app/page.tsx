@@ -11,6 +11,7 @@ import Map from "./components/ShopMap";
 import SearchBar from "./components/SearchBar";
 import "../styles/global.css";
 import "./globals.css";
+import Mapguide from "../../public/assets/MapGuide.gif";
 import { fetchShopCategory, ShopCategory } from "@/utility/shopcate";
 import Filter from "./components/Filter";
 
@@ -88,8 +89,20 @@ export default function Home() {
             setMatchShopID={setMatchShopID}
           />
         </div>
-        <div className="sm:hidden">
-          <Map selectedCate={selectedCate}></Map>
+
+        
+        <div className="sm:flex hidden w-full max-w-[1100px] gap-4">
+          <div className="w-[600px] min-w-[600px]">
+            <Map selectedCate={selectedCate} />
+          </div>
+          
+          <div className="w-[570px] min-w-[500px] flex justify-center">
+            <img src="../assets/Mapguide.gif" alt="GIF" className="w-full h-auto max-h-[570px] object-contain mapguide-hidden" />
+          </div>
+        </div>
+
+        <div className="sm:hidden block">
+          <Map selectedCate={selectedCate} />
         </div>
 
         <div className="mt-6 sm:hidden ref={shopListRef}">
@@ -101,6 +114,8 @@ export default function Home() {
             matchShop={matchShopID}
           />
         </div>
+
+
         <div>
           <HighlightBanner />
         </div>
