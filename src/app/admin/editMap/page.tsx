@@ -2,22 +2,28 @@
 
 import { useState, useEffect, useRef } from "react";
 import { fetchMapDetail, MapDetail } from "../../../utility/maps";
+import { fetchShopDetail,ShopDetail, ShopIdName } from "../../../utility/shop";
 import { ChangeMap } from "../../../utility/maps";
 import "./adminPage.css";
 
 export default function AdminPage() {
-  const [blocks, setBlocks] = useState<Record<number, { blockName: string; shopName: string; shopId: number }>>({});
+  const [blocks, setBlocks] = useState<Record<number, { blockName: string; shopName: string |null; shopId: number|null }>>({});
   const [shopSet, setShopSet] = useState<MapDetail[]>([]); //Block - Shop
+  const [Shops,setShops] = useState<ShopDetail[]>([]); // Shops Detail
+  const [ShopIdName,setShopIdName] = useState<ShopIdName[]>([]); //lower case shop name
   const [editingBlock, setEditingBlock] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
 
   // Fetch map and shop data
   const fetchData = async () => {
     try {
-      const data = await fetchMapDetail();
-      setShopSet(data);
+      const [mapData, shopData] = await Promise.all([fetchMapDetail(),fetchShopDetail()]);
+      setShopSet(mapData);
+      setShops(shopData);
+      console.log("shop data : ", shopData);
 
-      const initialBlocks = data.reduce((acc, mapDetail) => {
+      const initialBlocks = mapData.reduce((acc, mapDetail) => {
         acc[mapDetail.block_id] = {
           shopName: mapDetail.shop_name,
           blockName: mapDetail.block_name,
@@ -27,6 +33,16 @@ export default function AdminPage() {
       }, {} as Record<number, { blockName: string; shopName: string; shopId: number }>);
 
       setBlocks(initialBlocks);
+
+      //reduce ShopDetail data -> [shop_id][shop_name] 
+      const shopIdNameRecord: ShopIdName[] = shopData.map((item)=>({
+        shop_id : item.id,
+        shop_name : item.name
+      }));
+
+      console.log("shopIdNameRecord = ",shopIdNameRecord)
+      
+      setShopIdName(shopIdNameRecord);
 
     } catch (error) {
       console.error("Error fetching map details:", error);
@@ -49,13 +65,15 @@ export default function AdminPage() {
     if (editingBlock === blockId) {
       setEditingBlock(null);
       setSearchTerm(""); // Reset search term when exiting edit mode
+      setIsEdit(false);
     } else {
       setEditingBlock(blockId);
       setSearchTerm(""); // Clear search term when entering edit mode
+      setIsEdit(true);
     }
   };
 
-  const handleShopSelect = (blockId: number, selectedShop: MapDetail) => {
+  const handleShopSelect = (blockId: number, selectedShop:{ shop_id: number; shop_name: string } ) => {
     // Update block with selected shop details
     setBlocks((prevBlocks) => ({
       ...prevBlocks,
@@ -69,8 +87,9 @@ export default function AdminPage() {
     setEditingBlock(null);
   };
 
-  const filteredShops = shopSet.filter((shop) =>
-    shop.shop_name && shop.shop_name.toLowerCase().includes(searchTerm.toLowerCase())
+  //search for shop name
+  const filteredShops = ShopIdName.filter(({shop_name}) =>
+    shop_name && shop_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleRemoveShop = (blockId: number) => {
@@ -78,7 +97,7 @@ export default function AdminPage() {
     if (confirmRemove) {
       setBlocks((prevBlocks) => ({
         ...prevBlocks,
-        [blockId]: { blockName: prevBlocks[blockId]?.blockName || "", shopName: "-", shopId: 0 },
+        [blockId]: { blockName: prevBlocks[blockId]?.blockName || "", shopName: null, shopId: null },
       }));
     }
   };
@@ -101,6 +120,7 @@ export default function AdminPage() {
 
       await ChangeMap(mapChangedData);
       alert("Changes saved successfully!");
+      setIsEdit(true);
     } catch (error) {
       console.error("Error saving changes:", error);
       alert("Failed to save changes. Please try again.");
@@ -110,6 +130,13 @@ export default function AdminPage() {
   const handleResetChanges = async () => {
     await fetchData();
   };
+
+  //debug
+    console.log("Shops:", Shops);
+    console.log("ShopIdName:", ShopIdName);
+    console.log("Search Term:", searchTerm);
+    console.log("Filtered Shops:", filteredShops);
+
 
   return (
     <div className="h-screen flex flex-col">
@@ -133,7 +160,7 @@ export default function AdminPage() {
                   transform: `translate(${x}px, ${y}px)`,
                 }}
               >
-                <p>{blocks[Number(blockId)].shopName || "Select Shop"}</p>
+                <p>{blocks[Number(blockId)].shopName || "no shop"}</p>
               </div>
             );
           })}
@@ -144,19 +171,19 @@ export default function AdminPage() {
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-bold mb-4">Manage Shops</h2>
             <div className="mb-1">
-              <button onClick={handleSaveChanges} className="p-1 bg-green-500 text-white rounded">
+              <button disabled={!isEdit} onClick={handleSaveChanges} className="p-1 bg-green-500 text-white rounded">
                 Save Changes
               </button>
-              <button onClick={handleResetChanges} className="p-1 m-2 bg-gray-500 text-white rounded">
-                Reset
+              <button disabled={!isEdit} onClick={handleResetChanges} className="p-1 m-2 bg-gray-500 text-white rounded">
+                Cancel
               </button>
             </div>
           </div>
           <div className="table-container">
-            <table className="w-full border-collapse border border-gray-300 bg-white">
+            <table className="w-full border-collapse border border-gray-300 bg-white ">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="border border-gray-300 px-4 py-2">Block ID</th>
+                  <th className="border border-gray-300 px-4 py-2">Block Name</th>
                   <th className="border border-gray-300 px-4 py-2">Shop ID</th>
                   <th className="border border-gray-300 px-4 py-2">Name</th>
                   <th className="border border-gray-300 px-4 py-2">Actions</th>
@@ -164,8 +191,8 @@ export default function AdminPage() {
               </thead>
               <tbody>
                 {Object.entries(blocks).map(([blockId, details]) => (
-                  <tr key={blockId}>
-                    <td className="border border-gray-300 px-4 py-4 text-center">{blockId}</td>
+                  <tr key={blockId} >
+                    <td className="border border-gray-300 px-4 py-4 text-center">{details.blockName}</td>
                     <td className="border border-gray-300 px-4 py-4 text-center">{details.shopId}</td>
                     <td className="border border-gray-300 px-4 py-2 text-center" style={{ width: "200px" }}>
                       {editingBlock === Number(blockId) ? (
@@ -178,15 +205,15 @@ export default function AdminPage() {
                             className="p-2 border border-gray-300 rounded w-full"
                             placeholder="Search shop..."
                           />
-                          {filteredShops.length > 0 ? (
+                          {filteredShops !== null ? (
                             <ul className="border border-gray-300 mt-2 rounded bg-white max-h-40 overflow-y-auto">
-                              {filteredShops.map((shop) => (
+                              {filteredShops.map(({shop_id,shop_name}) => (
                                 <li
-                                  key={shop.shop_id}
+                                  key={shop_name}
                                   className="p-2 hover:bg-gray-100 cursor-pointer"
-                                  onClick={() => handleShopSelect(Number(blockId), shop)}
+                                  onClick={() => handleShopSelect(Number(blockId), {shop_id,shop_name})}
                                 >
-                                  {shop.shop_name}
+                                  {shop_name}
                                 </li>
                               ))}
                             </ul>

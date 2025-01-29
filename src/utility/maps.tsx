@@ -8,7 +8,7 @@ export interface MapDetail {
 export interface MapChanged {
   block_id: number;
   block_name: string;
-  shop_id: number;
+  shop_id: number | null;
 }
 
 
