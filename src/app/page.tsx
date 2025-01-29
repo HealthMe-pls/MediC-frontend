@@ -10,6 +10,7 @@ import Footer from "./layouts/Footer";
 import Map from "./components/ShopMap";
 import "../styles/global.css";
 import "./globals.css";
+import Mapguide from "../../public/assets/MapGuide.gif";
 import { fetchShopCategory, ShopCategory } from "@/utility/shopcate";
 
 export default function Home() {
@@ -79,7 +80,7 @@ export default function Home() {
               <svg
                 width="18"
                 height="16"
-                viewBox="0 0 18 16"
+                viewBox="0 0 26 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 className="flex-shrink-0 mr-[54x]"
@@ -156,9 +157,32 @@ export default function Home() {
           </div>
         )}
 
-        <div className="sm:hidden">
-          <Map selectedCate={selectedCate}></Map>
-        </div>
+{/* <div className="sm:block hidden w-[550px] gap-4">
+  <Map selectedCate={selectedCate} />  
+  <img src="../assets/Mapguide.gif" alt="GIF" className="w-auto h-auto w-[569px]" style={}/>
+</div>
+
+<div className="sm:hidden block">
+  <Map selectedCate={selectedCate} />
+
+</div> */}
+
+<div className="sm:flex hidden w-full max-w-[1100px] gap-4">
+  <div className="w-[600px] min-w-[600px]">
+    <Map selectedCate={selectedCate} />
+  </div>
+
+  <div className="w-[570px] min-w-[500px] flex justify-center">
+    <img src="../assets/Mapguide.gif" alt="GIF" className="w-full h-auto max-h-[570px] object-contain mapguide-hidden" />
+  </div>
+</div>
+
+<div className="sm:hidden block">
+  <Map selectedCate={selectedCate} />
+</div>
+
+
+
         <div>
           <HighlightBanner />
         </div>

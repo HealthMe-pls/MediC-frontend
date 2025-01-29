@@ -103,7 +103,7 @@ export default function Map({ selectedCate }: { selectedCate: number }) {
 
   return (
     <div className="relative flex justify-center items-center">
-      <img src="/assets/the_earth_tree.png" alt="Map" className="w-full max-w-xl h-auto z-0" />
+      <img src="/assets/the_earth_tree.png" alt="Map" className="w-full max-w-full max-w-xl h-auto z-0" />
       <img src="/assets/fork.png" alt="fork" className="w-full max-w-xl h-auto z-0 forks" />
       {points.map((point) => {
         const mapDetail = mapDetails.find(detail => detail.block_name === point.name);
