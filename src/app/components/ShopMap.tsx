@@ -3,8 +3,8 @@ import '../../styles/global.css';
 import { fetchShopCategory, ShopCategory } from '@/utility/shopcate';
 import { fetchMapDetail, MapDetail } from '@/utility/maps';
 
-export default function Map({ selectedCate }: { selectedCate: number }) {
-    const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
+export default function Map({ selectedCate, setSelectedBlock }: { selectedCate: number; setSelectedBlock: (block: string) => void }) {
+  const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
 
   useEffect(() => {
     fetchMapDetail()
@@ -111,19 +111,23 @@ export default function Map({ selectedCate }: { selectedCate: number }) {
         const shopId = mapDetail?.shop_id ?? null;
 
         return (
-          <div
-            key={point.name}
-            className={`ellipse ${point.name[0].toLowerCase()}`}
-            style={{
-              top: point.top,
-              left: point.left,
-              ...getStyleForPoint(point.name, categoryId, shopId),
-            }}
-          >
-            <span className="ellipse-text">{point.name}</span>
-          </div>
-        );
-      })}
-    </div>
+          <button
+              key={point.name}
+              className={`ellipse ${point.name[0].toLowerCase()} sm:cursor-pointer sm:pointer-events-auto pointer-events-none transition-transform`}
+              style={{
+                top: point.top,
+                left: point.left,
+                ...getStyleForPoint(point.name, categoryId, shopId),
+              }}
+              onClick={() => {
+                console.log(`Clicked on ${point.name}`);
+                setSelectedBlock(point.name);
+              }}
+            >
+              <span className="ellipse-text">{point.name}</span>
+            </button>
+            );
+          })}
+        </div>
   );
 }
