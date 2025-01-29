@@ -25,6 +25,17 @@ export default function Home() {
 
   const shopListRef = useRef<HTMLDivElement>(null);
 
+  const [showGif, setShowGif] = useState(true); 
+  
+  const handleCloseGif = () => {
+    setShowGif(false);  // ปิดการแสดง GIF
+  };
+
+  const handleSearchChange = (newSelectedCate) => {
+    setSelectedCate(newSelectedCate);
+  };
+
+
   useEffect(() => {
     if (matchShopID !== 0) {
       setTimeout(() => {
@@ -32,17 +43,17 @@ export default function Home() {
         shopListRef.current?.scrollIntoView({
           behavior: "smooth",
           block: "start",
-          inline: "nearest", // optional: adjust the horizontal alignment if needed
+          inline: "nearest",
         });
 
-        // Scroll to the position 500px above the bottom
         window.scrollTo({
           top: 850,
-          behavior: "smooth", // Use smooth scrolling for window scroll as well
+          behavior: "smooth",
         });
       }, 300); // Increased delay for smoother transition
     }
   }, [matchShopID]);
+
 
   useEffect(() => {
     fetchMapDetail()
@@ -62,8 +73,13 @@ export default function Home() {
   };
 
   const handleCategorySelect = (categoryId: number) => {
-    setSelectedCate(categoryId); // อัปเดต selectedCate
+    setSelectedCate(categoryId);
   };
+
+  useEffect(() => {
+    console.log("selectedBlock:", selectedBlock);
+    console.log("matchShopID:", matchShopID);
+  }, [selectedBlock, matchShopID]);
 
   return (
     <div className="flex flex-col font-lexend">
@@ -81,7 +97,7 @@ export default function Home() {
           {/* Search Bar */}
           <div>
             <SearchBar
-              setSelectedCate={setSelectedCate}
+              setSelectedCate={handleSearchChange}
               setMatchShopID={setMatchShopID}
             />
           </div>
@@ -90,55 +106,63 @@ export default function Home() {
           <Filter
             shopCategory={shopCategory}
             selectedCate={selectedCate}
-            onSelectCategory={handleCategorySelect} // ส่งฟังก์ชันให้ Filter
+            onSelectCategory={handleCategorySelect}
             setMatchShopID={setMatchShopID}
           />
         </div>
 
-        <div className="sm:flex hidden w-full gap-4 flex-wrap justify-center">
-          {/* Map Section */}
-          <div className="w-[600px] min-w-[600px] flex justify-center">
-            <Map
-              selectedCate={selectedCate}
-              setSelectedBlock={setSelectedBlock}
-            />
-          </div>
+        <div className="sm:flex hidden w-full gap-32 flex-wrap justify-center">
+  <div className="w-[600px] min-w-[600px] flex justify-center">
+    <Map
+      selectedCate={selectedCate}
+      setSelectedBlock={setSelectedBlock}
+    />
+  </div>
 
-          <div className="w-[570px] min-w-[500px] flex justify-center">
-            {!selectedBlock && (
-              <img
-                src="../assets/Mapguide.gif"
-                alt="GIF"
-                className="w-full h-auto max-h-[570px] object-contain mapguide-hidden"
-              />
-            )}
-          </div>
-          <div className="z-10 shoplistformmap mapguide-hidden">
-            <div className="absolute">
-              <SearchBar
-                setSelectedCate={setSelectedCate}
-                setMatchShopID={setMatchShopID}
-              />
-            </div>
-            <div className="mt-20 h-[100%]">
-              <Shopside blockName={selectedBlock} />
-            </div>
-          </div>
+  <div className="w-[570px] min-w-[500px] flex justify-center flex-wrap flex-col">
+    <div className="w-full">
+      <SearchBar
+        setSelectedCate={setSelectedCate}
+        setMatchShopID={setMatchShopID}
+      />
+    </div>
 
-          {/* <Shopside blockName={selectedBlock} /> */}
-        </div>
-
-        <div className="sm:hidden block">
-          <Map
-            selectedCate={selectedCate}
-            setSelectedBlock={setSelectedBlock}
+    <div className="w-full">
+    {showGif && !selectedBlock ? (
+        <div className="relative w-full">
+          <img
+            src="../assets/Mapguide.gif"
+            alt="GIF"
+            className="w-full h-auto max-h-[570px] object-contain mapguide-hidden"
           />
+          <button
+            onClick={handleCloseGif}
+            className="absolute top-2 right-16 p-1 rounded-full mr-2 mt-2"
+            aria-label="Close"
+          >
+            <span className="text-opacity-50 text-black text-[50px]">×</span>
+          </button>
         </div>
+      ) : (
+        <Shopside 
+          blockName={selectedBlock}
+        />
+      )}
+    </div>
+  </div>
+</div>
+
+<div className="sm:hidden block">
+  <Map
+    selectedCate={selectedCate}
+    setSelectedBlock={setSelectedBlock}
+  />
+</div>
 
         <div className="mt-6 sm:hidden ref={shopListRef}">
           <Shoplist
             label=""
-            onCateChange={handleChange}
+            onCateChange={handleSearchChange}
             Cateid={selectedCate}
             setMatchShopID={setMatchShopID}
             matchShop={matchShopID}
