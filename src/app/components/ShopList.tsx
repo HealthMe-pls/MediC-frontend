@@ -8,8 +8,10 @@ import CardMenuSL from "./CardMenuSL";
 
 interface CateID {
   label: string;
-  id: number;
-  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void; // ใช้ event type ที่ถูกต้อง
+  Cateid: number;
+  onCateChange: (event: React.ChangeEvent<HTMLSelectElement>) => void; // ใช้ event type ที่ถูกต้อง
+  setMatchShopID: React.Dispatch<React.SetStateAction<number>>;
+  matchShop: number;
 }
 
 const formatDate = (isoString: string): string => {
@@ -20,14 +22,20 @@ const formatTime = (isoString: string): string => {
   const date = new Date(isoString); // ใช้ new Date() แทน parseISO
   return format(date, "HH:mm");
 };
-const Shoplist: React.FC<CateID> = ({ label, onChange, id = 0 }) => {
+const Shoplist: React.FC<CateID> = ({
+  label,
+  onCateChange,
+  Cateid = 0,
+  setMatchShopID,
+  matchShop,
+}) => {
   const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
   const [shopDetails, setShopDetails] = useState<ShopDetail[]>([]);
   const [selectedZone, setSelectedZone] = useState<string | null>("A");
   const [selectedBlock, setSelectedBlock] = useState<MapDetail | null>(null);
   const [isShopListVisible, setShopListVisible] = useState<boolean>(false);
 
-  console.log(id);
+  console.log(Cateid);
 
   useEffect(() => {
     fetchMapDetail()
@@ -46,13 +54,33 @@ const Shoplist: React.FC<CateID> = ({ label, onChange, id = 0 }) => {
       ? mapDetails.filter(
           (detail) =>
             detail.block_zone === selectedZone &&
-            (detail.category_id === id || id === 0)
+            (detail.category_id === Cateid || Cateid === 0)
         )
       : [];
 
+  // const selectedShopDetail =
+  //   matchShop === 0
+  //     ? selectedBlock &&
+  //       shopDetails.find((shop) => shop.name === selectedBlock.shop_name)
+  //     : shopDetails.find((shop) => shop.shop_id === matchShop);
   const selectedShopDetail =
     selectedBlock &&
     shopDetails.find((shop) => shop.name === selectedBlock.shop_name);
+
+  const matchShopDetail =
+    matchShop === 0
+      ? selectedShopDetail
+      : shopDetails.find((shop) => shop.shop_id === matchShop);
+
+  useEffect(() => {
+    // Trigger the side effect when matchShop changes and is not 0
+    if (matchShop !== 0) {
+      setShopListVisible(true);
+      const selectedBlock =
+        mapDetails.find((block) => block.shop_id === matchShop) || null;
+      setSelectedBlock(selectedBlock);
+    }
+  }, [matchShop]);
 
   return (
     <div className="p-4 font-lexend text-[#4C4343]">
@@ -128,14 +156,19 @@ const Shoplist: React.FC<CateID> = ({ label, onChange, id = 0 }) => {
 
       {/* แสดง Block */}
       {isShopListVisible && (
-        <div className="grid grid-cols-6 gap-2 mb-4">
-          {filteredBlock.map((block, index) => (
-            <button
-              key={`shop-${block.block_id}-${index}`}
-              className={`px-auto py-2 border font-light  ${
+        <div className="mb-4">
+          {filteredBlock.filter((block) => block.shop_id !== null).length >
+          0 ? (
+            <div className="grid grid-cols-6 gap-2">
+              {filteredBlock
+                .filter((block) => block.shop_id !== null) // กรอง block ที่ไม่มี shop_id
+                .map((block, index) => (
+                  <button
+                    key={`shop-${block.block_id}-${index}`}
+                    className={`px-auto py-2 border font-light  
+              ${
                 selectedBlock?.block_id === block.block_id
-                  ? // Change color based on the selected zone
-                    block.block_zone === "A"
+                  ? block.block_zone === "A"
                     ? "bg-[#FFEF9E]"
                     : block.block_zone === "B"
                     ? "bg-[#D5EBD6] "
@@ -144,25 +177,32 @@ const Shoplist: React.FC<CateID> = ({ label, onChange, id = 0 }) => {
                     : "bg-gray-200"
                   : "bg-white text-black border-[#D0D0D0]"
               }`}
-              onClick={() => setSelectedBlock(block)}
-            >
-              {block.block_name}
-            </button>
-          ))}
+                    onClick={() => {
+                      setSelectedBlock(block);
+                      setMatchShopID(0);
+                    }}
+                  >
+                    {block.block_name}
+                  </button>
+                ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center py-2">No shop available</p>
+          )}
         </div>
       )}
 
       {/* รายละเอียดร้านค้า */}
       {isShopListVisible &&
         selectedBlock &&
-        (selectedShopDetail?.category_id === id || id === 0) && (
+        (matchShopDetail?.category_id === Cateid || Cateid === 0) && (
           <div className="pt-4 px-4 bg-white rounded-[10] shadow-md">
             <div className="flex justify-between items-center">
               <h3 className="text-xl font-regular text-[24px] mb-2 ">
-                {selectedBlock.shop_name}
+                {matchShopDetail?.name ? matchShopDetail.name : "No shop"}
               </h3>
               <p className="text-green-500 font-light text-[14px]">
-                {selectedShopDetail?.status ? (
+                {matchShopDetail?.status ? (
                   <svg
                     width="73"
                     height="23"
@@ -196,7 +236,7 @@ const Shoplist: React.FC<CateID> = ({ label, onChange, id = 0 }) => {
               </p>
             </div>
             <p className="font-light text-[14px] ">
-              {selectedShopDetail?.category}
+              {matchShopDetail?.category}
             </p>
             <div className="mt-4">
               <p className="text-[15px] font-regular flex items-center">
@@ -215,7 +255,7 @@ const Shoplist: React.FC<CateID> = ({ label, onChange, id = 0 }) => {
                 </svg>
                 Featured Menu
               </p>
-              {selectedShopDetail?.menus?.length ? (
+              {matchShopDetail?.menus?.length ? (
                 <div
                   style={{
                     display: "flex",
@@ -226,7 +266,7 @@ const Shoplist: React.FC<CateID> = ({ label, onChange, id = 0 }) => {
                   }}
                   className="hide-scrollbar"
                 >
-                  {selectedShopDetail.menus.slice(0, 4).map((menu) => (
+                  {matchShopDetail.menus.slice(0, 4).map((menu) => (
                     <div
                       key={menu.id}
                       style={{
@@ -258,10 +298,10 @@ const Shoplist: React.FC<CateID> = ({ label, onChange, id = 0 }) => {
                 </svg>
                 Business Hours
               </p>
-              {selectedShopDetail?.shop_open_dates ? (
+              {matchShopDetail?.shop_open_dates ? (
                 <ul>
-                  {Array.isArray(selectedShopDetail.shop_open_dates) &&
-                    selectedShopDetail.shop_open_dates.map((date, index) => (
+                  {Array.isArray(matchShopDetail.shop_open_dates) &&
+                    matchShopDetail.shop_open_dates.map((date, index) => (
                       <li key={index} className="text-[14px] font-light">
                         {`${formatDate(date.start_time)} ${formatTime(
                           date.start_time
@@ -291,10 +331,10 @@ const Shoplist: React.FC<CateID> = ({ label, onChange, id = 0 }) => {
                 </svg>
                 Social Media
               </p>
-              {selectedShopDetail?.social_media ? (
+              {matchShopDetail?.social_media ? (
                 <ul>
-                  {Array.isArray(selectedShopDetail.social_media) &&
-                    selectedShopDetail.social_media.map((media, index) => (
+                  {Array.isArray(matchShopDetail.social_media) &&
+                    matchShopDetail.social_media.map((media, index) => (
                       <li key={index} className="text-[14px] font-light">
                         {media.platform}: <a href={media.link}>{media.link}</a>
                       </li>
@@ -305,7 +345,7 @@ const Shoplist: React.FC<CateID> = ({ label, onChange, id = 0 }) => {
               )}
             </div>
 
-            <Link href={`/shop/${selectedBlock.shop_id}`}>
+            <Link href={`/shop/${matchShopDetail?.shop_id}`}>
               <div className="mt-4 flex justify-center pb-2">
                 <button className="w-[100%] h-[30px] rounded-[15px] bg-[#F0F0F0] font-light text-[14px]">
                   See More
