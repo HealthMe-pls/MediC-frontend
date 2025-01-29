@@ -85,7 +85,6 @@ const Shoplist: React.FC<CateID> = ({
   return (
     <div className="p-4 font-lexend text-[#4C4343]">
       {/* Dropdown Block */}
-      <p>MatchShopID: {matchShop !== 0 ? matchShop : "None"}</p>
       <div className="py-2">
         {/* Dropdown Block */}
         <div className="flex space-x-0">
@@ -158,29 +157,31 @@ const Shoplist: React.FC<CateID> = ({
       {/* แสดง Block */}
       {isShopListVisible && (
         <div className="grid grid-cols-6 gap-2 mb-4">
-          {filteredBlock.map((block, index) => (
-            <button
-              key={`shop-${block.block_id}-${index}`}
-              className={`px-auto py-2 border font-light  ${
-                selectedBlock?.block_id === block.block_id
-                  ? // Change color based on the selected zone
-                    block.block_zone === "A"
-                    ? "bg-[#FFEF9E]"
-                    : block.block_zone === "B"
-                    ? "bg-[#D5EBD6] "
-                    : block.block_zone === "C"
-                    ? "bg-[#CAE5F3]"
-                    : "bg-gray-200"
-                  : "bg-white text-black border-[#D0D0D0]"
-              }`}
-              onClick={() => {
-                setSelectedBlock(block);
-                setMatchShopID(0);
-              }}
-            >
-              {block.block_name}
-            </button>
-          ))}
+          {filteredBlock
+            .filter((block) => block.shop_id !== null) // กรอง block ที่ไม่มี shop_id
+            .map((block, index) => (
+              <button
+                key={`shop-${block.block_id}-${index}`}
+                className={`px-auto py-2 border font-light  
+            ${
+              selectedBlock?.block_id === block.block_id
+                ? block.block_zone === "A"
+                  ? "bg-[#FFEF9E]"
+                  : block.block_zone === "B"
+                  ? "bg-[#D5EBD6] "
+                  : block.block_zone === "C"
+                  ? "bg-[#CAE5F3]"
+                  : "bg-gray-200"
+                : "bg-white text-black border-[#D0D0D0]"
+            }`}
+                onClick={() => {
+                  setSelectedBlock(block);
+                  setMatchShopID(0);
+                }}
+              >
+                {block.block_name}
+              </button>
+            ))}
         </div>
       )}
 

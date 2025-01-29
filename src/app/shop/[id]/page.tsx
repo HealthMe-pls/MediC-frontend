@@ -25,6 +25,12 @@ const ShopPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!loading) {
+      window.scrollTo(0, 0);
+    }
+  }, [loading]);
+
+  useEffect(() => {
     if (id) {
       const fetchData = async () => {
         try {

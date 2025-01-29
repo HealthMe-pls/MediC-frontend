@@ -32,9 +32,9 @@ export default function Home() {
           inline: "nearest", // optional: adjust the horizontal alignment if needed
         });
 
-        // Smooth scroll to the bottom of the page but leave 210px space
+        // Scroll to the position 500px above the bottom
         window.scrollTo({
-          top: document.documentElement.scrollHeight, // Use document.documentElement.scrollHeight
+          top: 850,
           behavior: "smooth", // Use smooth scrolling for window scroll as well
         });
       }, 300); // Increased delay for smoother transition
@@ -78,9 +78,6 @@ export default function Home() {
               setSelectedCate={setSelectedCate}
               setMatchShopID={setMatchShopID}
             />
-            <p className="mt-4">
-              MatchShopID: {matchShopID !== 0 ? matchShopID : "None"}
-            </p>
           </div>
 
           {/* Filter Button */}

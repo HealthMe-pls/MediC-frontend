@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ShopCategory } from "@/utility/shopcate";
 
 interface FilterProps {
@@ -16,6 +16,11 @@ const Filter: React.FC<FilterProps> = ({
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [tempCate, setTempCate] = useState(selectedCate);
+
+  // Update tempCate when selectedCate changes
+  useEffect(() => {
+    setTempCate(selectedCate);
+  }, [selectedCate]);
 
   // Toggle modal visibility
   const toggleModal = () => {
@@ -89,13 +94,14 @@ const Filter: React.FC<FilterProps> = ({
                     type="radio"
                     name="category"
                     className="form-radio h-5 w-5 checked:bg-[#4C4343] checked:ring-[#4C4343] focus:ring-[#4C4343]"
-                    checked={tempCate === category.id}
+                    checked={tempCate === category.id} // ไฮไลท์รายการที่ตรงกับ tempCate
                     onChange={() => setTempCate(category.id)} // เปลี่ยนค่า tempCate แทน
                   />
                   <span className="text-gray-800">{category.name}</span>
                 </label>
               ))}
             </div>
+
             {/* ปุ่มยืนยันและปิด Modal */}
             <div className="flex justify-end gap-4">
               <button

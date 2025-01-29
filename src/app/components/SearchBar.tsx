@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { fetchShopByWord, SearchBarInt } from "@/utility/searchbar";
 
 interface SearchBarProps {
-  setSelectedCate: React.Dispatch<React.SetStateAction<number>>; // Receive setSelectedCate from parent
-  setMatchShopID: React.Dispatch<React.SetStateAction<number>>; // Receive setMatchShopID from parent
+  setSelectedCate: React.Dispatch<React.SetStateAction<number>>;
+  setMatchShopID: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function SearchBar({
@@ -13,7 +13,9 @@ export default function SearchBar({
   const [keyword, setKeyword] = useState<string>("");
   const [results, setResults] = useState<SearchBarInt[]>([]);
   const [isSearching, setIsSearching] = useState<boolean>(false);
-  const [selectedShopId, setSelectedShopId] = useState<number | null>(null); // Track the selected shop
+  const [selectedShopId, setSelectedShopId] = useState<number | null>(null);
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1); // ติดตาม index ที่เลือก
+  const [hoveredIndex, setHoveredIndex] = useState<number>(-1); // ติดตาม index ที่ hover
 
   useEffect(() => {
     if (keyword.length > 2) {
@@ -22,70 +24,92 @@ export default function SearchBar({
         const data = await fetchShopByWord(keyword);
         setResults(data);
         setIsSearching(false);
+        setHighlightedIndex(-1); // รีเซ็ต index เมื่อมีผลใหม่
       };
       fetchData();
     } else {
-      setResults([]); // Clear results when search input is less than or equal to 2 characters
+      setResults([]);
+      setHighlightedIndex(-1); // รีเซ็ต index ถ้าค้นหาน้อยกว่า 2 ตัวอักษร
     }
   }, [keyword]);
 
   useEffect(() => {
     if (keyword.length > 0) {
-      setSelectedCate(0); // Reset selectedCate to 0 when a new search starts
+      setSelectedCate(0);
     }
-  }, [keyword, setSelectedCate]); // Dependency on keyword change
+  }, [keyword, setSelectedCate]);
 
   const handleSelectShop = (shopId: number) => {
-    setMatchShopID(shopId); // Update matchShopID when a shop is selected
-    setKeyword(""); // Clear the search input field when an item is selected
-    setSelectedShopId(shopId); // Set the selected shop
+    setMatchShopID(shopId);
+    setKeyword("");
+    setSelectedShopId(shopId);
+    setHighlightedIndex(-1); // รีเซ็ต index หลังเลือก
+    setHoveredIndex(-1); // รีเซ็ต hover
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "ArrowDown") {
+      setHighlightedIndex((prevIndex) =>
+        prevIndex < results.length - 1 ? prevIndex + 1 : 0
+      );
+    } else if (e.key === "ArrowUp") {
+      setHighlightedIndex((prevIndex) =>
+        prevIndex > 0 ? prevIndex - 1 : results.length - 1
+      );
+    } else if (e.key === "Enter" && highlightedIndex >= 0) {
+      handleSelectShop(results[highlightedIndex].shop_id);
+    }
   };
 
   return (
     <div className="mb-4">
       {/* Search Bar */}
       <div className="mt-2">
-        <div className="">
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md"
-            placeholder="Search..."
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-          />
-        </div>
+        <input
+          type="text"
+          className="w-full p-3 border border-gray-300 rounded-md"
+          placeholder="Search..."
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          onKeyDown={handleKeyDown} // รองรับปุ่มลูกศรและ Enter
+        />
       </div>
 
       {/* Results */}
-      {keyword.length > 2 && results.length === 0 && !isSearching ? (
-        <p className="bg-white border border-gray-200 rounded-md font-light text-[14px] p-2 border-b last:border-none">
+      {keyword.length > 2 && results.length === 0 && !isSearching && (
+        <p className="bg-white border border-gray-200 rounded-md font-light text-[14px] p-2">
           No shops/products found
         </p>
-      ) : null}
+      )}
 
-      {results.length > 0 ? (
+      {results.length > 0 && (
         <ul className="bg-white border border-gray-200 rounded-md font-light text-[14px]">
-          {results
-            .filter((shop) => shop !== null)
-            .map((shop) => (
-              <li
-                key={shop?.shop_id}
-                className={`p-2 border-b last:border-none cursor-pointer ${
-                  selectedShopId === shop?.shop_id
-                    ? "bg-gray-200" // Highlight the selected item
+          {results.map((shop, index) => (
+            <li
+              key={shop?.shop_id}
+              className={`p-2 border-b last:border-none cursor-pointer 
+                ${highlightedIndex === index ? "bg-gray-200" : ""}
+                ${
+                  hoveredIndex === index && highlightedIndex !== index
+                    ? "bg-gray-100"
                     : ""
-                }`}
-                onClick={() => handleSelectShop(shop?.shop_id!)} // Handle shop selection
-              >
-                {shop?.matchWord} (ID: {shop?.shop_id})
-              </li>
-            ))}
+                }
+              `}
+              onClick={() => handleSelectShop(shop?.shop_id!)}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(-1)}
+            >
+              {shop?.matchWord} (ID: {shop?.shop_id})
+            </li>
+          ))}
         </ul>
-      ) : isSearching && keyword.length > 2 ? (
+      )}
+
+      {isSearching && keyword.length > 2 && (
         <p className="bg-white border border-gray-200 rounded-md font-light text-[14px]">
           Searching...
         </p>
-      ) : null}
+      )}
     </div>
   );
 }
