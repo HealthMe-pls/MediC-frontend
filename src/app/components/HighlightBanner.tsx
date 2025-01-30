@@ -3,21 +3,23 @@
 import { useState, useEffect, useRef } from "react";
 import { fetchWorkshops, Workshop } from "../../utility/workshop";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const HighlightBanner = () => {
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [currentIndex, setCurrentIndex] = useState<number>(0); // Tracks the currently centered workshop index
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const autoSlideInterval = 3000; // Auto-slide every 3 seconds
+  const autoSlideInterval = 3000;
   const carouselRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
 
   // Fetch workshops
   useEffect(() => {
     fetchWorkshops()
       .then((data) => {
-        setWorkshops(data || []); // Fallback to an empty array if no data
+        setWorkshops(data || []);
         setLoading(false);
       })
       .catch((err) => {
@@ -42,13 +44,10 @@ const HighlightBanner = () => {
   // Update carousel position when currentIndex changes
   useEffect(() => {
     if (carouselRef.current) {
-      const cardWidth = carouselRef.current.children[0]?.clientWidth || 0; // Width of a single card
+      const cardWidth = carouselRef.current.children[0]?.clientWidth || 0;
       const gap =
-        parseInt(
-          window.getComputedStyle(carouselRef.current).gap, // Get the gap from CSS
-          10
-        ) || 0; // Fallback to 0 if gap is not defined
-      const scrollOffset = currentIndex * (cardWidth + gap); // Scroll by one card + gap
+        parseInt(window.getComputedStyle(carouselRef.current).gap, 10) || 0;
+      const scrollOffset = currentIndex * (cardWidth + gap);
 
       carouselRef.current.scrollTo({
         left: scrollOffset,
@@ -65,21 +64,21 @@ const HighlightBanner = () => {
     setCurrentIndex((prev) => (prev === 0 ? workshops.length - 1 : prev - 1));
   };
 
+  // Function to store the last page and navigate
+  const handleNavigation = (id: number) => {
+    sessionStorage.setItem("previousPage", window.location.pathname);
+    router.push(`/workshops/${id}`);
+  };
+
   if (loading) return <div>Loading workshops...</div>;
   if (error) return <div>Error loading workshops: {error}</div>;
 
   return (
     <div
       className="font-lexend bg-[#FFF7EB] border-[1px] rounded-lg border-black py-4 
-    text-center text-black mb-6 p-5 aspect-[15/4] w-full mx-auto"
-      onMouseEnter={() => {
-        console.log("Mouse entered"); // Debug log
-        setIsHovered(true);
-      }}
-      onMouseLeave={() => {
-        console.log("Mouse left"); // Debug log
-        setIsHovered(false);
-      }}
+      text-center text-black mb-6 p-5 aspect-[15/4] w-full mx-auto"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <h2 className="text-xl md:text-2xl">Highlight Workshop and Events</h2>
       <div className="relative w-full mt-4">
@@ -89,7 +88,7 @@ const HighlightBanner = () => {
           className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-all"
           aria-label="Previous workshop"
         >
-          -
+          ◀
         </button>
 
         <button
@@ -97,30 +96,25 @@ const HighlightBanner = () => {
           className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-all"
           aria-label="Next workshop"
         >
-          +
+          ▶
         </button>
 
         {/* Carousel Container */}
         <div
           ref={carouselRef}
-          className="flex overflow-hidden scroll-snap-x-mandatory scroll-snap-align-center gap-4"
+          className="flex overflow-hidden scroll-snap-x-mandatory scroll-snap-align-center gap-4 h-max-[320px]"
           style={{
             scrollBehavior: "smooth",
           }}
         >
-          {workshops.map((workshop, index) => (
+          {workshops.map((workshop) => (
             <div
               key={workshop.id}
-              className={`relative flex-shrink-0 transition-opacity duration-500
-                md:w-1/3 w-full flex-shrink-0 w-full md:w-1/3 bg-white shadow-lg rounded-lg 
-              aspect-[10/10] max-w-[400px] mx-auto
-                ${
-                  index === currentIndex
-                    ? "opacity-100 scale-100" // Show full card on iPhone size
-                    : "opacity-50 scale-95 -translate-x-4 md:opacity-100 md:scale-100 md:translate-x-0" // Peek effect only on small screens
-                }`}
+              className="relative flex-shrink-0 transition-opacity duration-500
+              md:w-1/3 w-full flex-shrink-0 w-full md:w-1/3 bg-white shadow-lg rounded-lg 
+              aspect-[10/10] max-w-[400px] mx-auto"
               style={{
-                scrollSnapAlign: "center", // Ensure cards snap to the center
+                scrollSnapAlign: "center",
               }}
             >
               {/* Workshop Card */}
@@ -141,11 +135,12 @@ const HighlightBanner = () => {
               </div>
               <div className="p-4">
                 <h3 className="text-lg truncate">{workshop.name}</h3>
-                <Link href={`/workshops/${workshop.id}`}>
-                  <button className="mt-2 px-4 py-2 bg-[#52A794] text-white rounded-md hover:bg-blue-600">
-                    View Details
-                  </button>
-                </Link>
+                <button
+                  onClick={() => handleNavigation(workshop.id)}
+                  className="mt-2 px-4 py-2 bg-[#52A794] text-white rounded-md hover:bg-blue-600"
+                >
+                  View Details
+                </button>
               </div>
             </div>
           ))}

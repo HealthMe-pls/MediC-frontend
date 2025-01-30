@@ -12,6 +12,7 @@ import "../styles/global.css";
 import "./globals.css";
 import { fetchShopCategory, ShopCategory } from "@/utility/shopcate";
 
+
 export default function Home() {
   const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
   const [shopCategory, setCategory] = useState<ShopCategory[]>([]);
