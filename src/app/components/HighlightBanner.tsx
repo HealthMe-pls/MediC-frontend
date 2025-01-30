@@ -75,12 +75,14 @@ const HighlightBanner = () => {
 
   return (
     <div
-      className="font-lexend bg-[#FFF7EB] border-[1px] rounded-lg border-black py-4 
+      className="font-lexend bg-[#FFF7EB] rounded-lg py-4 
       text-center text-black mb-6 p-5 aspect-[15/4] w-full mx-auto "
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <h2 className="text-[20px]">Highlight Workshop and Events</h2>
+      <h2 className="md:text-[20px] text-left sm:text-[16px]">
+        Highlight Workshop and Events
+      </h2>
       <div className="relative w-full mt-4">
         {/* Navigation Buttons */}
         <button
