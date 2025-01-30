@@ -113,7 +113,7 @@ export default function Home() {
 
       <main className="flex-1 overflow-auto p-6 bg-[#FFF7EB]">
 
-        <h2 className="text-[25px] text-[#4C4343] mb-4 text-center sm:hidden">
+        <h2 className="text-[25px] text-[#4C4343] mb-4 text-center mobile-view">
           Market Map
         </h2>
         <div className="mobile-view">
@@ -133,14 +133,14 @@ export default function Home() {
           />
         </div>
         </div>
-        <div className="flex flex-wrap ipad-view w-[600px] justify-center mx-auto">
-    <div className="flex-1">
+        <div className="flex flex-wrap ipad-view w-[575px] justify-center mx-auto">
+    <div className="flex-1 mr-2">
       <SearchBar
         setSelectedCate={setSelectedCate}
         setMatchShopID={setMatchShopID}
       />
     </div>
-    <div className="flex-1">
+    <div className="flex-1 ml-2">
       <Filter
         shopCategory={shopCategory}
         selectedCate={selectedCate}
@@ -149,7 +149,7 @@ export default function Home() {
       /></div>
     </div>
 
-        <div className="sm:flex hidden w-full gap-8 flex-wrap justify-center">
+        <div className="sm:flex hidden w-full gap-8 flex-wrap justify-center mb-[32px]">
   <div className="w-[600px] min-w-[600px] flex justify-center">
       <Map
         selectedCate={selectedCate}
@@ -160,14 +160,14 @@ export default function Home() {
   </div>
 
   <div className="w-[570px] min-w-[500px] flex justify-center flex-wrap flex-col">
-    <div className="flex flex-wrap desktop-view">
-    <div className="flex-1">
+    <div className="flex flex-wrap desktop-view mx-autu">
+    <div className="flex-1 mr-2">
       <SearchBar
         setSelectedCate={setSelectedCate}
         setMatchShopID={setMatchShopID}
       />
     </div>
-    <div className="flex-1">
+    <div className="flex-1 ml-2">
       <Filter
         shopCategory={shopCategory}
         selectedCate={selectedCate}
@@ -200,7 +200,7 @@ export default function Home() {
   </div>
 </div>
 
-<div className="sm:hidden block">
+<div className="mobile-view block">
       <Map
         selectedCate={selectedCate}
         setSelectedBlock={setSelectedBlock}
@@ -208,7 +208,7 @@ export default function Home() {
       />
 </div>
 
-        <div className="mt-6 sm:hidden ref={shopListRef}">
+        <div className="mt-6 mobile-view ref={shopListRef}">
           <Shoplist
             label=""
             onCateChange={handleSearchChange}
