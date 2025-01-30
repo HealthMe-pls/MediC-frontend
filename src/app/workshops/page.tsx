@@ -40,10 +40,14 @@ export default function WorkshopsPage() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {workshops.map((workshop) => (
-              <WorkshopCard key={workshop.id} workshop={workshop} />
-            ))}
+          <div className="flex justify-around">
+            <div className="flex flex-wrap p-5 justify-around mx-2">
+              {workshops.map((workshop) => (
+                <div key={workshop.id} className="justify-between p-5">
+                  <WorkshopCard workshop={workshop} />
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </main>

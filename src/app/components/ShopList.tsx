@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { th } from "date-fns/locale";
 import CardMenuSL from "./CardMenuSL";
+import { useRouter } from "next/navigation";
 
 interface CateID {
   label: string;
@@ -85,7 +86,24 @@ const Shoplist: React.FC<CateID> = ({
     }
   }, [matchShop]);
 
+    const router = useRouter();
+
+    const handleNavigation = () => {
+      sessionStorage.setItem("previousPage", window.location.pathname);
+      router.push(`/shop/${selectedBlock?.shop_id}`);
+    };
+  
+    const handleBack = () => {
+      const previousPage = sessionStorage.getItem("previousPage");
+      if (previousPage) {
+        router.push(previousPage);
+      } else {
+        router.back();
+      }
+    };
+  
   return (
+    
     <div className="p-4 font-lexend text-[#4C4343]">
       {/* Dropdown Block */}
       <div className="p-4 font-lexend text-[#4C4343]">
@@ -347,14 +365,22 @@ const Shoplist: React.FC<CateID> = ({
                 <p className="text-[14px] font-light">Not available</p>
               )}
             </div>
+            <div className="mt-4 flex justify-center pb-2">
+              <button
+                onClick={handleNavigation}
+                className="w-[100%] h-[30px] rounded-[15px] bg-[#F0F0F0] font-light text-[14px]"
+              >
+                See More
+              </button>
+            </div>
 
-            <Link href={`/shop/${matchShopDetail?.shop_id}`}>
+            {/* <Link href={`/shop/${selectedBlock.shop_id}`}>
               <div className="mt-4 flex justify-center pb-2">
                 <button className="w-[100%] h-[30px] rounded-[15px] bg-[#F0F0F0] font-light text-[14px]">
                   See More
                 </button>
               </div>
-            </Link>
+            </Link> */}
           </div>
         )}
     </div>

@@ -46,7 +46,7 @@ const ShopPage = () => {
 
   return (
     <div className="font-lexend text-[#4C4343] bg-[#FFF7EB] min-h-screen flex flex-col justify-between">
-      <BackButton href="../../" />
+      <BackButton />
       <div>
         {shopDetail ? (
           <div className=" font-lexend text-[#4C4343] bg-[#FFF7EB]">
@@ -206,7 +206,7 @@ const ShopPage = () => {
           <p>No shop details found</p>
         )}
       </div>
-      <div className="flex flex-col justify-end mt-8 ">
+      <div className="flex flex-col justify-end mt-8">
         <div>
           <Footer />
         </div>

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 
 export interface Photo {
@@ -63,7 +62,7 @@ const ImageBanner: React.FC<ImageBannerProps> = ({ photos, basePath = "" }) => {
     <div className="w-full relative">
       {/* รูปภาพ */}
       <div
-        className="w-full h-[216px] overflow-hidden relative"
+        className="w-[350] h-[216px] overflow-hidden relative"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
