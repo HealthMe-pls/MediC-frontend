@@ -91,3 +91,21 @@ img {
     font-size: 7px;
   }
 }
+
+@media (min-width: 1346px) {
+  .ipad-view, .mobile-view {
+    display: none;
+  }
+}
+
+@media (max-width: 1345px) and (min-width: 641px) {
+  .desktop-view, .mobile-view {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .desktop-view, .ipad-view {
+    display: none;
+  }
+}

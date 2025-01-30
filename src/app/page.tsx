@@ -110,24 +110,21 @@ export default function Home() {
     <div className="flex flex-col font-lexend">
       <Header />
 
-      {/* Content Section */}
 
       <main className="flex-1 overflow-auto p-6 bg-[#FFF7EB]">
-        {/* Filter Button */}
 
         <h2 className="text-[25px] text-[#4C4343] mb-4 text-center sm:hidden">
           Market Map
         </h2>
-        <div className="mb-6 mt-2 sm:hidden">
-          {/* Search Bar */}
+        <div className="mobile-view">
+        <div className="mb-6 mt-2 ">
           <div>
-            <SearchBar
-              setSelectedCate={handleSearchChange}
-              setMatchShopID={setMatchShopID}
-            />
+          <SearchBar
+        setSelectedCate={setSelectedCate}
+        setMatchShopID={setMatchShopID}
+      />
           </div>
 
-          {/* Filter Button */}
           <Filter
             shopCategory={shopCategory}
             selectedCate={selectedCate}
@@ -135,8 +132,24 @@ export default function Home() {
             setMatchShopID={setMatchShopID}
           />
         </div>
+        </div>
+        <div className="flex flex-wrap ipad-view w-[600px] justify-center mx-auto">
+    <div className="flex-1">
+      <SearchBar
+        setSelectedCate={setSelectedCate}
+        setMatchShopID={setMatchShopID}
+      />
+    </div>
+    <div className="flex-1">
+      <Filter
+        shopCategory={shopCategory}
+        selectedCate={selectedCate}
+        onSelectCategory={handleCategorySelect}
+        setMatchShopID={setMatchShopID}
+      /></div>
+    </div>
 
-        <div className="sm:flex hidden w-full gap-32 flex-wrap justify-center">
+        <div className="sm:flex hidden w-full gap-8 flex-wrap justify-center">
   <div className="w-[600px] min-w-[600px] flex justify-center">
       <Map
         selectedCate={selectedCate}
@@ -147,7 +160,7 @@ export default function Home() {
   </div>
 
   <div className="w-[570px] min-w-[500px] flex justify-center flex-wrap flex-col">
-    <div className="flex flex-wrap">
+    <div className="flex flex-wrap desktop-view">
     <div className="flex-1">
       <SearchBar
         setSelectedCate={setSelectedCate}
