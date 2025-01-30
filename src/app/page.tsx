@@ -1,5 +1,5 @@
 "use client";
-
+/* eslint-disable */
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { fetchMapDetail, MapDetail } from "../utility/maps";

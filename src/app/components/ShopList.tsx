@@ -3,7 +3,7 @@ import { fetchMapDetail, MapDetail } from "../../utility/maps";
 import { fetchShopDetail, ShopDetail } from "@/utility/shopDetail";
 import { format } from "date-fns";
 import Link from "next/link";
-import { th } from "date-fns/locale";
+// import { th } from "date-fns/locale";
 import CardMenuSL from "./CardMenuSL";
 import { useRouter } from "next/navigation";
 
@@ -23,6 +23,7 @@ const formatTime = (isoString: string): string => {
   const date = new Date(isoString); // ใช้ new Date() แทน parseISO
   return format(date, "HH:mm");
 };
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Shoplist: React.FC<CateID> = ({
   label,
   onCateChange,

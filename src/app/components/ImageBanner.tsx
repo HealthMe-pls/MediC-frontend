@@ -11,7 +11,9 @@ interface ImageBannerProps {
 }
 
 // const NEXT_API = process.env.NEXT_URL;
+// const NEXT_API = "http://127.0.0.1:3000";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ImageBanner: React.FC<ImageBannerProps> = ({ photos, basePath = "" }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -68,6 +70,7 @@ const ImageBanner: React.FC<ImageBannerProps> = ({ photos, basePath = "" }) => {
         onTouchEnd={handleTouchEnd}
       >
         {photos.length > 0 ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={`${process.env.GO_API_URL}/upload/${photos[currentIndex]?.pathfile}`}
             alt={`Slide ${currentIndex + 1}`}

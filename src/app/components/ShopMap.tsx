@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from 'react';
 import '../../styles/global.css';
 import { fetchShopCategory, ShopCategory } from '@/utility/shopcate';

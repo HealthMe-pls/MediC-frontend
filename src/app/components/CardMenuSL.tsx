@@ -10,6 +10,7 @@ const CardMenuSL: React.FC<CardMenuProps> = ({ menu }) => {
       <div className="flex-col items-start gap-4 m-2">
         {/* รูปภาพของสินค้า */}
         {menu.photos?.length ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={`${process.env.GO_API_URL}/upload/${menu.photos[0]?.pathfile}`}
             alt={menu.product_name}

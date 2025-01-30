@@ -5,6 +5,7 @@ interface CardMenuProps {
 }
 
 // const NEXT_API = process.env.NEXT_URL ;
+// const NEXT_API = "http://127.0.0.1:3000";
 
 const CardProductDetail: React.FC<CardMenuProps> = ({ menu }) => {
   return (
@@ -20,6 +21,7 @@ const CardProductDetail: React.FC<CardMenuProps> = ({ menu }) => {
               const imageUrl = `${process.env.GO_API_URL}/upload/${menu.photos[0]?.pathfile}`;
               console.log(imageUrl); // Console log URL ของรูปภาพ
               return (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={imageUrl}
                   alt={menu.product_name}

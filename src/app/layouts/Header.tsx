@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Hamburger from "../components/hamburger";
-import styles from "../../styles/Header.module.css";
+// import styles from "../../styles/Header.module.css";
 import Bar from "./bar";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,8 +20,8 @@ const Header = () => {
       {/* <div className={styles.header}> */}
       <div className="flex justify-between p-4 bg-white font-lexend">
         <div className="flex-none justify-start">
-          {/* <div className={styles.logoContainer}> */}
-          <img src="/assets/logo.png" alt="Logo" className="w-[86px]" />
+          <Image src="/assets/logo.png" alt="Logo" width={86} height={86} />
+          {/* <img src="/assets/logo.png" alt="Logo" className="w-[86px]" /> */}
           {/* <h1 className="text-xl sm:text-3xl font-bold">
             Bamboo Family Market
           </h1> */}
