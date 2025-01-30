@@ -24,7 +24,7 @@ const ShopHoursSummaryPage = () => {
           <div className="mt-4 space-y-4">
             {" "}
             {/* You can leave this space between items if you need extra padding */}
-            <Link href="/adminPage/page">
+            <Link href="/adminPage">
               <button className="w-full bg-gray-600 text-white py-2 rounded-lg mb-4">
                 {" "}
                 {/* Added margin-bottom */}

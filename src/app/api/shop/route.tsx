@@ -1,11 +1,9 @@
-import { NextResponse } from "next/server"; 
+import { NextResponse } from "next/server";
 
 // GET - Fetch all shop
 export async function GET() {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/shop`
-    );
+    const response = await fetch(`${process.env.GO_API_URL}/shop`);
 
     if (!response.ok) {
       throw new Error("Failed to fetch shop");

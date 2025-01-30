@@ -2,24 +2,34 @@
 
 import { useState, useEffect, useRef } from "react";
 import { fetchMapDetail, MapDetail } from "../../../utility/maps";
-import { fetchShopDetail,ShopDetail, ShopIdName } from "../../../utility/shop";
+import { fetchShopDetail, ShopDetail, ShopIdName } from "../../../utility/shop";
 import { ChangeMap } from "../../../utility/maps";
-import "./adminPage.css";
-import { createCategory, DeleteCatagory, fetchShopCategory, ShopCategory } from "@/utility/shopcategory";
+// import "./adminPage.css";
+import {
+  createCategory,
+  DeleteCatagory,
+  fetchShopCategory,
+  ShopCategory,
+} from "@/utility/shopcategory";
 
 export default function AdminPage() {
-  const [blocks, setBlocks] = useState<Record<number, { blockName: string; shopName: string |null; shopId: number|null }>>({});
+  const [blocks, setBlocks] = useState<
+    Record<
+      number,
+      { blockName: string; shopName: string | null; shopId: number | null }
+    >
+  >({});
   const [shopSet, setShopSet] = useState<MapDetail[]>([]); //Block - Shop
-  const [Shops,setShops] = useState<ShopDetail[]>([]); // Shops Detail
-  const [ShopIdName,setShopIdName] = useState<ShopIdName[]>([]); //lower case shop name
+  const [Shops, setShops] = useState<ShopDetail[]>([]); // Shops Detail
+  const [ShopIdName, setShopIdName] = useState<ShopIdName[]>([]); //lower case shop name
   const [editingBlock, setEditingBlock] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isEdit, setIsEdit] = useState(false);
 
   //manage category
-  const [isPopUpOpen,setIsPopUpOpen] = useState(false);
-  const [shopCategory,setShopCategory] = useState<ShopCategory[]>([]);
-  const [isAddingCat,setIsAddingCat] = useState(false);
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+  const [shopCategory, setShopCategory] = useState<ShopCategory[]>([]);
+  const [isAddingCat, setIsAddingCat] = useState(false);
   const [categorySearchTerm, setCategorySearchTerm] = useState("");
 
   // Fetch map and shop data
@@ -28,7 +38,7 @@ export default function AdminPage() {
       const [mapData, shopData, categoryData] = await Promise.all([
         fetchMapDetail(),
         fetchShopDetail(),
-        fetchShopCategory()
+        fetchShopCategory(),
       ]);
 
       setShopSet(mapData);
@@ -47,16 +57,15 @@ export default function AdminPage() {
 
       setBlocks(initialBlocks);
 
-      //reduce ShopDetail data -> [shop_id][shop_name] 
-      const shopIdNameRecord: ShopIdName[] = shopData.map((item)=>({
-        shop_id : item.id,
-        shop_name : item.name
+      //reduce ShopDetail data -> [shop_id][shop_name]
+      const shopIdNameRecord: ShopIdName[] = shopData.map((item) => ({
+        shop_id: item.id,
+        shop_name: item.name,
       }));
 
       //console.log("shopIdNameRecord = ",shopIdNameRecord)
-      
-      setShopIdName(shopIdNameRecord);
 
+      setShopIdName(shopIdNameRecord);
     } catch (error) {
       console.error("Error fetching map details:", error);
     }
@@ -67,7 +76,7 @@ export default function AdminPage() {
   }, []);
 
   // Focus input when editing
-  const inputRef = useRef<HTMLInputElement|null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
     if (editingBlock !== null && inputRef.current) {
       inputRef.current.focus();
@@ -77,21 +86,21 @@ export default function AdminPage() {
   useEffect(() => {
     console.log("isEdit changed:", isEdit);
   }, [isEdit]);
-  
-
 
   const handleEditClick = (blockId: number) => {
     if (editingBlock === blockId) {
       setEditingBlock(null);
       setSearchTerm(""); // Reset search term when exiting edit mode
-
     } else {
       setEditingBlock(blockId);
       setSearchTerm(""); // Clear search term when entering edit mode
     }
   };
 
-  const handleShopSelect = (blockId: number, selectedShop:{ shop_id: number; shop_name: string } ) => {
+  const handleShopSelect = (
+    blockId: number,
+    selectedShop: { shop_id: number; shop_name: string }
+  ) => {
     // Update block with selected shop details
     setBlocks((prevBlocks) => ({
       ...prevBlocks,
@@ -106,8 +115,9 @@ export default function AdminPage() {
   };
 
   //search for shop name
-  const filteredShops = ShopIdName.filter(({shop_name}) =>
-    shop_name && shop_name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredShops = ShopIdName.filter(
+    ({ shop_name }) =>
+      shop_name && shop_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleRemoveShop = (blockId: number) => {
@@ -115,7 +125,11 @@ export default function AdminPage() {
     if (confirmRemove) {
       setBlocks((prevBlocks) => ({
         ...prevBlocks,
-        [blockId]: { blockName: prevBlocks[blockId]?.blockName || "", shopName: null, shopId: null },
+        [blockId]: {
+          blockName: prevBlocks[blockId]?.blockName || "",
+          shopName: null,
+          shopId: null,
+        },
       }));
     }
     setIsEdit(true);
@@ -131,16 +145,17 @@ export default function AdminPage() {
 
   const handleSaveChanges = async () => {
     try {
-      const mapChangedData = Object.entries(blocks).map(([blockId, { blockName, shopId }]) => ({
-        block_id: Number(blockId),
-        block_name: blockName,
-        shop_id: shopId,
-      }));
+      const mapChangedData = Object.entries(blocks).map(
+        ([blockId, { blockName, shopId }]) => ({
+          block_id: Number(blockId),
+          block_name: blockName,
+          shop_id: shopId,
+        })
+      );
 
       await ChangeMap(mapChangedData);
       setIsEdit(false);
       alert("Changes saved successfully!");
-      
     } catch (error) {
       console.error("Error saving changes:", error);
       alert("Failed to save changes. Please try again.");
@@ -152,65 +167,63 @@ export default function AdminPage() {
     setIsEdit(false);
   };
 
-  const handleManageCategory = () =>{
-    if(isPopUpOpen){
+  const handleManageCategory = () => {
+    if (isPopUpOpen) {
       setIsPopUpOpen(false);
-    }else{
+    } else {
       setIsPopUpOpen(true);
     }
-  }
+  };
 
-  const categoryInputRef = useRef<HTMLInputElement|null>(null);
+  const categoryInputRef = useRef<HTMLInputElement | null>(null);
   const handleAddCategories = () => {
     setIsAddingCat(true);
-    setCategorySearchTerm
+    setCategorySearchTerm;
     categoryInputRef.current?.focus();
-  }
+  };
 
-  const handleConfirmCat = async (name:string) => {
-    try{
+  const handleConfirmCat = async (name: string) => {
+    try {
       const category = {
-        name : name
-      }
+        name: name,
+      };
       await createCategory(category);
       setIsAddingCat(false);
-      setIsPopUpOpen(false);  // Close the popup
+      setIsPopUpOpen(false); // Close the popup
       fetchData();
-      setIsPopUpOpen(true);   // Reopen the popup
-      setCategorySearchTerm('');
+      setIsPopUpOpen(true); // Reopen the popup
+      setCategorySearchTerm("");
     } catch (error) {
       console.error("Error adding category:", error);
     }
-  }
+  };
 
   const handleCancelAdd = () => {
     setIsAddingCat(false);
-  }
+  };
 
-  const handleDeleteCat = async (id: number,name:string) => {
+  const handleDeleteCat = async (id: number, name: string) => {
     const confirmRemove = window.confirm(`Remove Category ${name}?`);
     if (confirmRemove) {
-      try{
+      try {
         await DeleteCatagory(id);
-        setIsPopUpOpen(false);  // Close the popup
+        setIsPopUpOpen(false); // Close the popup
         fetchData();
-        setIsPopUpOpen(true);   // Reopen the popup
+        setIsPopUpOpen(true); // Reopen the popup
         alert("Category removed successfully!");
-      }catch(error){
+      } catch (error) {
         console.error("Error removing category:", error);
         alert("An error occurred while removing the category.");
       }
     }
-  }
-
+  };
 
   //debug
-    // console.log("Shops:", Shops);
-    // console.log("ShopIdName:", ShopIdName);
-    // console.log("Search Term:", searchTerm);
-    // console.log("Filtered Shops:", filteredShops);
-    //console.log("shopCategory: ", shopCategory);
-
+  // console.log("Shops:", Shops);
+  // console.log("ShopIdName:", ShopIdName);
+  // console.log("Search Term:", searchTerm);
+  // console.log("Filtered Shops:", filteredShops);
+  //console.log("shopCategory: ", shopCategory);
 
   return (
     <div className="h-screen flex flex-col">
@@ -220,11 +233,12 @@ export default function AdminPage() {
 
       <main className="flex-1 p-6 bg-gray-50 flex flex-col items-center">
         {/* Map */}
-        <div
-          className="relative w-72 h-72 rounded-full border-4 border-gray-500 flex items-center justify-center"
-        >
+        <div className="relative w-72 h-72 rounded-full border-4 border-gray-500 flex items-center justify-center">
           {Object.keys(blocks).map((blockId, index) => {
-            const { x, y } = generateBlockPosition(index, Object.keys(blocks).length);
+            const { x, y } = generateBlockPosition(
+              index,
+              Object.keys(blocks).length
+            );
             return (
               <div
                 key={blockId}
@@ -241,108 +255,128 @@ export default function AdminPage() {
         </div>
 
         {isPopUpOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-            <div className="flex justify-between">
-              <h2 className="text-xl font-bold mb-4">Manage Categories</h2>
-              {/* Close Button */}
-              <button
-                onClick={handleManageCategory}
-                className="p-2 text-black rounded"
-              >
-                x
-              </button>
-            </div>
-            
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+              <div className="flex justify-between">
+                <h2 className="text-xl font-bold mb-4">Manage Categories</h2>
+                {/* Close Button */}
+                <button
+                  onClick={handleManageCategory}
+                  className="p-2 text-black rounded"
+                >
+                  x
+                </button>
+              </div>
+
               {isAddingCat ? (
-              <ul>
-                <div>
-                {shopCategory.map((category) => (
-                  <li key={category.id} className="p-2 border-b">
-                    {category.name}
-                  </li>
-                ))}
-                <input
-                  type="text"
-                  value={categorySearchTerm}
-                  onChange={(e) => setCategorySearchTerm(e.target.value)}
-                  ref={categoryInputRef}
-                  className="m-2 p-2"
-                  placeholder="Add Category..."
-                />
-                  <button
-                    className="align-middle"
-                    onClick={()=>handleConfirmCat(categorySearchTerm)}>
+                <ul>
+                  <div>
+                    {shopCategory.map((category) => (
+                      <li key={category.id} className="p-2 border-b">
+                        {category.name}
+                      </li>
+                    ))}
+                    <input
+                      type="text"
+                      value={categorySearchTerm}
+                      onChange={(e) => setCategorySearchTerm(e.target.value)}
+                      ref={categoryInputRef}
+                      className="m-2 p-2"
+                      placeholder="Add Category..."
+                    />
+                    <button
+                      className="align-middle"
+                      onClick={() => handleConfirmCat(categorySearchTerm)}
+                    >
                       ✔
-                  </button>
-                  <button
-                    className="align-middle ml-3"
-                    onClick={handleCancelAdd}>
+                    </button>
+                    <button
+                      className="align-middle ml-3"
+                      onClick={handleCancelAdd}
+                    >
                       ❌
-                  </button>
-                </div>
-              </ul>
+                    </button>
+                  </div>
+                </ul>
               ) : (
                 <ul>
                   {shopCategory.map((category) => (
-                  <li key={category.id} className="p-2 border-b">
-                    <button 
-                      onClick={()=>handleDeleteCat(category.id,category.name)}
-                      className=" mr-3">
-                      ✖
-                    </button>
-                    {category.name}
-                  </li>
+                    <li key={category.id} className="p-2 border-b">
+                      <button
+                        onClick={() =>
+                          handleDeleteCat(category.id, category.name)
+                        }
+                        className=" mr-3"
+                      >
+                        ✖
+                      </button>
+                      {category.name}
+                    </li>
                   ))}
                 </ul>
               )}
-            {!isAddingCat && (
-            <button 
-              onClick={handleAddCategories}
-              className="mt-5 px-5 bg-green-200 rounded">
-              Add
-            </button>
-            )}
-
-            
+              {!isAddingCat && (
+                <button
+                  onClick={handleAddCategories}
+                  className="mt-5 px-5 bg-green-200 rounded"
+                >
+                  Add
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
         {/* Edit Table */}
         <div className="mt-8 w-full">
-        {isEdit ? (
-          <div>
-            <div className="flex justify-between">
-              <h2 className="text-xl font-bold mb-4">Manage Shops</h2>
-              <button onClick={handleManageCategory} className="m-1 p-3 bg-gray-300 rounded">
-                Manage catagory
-              </button>
-            </div>
+          {isEdit ? (
+            <div>
+              <div className="flex justify-between">
+                <h2 className="text-xl font-bold mb-4">Manage Shops</h2>
+                <button
+                  onClick={handleManageCategory}
+                  className="m-1 p-3 bg-gray-300 rounded"
+                >
+                  Manage catagory
+                </button>
+              </div>
               <div className="mb-1 flex justify-end">
-                <button disabled={!isEdit} onClick={handleSaveChanges} className="p-3 mr-2 bg-green-500 text-white rounded">
+                <button
+                  disabled={!isEdit}
+                  onClick={handleSaveChanges}
+                  className="p-3 mr-2 bg-green-500 text-white rounded"
+                >
                   Save Changes
                 </button>
-                <button disabled={!isEdit} onClick={handleCancelChanges} className="p-3 bg-gray-500 text-white rounded">
+                <button
+                  disabled={!isEdit}
+                  onClick={handleCancelChanges}
+                  className="p-3 bg-gray-500 text-white rounded"
+                >
                   Cancel
                 </button>
               </div>
             </div>
-          ):(
+          ) : (
             <div>
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold mb-4">Manage Shops</h2>
-                <button onClick={handleManageCategory} className="m-3 p-3 bg-gray-300 rounded">
+                <button
+                  onClick={handleManageCategory}
+                  className="m-3 p-3 bg-gray-300 rounded"
+                >
                   Manage catagory
                 </button>
               </div>
             </div>
           )}
-          <div className="table-container">
+          <div className="max-h-[300px] overflow-y-auto">
             <table className="w-full border-collapse border border-gray-300 bg-white ">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="border border-gray-300 px-4 py-2">Block Name</th>
+                  <th className="border border-gray-300 px-4 py-2">
+                    Block Name
+                  </th>
                   <th className="border border-gray-300 px-4 py-2">Shop ID</th>
                   <th className="border border-gray-300 px-4 py-2">Name</th>
                   <th className="border border-gray-300 px-4 py-2">Actions</th>
@@ -350,10 +384,17 @@ export default function AdminPage() {
               </thead>
               <tbody>
                 {Object.entries(blocks).map(([blockId, details]) => (
-                  <tr key={blockId} >
-                    <td className="border border-gray-300 px-4 py-4 text-center">{details.blockName}</td>
-                    <td className="border border-gray-300 px-4 py-4 text-center">{details.shopId}</td>
-                    <td className="border border-gray-300 px-4 py-2 text-center" style={{ width: "200px" }}>
+                  <tr key={blockId}>
+                    <td className="border border-gray-300 px-4 py-4 text-center">
+                      {details.blockName}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-4 text-center">
+                      {details.shopId}
+                    </td>
+                    <td
+                      className="border border-gray-300 px-4 py-2 text-center"
+                      style={{ width: "200px" }}
+                    >
                       {editingBlock === Number(blockId) ? (
                         <div>
                           <input
@@ -366,18 +407,25 @@ export default function AdminPage() {
                           />
                           {filteredShops !== null ? (
                             <ul className="border border-gray-300 mt-2 rounded bg-white max-h-40 overflow-y-auto">
-                              {filteredShops.map(({shop_id,shop_name}) => (
+                              {filteredShops.map(({ shop_id, shop_name }) => (
                                 <li
                                   key={shop_name}
                                   className="p-2 hover:bg-gray-100 cursor-pointer"
-                                  onClick={() => handleShopSelect(Number(blockId), {shop_id,shop_name})}
+                                  onClick={() =>
+                                    handleShopSelect(Number(blockId), {
+                                      shop_id,
+                                      shop_name,
+                                    })
+                                  }
                                 >
                                   {shop_name}
                                 </li>
                               ))}
                             </ul>
                           ) : (
-                            <p className="text-gray-500 mt-2">No shop found...</p>
+                            <p className="text-gray-500 mt-2">
+                              No shop found...
+                            </p>
                           )}
                         </div>
                       ) : (

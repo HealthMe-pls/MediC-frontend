@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { fetchMapDetail, MapDetail } from "../../../utility/maps";
-import Header from "../../layouts/Header";
+import { fetchMapDetail, MapDetail } from "../../utility/maps";
+import Header from "../layouts/Header";
+import EditMapPage from "../admin/editMap/page";
 
-export default function AdminPage() {
+export default function AdminPageComponent() {
   const [blocks, setBlocks] = useState<Record<number, string>>({});
   const [shopSet, setShopSet] = useState<MapDetail[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -53,7 +54,7 @@ export default function AdminPage() {
           <div className="mt-4 space-y-4">
             {" "}
             {/* You can leave this space between items if you need extra padding */}
-            <Link href="/adminPage/page">
+            <Link href="/admin/editMap">
               <button className="w-full bg-blue-600 text-white py-2 rounded-lg mb-4">
                 {" "}
                 {/* Added margin-bottom */}
