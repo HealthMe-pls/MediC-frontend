@@ -14,6 +14,7 @@ const HighlightBanner = () => {
   const autoSlideInterval = 3000;
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
+  const [visibleWorkshops, setVisibleWorkshops] = useState<number>(1); // Default: 1 card for mobile
 
   // Fetch workshops
   useEffect(() => {
@@ -55,6 +56,16 @@ const HighlightBanner = () => {
       });
     }
   }, [currentIndex]);
+  useEffect(() => {
+    const updateVisibleWorkshops = () => {
+      setVisibleWorkshops(window.innerWidth < 768 ? 1 : 3); // 1 for small, 3 for large
+    };
+
+    updateVisibleWorkshops(); // Set on initial render
+    window.addEventListener("resize", updateVisibleWorkshops); // Listen for resize
+
+    return () => window.removeEventListener("resize", updateVisibleWorkshops);
+  }, []);
 
   const handleNext = () => {
     setCurrentIndex((prev) => (prev === workshops.length - 1 ? 0 : prev + 1));
