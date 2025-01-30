@@ -75,12 +75,14 @@ const HighlightBanner = () => {
 
   return (
     <div
-      className="font-lexend bg-[#FFF7EB] border-[1px] rounded-lg border-black py-4 
-      text-center text-black mb-6 p-5 aspect-[15/4] w-full mx-auto"
+      className="font-lexend bg-[#FFF7EB] rounded-lg py-4 
+      text-center text-black mb-6 p-5 aspect-[15/4] w-full mx-auto "
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <h2 className="text-xl md:text-2xl">Highlight Workshop and Events</h2>
+      <h2 className="md:text-[20px] text-left sm:text-[16px]">
+        Highlight Workshop and Events
+      </h2>
       <div className="relative w-full mt-4">
         {/* Navigation Buttons */}
         <button
@@ -102,7 +104,7 @@ const HighlightBanner = () => {
         {/* Carousel Container */}
         <div
           ref={carouselRef}
-          className="flex overflow-hidden scroll-snap-x-mandatory scroll-snap-align-center gap-4 h-max-[320px]"
+          className="flex overflow-hidden scroll-snap-x-mandatory scroll-snap-align-center gap-4  "
           style={{
             scrollBehavior: "smooth",
           }}
@@ -112,36 +114,49 @@ const HighlightBanner = () => {
               key={workshop.id}
               className="relative flex-shrink-0 transition-opacity duration-500
               md:w-1/3 w-full flex-shrink-0 w-full md:w-1/3 bg-white shadow-lg rounded-lg 
-              aspect-[10/10] max-w-[400px] mx-auto"
+              aspect-[21/26] max-w-[210px] max-h-[260px] mx-auto hover:border hover:border-gray-300"
               style={{
                 scrollSnapAlign: "center",
               }}
             >
               {/* Workshop Card */}
-              <div className="relative">
-                <div className="block aspect-w-2 aspect-h-3 md:aspect-w-20 md:aspect-h-30">
-                  {workshop.photos?.length ? (
-                    <img
-                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/upload/${workshop.photos[0]?.pathfile}`}
-                      alt={workshop.name}
-                      className="w-full h-full object-cover aspect-[10/10] max-w-[200px] mx-auto"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-300 flex items-center justify-center aspect-[10/10] max-w-[200px] mx-auto">
-                      No Image Available
-                    </div>
-                  )}
+              <button
+                onClick={() => handleNavigation(workshop.id)}
+                className="mt-2 px-4 py-2 rounded-md "
+              >
+                <div className="relative w-full max-w-[180px] mx-auto mt-[15px] flex items-center justify-center">
+                  <div className="w-full aspect-[10/10] flex items-center justify-center">
+                    {workshop.photos?.length ? (
+                      <img
+                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/upload/${workshop.photos[0]?.pathfile}`}
+                        alt={workshop.name}
+                        className="w-full h-full object-cover rounded-md"
+                        onLoad={(e) => {
+                          const parent = e.currentTarget.parentElement;
+                          if (parent) {
+                            parent.style.setProperty(
+                              "min-height",
+                              `${e.currentTarget.clientHeight}px`
+                            );
+                            parent.style.setProperty(
+                              "min-width",
+                              `${e.currentTarget.clientWidth}px`
+                            );
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="bg-gray-300 flex items-center justify-center rounded-md min-h-[180px] min-w-[180px]">
+                        No Image Available
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="p-4">
-                <h3 className="text-lg truncate">{workshop.name}</h3>
-                <button
-                  onClick={() => handleNavigation(workshop.id)}
-                  className="mt-2 px-4 py-2 bg-[#52A794] text-white rounded-md hover:bg-blue-600"
-                >
-                  View Details
-                </button>
-              </div>
+
+                <div className="p-4">
+                  <h3 className="text-lg truncate">{workshop.name}</h3>
+                </div>
+              </button>
             </div>
           ))}
         </div>
