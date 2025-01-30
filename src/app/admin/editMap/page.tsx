@@ -155,6 +155,7 @@ export default function AdminPage() {
   const handleManageCategory = () =>{
     if(isPopUpOpen){
       setIsPopUpOpen(false);
+      setIsAddingCat(false)
     }else{
       setIsPopUpOpen(true);
     }
