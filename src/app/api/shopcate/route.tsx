@@ -4,9 +4,7 @@ import { NextResponse } from "next/server";
 // GET - Fetch all map
 export async function GET() {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/shopcategory`
-    );
+    const response = await fetch(`${process.env.GO_API_URL}/shopcategory`);
 
     if (!response.ok) {
       throw new Error("Failed to fetch shop in api route");

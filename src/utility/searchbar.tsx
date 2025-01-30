@@ -3,7 +3,7 @@ export interface SearchBarInt {
   shop_id: number;
 }
 
-const NEXT_API = "http://127.0.0.1:3000";
+// const NEXT_API = "http://127.0.0.1:3000";
 export async function fetchShopByWord(
   keyword: string
 ): Promise<SearchBarInt[]> {

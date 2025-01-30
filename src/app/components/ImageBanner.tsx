@@ -10,7 +10,7 @@ interface ImageBannerProps {
   basePath?: string;
 }
 
-const NEXT_API = "http://127.0.0.1:3000";
+// const NEXT_API = process.env.NEXT_URL;
 
 const ImageBanner: React.FC<ImageBannerProps> = ({ photos, basePath = "" }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -69,7 +69,7 @@ const ImageBanner: React.FC<ImageBannerProps> = ({ photos, basePath = "" }) => {
       >
         {photos.length > 0 ? (
           <img
-            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/upload/${photos[currentIndex]?.pathfile}`}
+            src={`${process.env.GO_API_URL}/upload/${photos[currentIndex]?.pathfile}`}
             alt={`Slide ${currentIndex + 1}`}
             className="w-full h-full object-cover transition-all duration-500 rounded-[10px]"
           />

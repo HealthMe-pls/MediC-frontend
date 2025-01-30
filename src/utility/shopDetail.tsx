@@ -43,12 +43,12 @@ export interface ShopDetail {
   status: boolean;
 }
 
-const NEXT_API = "http://127.0.0.1:3000";
+// const NEXT_API = "http://127.0.0.1:3000";
 
 // ฟังก์ชันดึงข้อมูลร้านค้าทั้งหมด
 export async function fetchShopDetail(): Promise<ShopDetail[]> {
   try {
-    const response = await fetch(`${NEXT_API}/api/shop`);
+    const response = await fetch(`/api/shop`);
     if (!response.ok) {
       throw new Error("Failed to fetch shop");
     }
@@ -74,7 +74,7 @@ export async function fetchShopDetail(): Promise<ShopDetail[]> {
 // }
 export async function fetchShopById(shopId: number): Promise<ShopDetail> {
   try {
-    const response = await fetch(`${NEXT_API}/api/shop/${shopId}`);
+    const response = await fetch(`/api/shop/${shopId}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch shop with ID: ${shopId}`);
     }

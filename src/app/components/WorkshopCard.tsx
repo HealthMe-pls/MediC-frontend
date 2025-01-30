@@ -35,7 +35,7 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
       <div className="mt-4">
         {workshop.photos?.length ? (
           <img
-            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/upload/${workshop.photos[0]?.pathfile}`}
+            src={`${process.env.GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`}
             alt={`Workshop Image`}
             className="w-max[350px] h-max-[350px] object-cover transition-all duration-500 rounded-[10px]"
           />

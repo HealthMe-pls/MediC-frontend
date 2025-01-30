@@ -16,10 +16,11 @@ export interface Workshop {
   start_time: string;
 }
 
-const NEXT_API = "http://127.0.0.1:3000";
+// const NEXT_API = "http://127.0.0.1:3000";
 export async function fetchWorkshops(): Promise<Workshop[]> {
+  console.log("fetchWorkshops: " + process.env.NEXT_URL);
   try {
-    const response = await fetch(`${NEXT_API}/api/workshops`); // Fetch from your route
+    const response = await fetch(`/api/workshops`); // Fetch from your route
 
     if (!response.ok) {
       throw new Error("Failed to fetch workshops from the route");
@@ -35,7 +36,7 @@ export const fetchWorkshopsById = async (
   id: number
 ): Promise<Workshop | null> => {
   try {
-    const response = await fetch(`http://127.0.0.1:3000/api/workshops/${id}`);
+    const response = await fetch(`/api/workshops/${id}`);
     if (!response.ok) {
       console.error(`Failed to fetch workshop: ${response.status}`);
       return null; // Return null for non-200 status codes
@@ -48,4 +49,3 @@ export const fetchWorkshopsById = async (
     return null; // Return null on network errors or exceptions
   }
 };
-

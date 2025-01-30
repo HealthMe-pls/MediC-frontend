@@ -42,8 +42,8 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 
 
 # Define build arguments
-ARG NEXT_PUBLIC_API_BASE_URL
-ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+ARG GO_API_URL
+ENV GO_API_URL=$GO_API_URL
 
 # Copy the rest of the source files into the image.
 COPY . .

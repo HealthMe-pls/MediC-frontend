@@ -11,7 +11,7 @@ const CardMenuSL: React.FC<CardMenuProps> = ({ menu }) => {
         {/* รูปภาพของสินค้า */}
         {menu.photos?.length ? (
           <img
-            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/upload/${menu.photos[0]?.pathfile}`}
+            src={`${process.env.GO_API_URL}/upload/${menu.photos[0]?.pathfile}`}
             alt={menu.product_name}
             className="w-[100] h-[100] object-cover rounded-[10]"
           />

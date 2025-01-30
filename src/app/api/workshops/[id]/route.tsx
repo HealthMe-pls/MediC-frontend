@@ -8,7 +8,7 @@ export async function GET(
   try {
     const { id: workshopId } = params;
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/workshops/${workshopId}`
+      `${process.env.GO_API_URL}/workshops/${workshopId}`
     );
 
     if (!response.ok) {

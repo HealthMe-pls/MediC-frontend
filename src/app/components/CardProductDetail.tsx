@@ -4,7 +4,7 @@ interface CardMenuProps {
   menu: Menu; // ใช้ Interface Menu เพื่อกำหนดรูปแบบของ menu prop
 }
 
-const NEXT_API = "http://127.0.0.1:3000";
+// const NEXT_API = process.env.NEXT_URL ;
 
 const CardProductDetail: React.FC<CardMenuProps> = ({ menu }) => {
   return (
@@ -17,7 +17,7 @@ const CardProductDetail: React.FC<CardMenuProps> = ({ menu }) => {
         <div className="w-[100px] h-[100px] flex-shrink-0">
           {menu.photos?.length ? (
             (() => {
-              const imageUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/upload/${menu.photos[0]?.pathfile}`;
+              const imageUrl = `${process.env.GO_API_URL}/upload/${menu.photos[0]?.pathfile}`;
               console.log(imageUrl); // Console log URL ของรูปภาพ
               return (
                 <img

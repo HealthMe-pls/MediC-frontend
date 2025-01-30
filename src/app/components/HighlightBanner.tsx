@@ -128,7 +128,7 @@ const HighlightBanner = () => {
                   <div className="w-full aspect-[10/10] flex items-center justify-center">
                     {workshop.photos?.length ? (
                       <img
-                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/upload/${workshop.photos[0]?.pathfile}`}
+                        src={`${process.env.GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`}
                         alt={workshop.name}
                         className="w-full h-full object-cover rounded-md"
                         onLoad={(e) => {

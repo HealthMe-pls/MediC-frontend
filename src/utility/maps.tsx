@@ -7,11 +7,11 @@ export interface MapDetail {
   shop_name: string;
 }
 
-const NEXT_API = "http://127.0.0.1:3000";
+// const NEXT_API = "http://127.0.0.1:3000";
 
 export async function fetchMapDetail(): Promise<MapDetail[]> {
   try {
-    const response = await fetch(`${NEXT_API}/api/map`);
+    const response = await fetch(`/api/map`);
     // console.log("fetchMapdetal: " + response.json());
     if (!response.ok) {
       throw new Error("Failed to fetch admins");
