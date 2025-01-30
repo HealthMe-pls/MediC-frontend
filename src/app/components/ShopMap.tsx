@@ -1,11 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import '../../styles/global.css';
 import { fetchShopCategory, ShopCategory } from '@/utility/shopcate';
 import { fetchMapDetail, MapDetail } from '@/utility/maps';
 
-export default function Map({ selectedCate, setSelectedBlock, matchShopID }: { selectedCate: number; setSelectedBlock: (block: string) => void; matchShopID: number }) {
+interface MapProps {
+  selectedCate: number;
+  setSelectedBlock: (block: string) => void;
+  matchShopID: number;
+  setMatchShopID: (id: number) => void;
+}
+
+export default function Map({ selectedCate, setSelectedBlock, matchShopID, setMatchShopID }: MapProps) {
   const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
 
+  
   useEffect(() => {
     fetchMapDetail()
       .then((data) => setMapDetails(data))
@@ -98,7 +106,7 @@ export default function Map({ selectedCate, setSelectedBlock, matchShopID }: { s
           style = { ...style, backgroundColor: '#CAE5F3' };
         }
       } else {
-        style = { ...style, opacity: 0, pointerEvents: 'none' };
+        style = { ...style, opacity: 0.3};
       }
     }
   
@@ -126,6 +134,7 @@ export default function Map({ selectedCate, setSelectedBlock, matchShopID }: { s
       onClick={() => {
         console.log(`Clicked on ${point.name}`);
         setSelectedBlock(point.name);
+        setMatchShopID(0);
       }}
     >
       <span className="ellipse-text">{point.name}</span>

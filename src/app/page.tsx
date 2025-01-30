@@ -35,7 +35,7 @@ export default function Home() {
 
 
   useEffect(() => {
-    if (matchShopID !== 0) {
+    if (matchShopID !== 0 && window.innerWidth <= 640) {
       setTimeout(() => {
         shopListRef.current?.scrollIntoView({
           behavior: "smooth",
@@ -57,6 +57,13 @@ export default function Home() {
       .then((data) => setMarketMaps(data))
       .catch((error) => console.error("Error fetching market maps:", error));
   }, [selectedCate]);
+
+  useEffect(() => {
+    if (selectedCate !== 0 && matchShopID === 0) {
+      setMatchShopID(0);
+    }
+  }, [selectedCate]);
+  
 
   useEffect(() => {
     fetchShopCategory()
@@ -157,6 +164,7 @@ export default function Home() {
         selectedCate={selectedCate}
         setSelectedBlock={setSelectedBlock}
         matchShopID={matchShopID}
+        setMatchShopID={setMatchShopID}
       />
 
   </div>
