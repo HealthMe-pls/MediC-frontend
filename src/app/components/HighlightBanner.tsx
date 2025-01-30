@@ -146,8 +146,8 @@ const HighlightBanner = () => {
                         }}
                       />
                     ) : (
-                      <div className="bg-gray-300 flex items-center justify-center rounded-md min-h-[180px] min-w-[180px]">
-                        No Image Available
+                      <div className="bg-[#F0F0F0] border border-[#CECECE] flex items-center justify-center rounded-md min-h-[180px] min-w-[180px]">
+                        No Image
                       </div>
                     )}
                   </div>

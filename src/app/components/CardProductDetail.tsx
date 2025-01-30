@@ -10,19 +10,32 @@ const CardProductDetail: React.FC<CardMenuProps> = ({ menu }) => {
   return (
     <div
       key={menu.id}
-      className="text-[14px] font-light bg-[#FFF7EB] rounded-[10px] max-w-[500px] max-h-[350px]"
+      className="text-[14px] font-light sm:bg-[#FFF7EB] md:bg-white rounded-[10px] max-w-[500px] max-h-[350px]"
     >
       <div className="flex gap-4 border border-[#CECECE] bg-white  rounded-[10px] p-2 max-w-[350px] max-h-[200px] items-start aspect-[35/20]">
         {/* Product Image */}
-        <div className="max-w-[150px] max-h-[100px] aspect-[15/10]">
+        <div className="w-[100px] h-[100px] ">
           {menu.photos?.length ? (
             <img
               src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/upload/${menu.photos[0]?.pathfile}`}
               alt={menu.product_name}
-              className="w-full h-full object-cover rounded-[10px] border border-[#CECECE]"
+              className="w-[100px] h-[100px] object-cover rounded-[10px] border border-[#CECECE]"
+              onLoad={(e) => {
+                const parent = e.currentTarget.parentElement;
+                if (parent) {
+                  parent.style.setProperty(
+                    "min-height",
+                    `${e.currentTarget.clientHeight}px`
+                  );
+                  parent.style.setProperty(
+                    "min-width",
+                    `${e.currentTarget.clientWidth}px`
+                  );
+                }
+              }}
             />
           ) : (
-            <div className="w-full h-full bg-[#F0F0F0] flex items-center justify-center rounded-[10px] border border-[#CECECE]">
+            <div className="w-[100px] h-[100px] bg-[#F0F0F0] flex items-center justify-center rounded-[10px] border border-[#CECECE]">
               <span>No Image</span>
             </div>
           )}
