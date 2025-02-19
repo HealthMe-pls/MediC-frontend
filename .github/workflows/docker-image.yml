@@ -28,7 +28,7 @@ jobs:
       # Step 4: Generate .env file
       - name: Generate .env file
         run: |
-          echo "GO_API_URL=${{ secrets.GO_API_URL }}" > .env
+          echo "NEXT_PUBLIC_GO_API_URL=${{ secrets.NEXT_PUBLIC_GO_API_URL }}" > .env
 
       # Step 5: Build and push multi-platform Docker image
       - name: Build and push Docker image
@@ -38,7 +38,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: apichayauwu/medic-app:latest
-          build-args: GO_API_URL=${{ secrets.GO_API_URL }}
+          build-args: NEXT_PUBLIC_GO_API_URL=${{ secrets.NEXT_PUBLIC_GO_API_URL }}
 
       # # Step 5: SSH into server and redeploy (Optional)
       # # - name: SSH into server and redeploy

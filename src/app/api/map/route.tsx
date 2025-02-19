@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const response = await fetch(
-      `${process.env.GO_API_URL}/mapdetail`
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/mapdetail`
     );
 
     if (!response.ok) {
@@ -15,6 +15,7 @@ export async function GET() {
     const maps = await response.json();
     const headers = new Headers();
     setCorsHeaders(headers);
+    // console.log("maps: ", maps);
     return NextResponse.json(maps, { status: 200, headers });
   } catch (error) {
     console.error(error);
@@ -24,4 +25,3 @@ export async function GET() {
     );
   }
 }
-

@@ -37,11 +37,11 @@ const Filter: React.FC<FilterProps> = ({
     closeModal(); // Close the modal after submission
   };
 
-  const [selectedValue, setSelectedValue] = useState<string>("");
+  // const [selectedValue, setSelectedValue] = useState<string>("");
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedValue(event.target.value);
-  };
+  // const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //   setSelectedValue(event.target.value);
+  // };
 
   return (
     <div className="mb-6 mt-2">

@@ -1,4 +1,5 @@
 import { Menu } from "@/utility/shopDetail";
+import Image from "next/image";
 
 interface CardMenuProps {
   menu: Menu; // ใช้ Interface Menu เพื่อกำหนดรูปแบบของ menu prop
@@ -10,12 +11,15 @@ const CardMenuSL: React.FC<CardMenuProps> = ({ menu }) => {
       <div className="flex-col items-start gap-4 m-2">
         {/* รูปภาพของสินค้า */}
         {menu.photos?.length ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={`${process.env.GO_API_URL}/upload/${menu.photos[0]?.pathfile}`}
-            alt={menu.product_name}
-            className="w-[100] h-[100] object-cover rounded-[10]"
-          />
+          <div className="w-[100] h-[100] flex-shrink-0">
+            <Image
+              src={`${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0]?.pathfile}`}
+              alt={menu.product_name}
+              width={100}
+              height={100}
+              className="object-cover w-full h-full max-w-[100px] max-h-[100px] rounded-[10]"
+            />
+          </div>
         ) : (
           <div className="w-[100] h-[100] object-cover rounded-[10] bg-[#F0F0F0] flex items-center justify-center">
             <span>No Image</span>

@@ -8,7 +8,7 @@ export async function GET(
   try {
     const shopId = (await context.params).id;
     const response = await fetch(
-      `${process.env.GO_API_URL}/shopdetail/${shopId}`
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/shopdetail/${shopId}`
     );
 
     if (!response.ok) {
@@ -41,7 +41,7 @@ export async function DELETE(
     setCorsHeaders(headers);
 
     const response = await fetch(
-      `${process.env.GO_API_URL}/shop/${shopId}`,
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/shop/${shopId}`,
       {
         method: "DELETE",
         headers,

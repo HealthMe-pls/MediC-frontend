@@ -40,10 +40,11 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=cache,target=/root/.npm \
     npm ci
 
-
-# Define build arguments
-ARG GO_API_URL
-ENV GO_API_URL=$GO_API_URL
+# Define build arguments with default values that can be overridden
+ARG NEXT_PUBLIC_GO_API_URL=http://backend:8080
+ENV NEXT_PUBLIC_GO_API_URL=$NEXT_PUBLIC_GO_API_URL
+ARG NEXT_PUBLIC_NEXT_URL=http://frontend
+ENV NEXT_PUBLIC_NEXT_URL=$NEXT_PUBLIC_NEXT_URL
 
 # Copy the rest of the source files into the image.
 COPY . .
@@ -56,10 +57,14 @@ RUN npm run build
 FROM base as final
 
 # Use production node environment by default.
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 
 # Run the application as a non-root user.
+# USER node
+
+USER root
+RUN mkdir -p /usr/src/app/.next && chmod -R 755 /usr/src/app/.next
 USER node
 
 # Copy package.json so that package manager commands can be used.
@@ -71,10 +76,17 @@ COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/.next ./.next
 COPY --from=build /usr/src/app ./usr/src/app
 COPY --from=build /usr/src/app/public ./public
+COPY --from=build /usr/src/app/next.config.ts ./next.config.ts
+
+# Define build arguments with default values that can be overridden
+ARG NEXT_PUBLIC_GO_API_URL=http://backend:8080
+ENV NEXT_PUBLIC_GO_API_URL=$NEXT_PUBLIC_GO_API_URL
+ARG NEXT_PUBLIC_NEXT_URL=http://frontend
+ENV NEXT_PUBLIC_NEXT_URL=$NEXT_PUBLIC_NEXT_URL
 
 
 # Expose the port that the application listens on.
-EXPOSE 3000
+EXPOSE 80
 
 # Run the application.
 CMD npm start

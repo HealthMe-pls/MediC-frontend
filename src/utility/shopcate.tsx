@@ -1,4 +1,7 @@
+// import { NextResponse } from "next/server";
+// import { setCorsHeaders } from "./corsUtils";
 import { ShopDetail } from "./shopDetail";
+import axios from "axios";
 
 export interface ShopCategory {
   id: number;
@@ -6,16 +9,29 @@ export interface ShopCategory {
   shops: ShopDetail[];
 }
 
-// const NEXT_API = "http://127.0.0.1:3000";
-
 export async function fetchShopCategory(): Promise<ShopCategory[]> {
   try {
-    const response = await fetch(`/api/shopcate`);
-    // console.log("fetchMapdetal: " + response.json());
-    if (!response.ok) {
+    // Set CORS headers
+    // const headers = new Headers();
+    // setCorsHeaders(headers);
+
+    const url = `/api/shopcate`;
+    console.log("Fetching Shop Category from URL:", url);
+
+    const response = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+
+    console.log("fetchShopCategory at shopcat: ", response);
+
+    if (response.status !== 200) {
       throw new Error("Failed to fetch Shop Category");
     }
-    return await response.json();
+    console.log("fetchShopCategory at shopcat: ", response.data);
+    return response.data as ShopCategory[];
   } catch (error) {
     console.error("Error fetching Shop Category", error);
     throw error;

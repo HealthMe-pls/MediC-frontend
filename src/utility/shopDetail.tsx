@@ -1,3 +1,6 @@
+// import { headers } from "next/headers";
+import axios from "axios";
+
 // Interface สำหรับข้อมูล Social Media
 export interface Photo {
   pathfile: string;
@@ -48,11 +51,15 @@ export interface ShopDetail {
 // ฟังก์ชันดึงข้อมูลร้านค้าทั้งหมด
 export async function fetchShopDetail(): Promise<ShopDetail[]> {
   try {
-    const response = await fetch(`/api/shop`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch shop");
-    }
-    return await response.json();
+    const url = `/api/shop`;
+    console.log("Fetching Shop detail from URL:", url);
+
+    const response = await axios.get<ShopDetail[]>(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data as ShopDetail[];
   } catch (error) {
     console.error("Error fetching shop:", error);
     throw error;
@@ -74,11 +81,18 @@ export async function fetchShopDetail(): Promise<ShopDetail[]> {
 // }
 export async function fetchShopById(shopId: number): Promise<ShopDetail> {
   try {
-    const response = await fetch(`/api/shop/${shopId}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch shop with ID: ${shopId}`);
+    const response = await axios.get<ShopDetail>(`/api/shop/${shopId}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("fetchShopByID: ", response);
+
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch Shop Category");
     }
-    return await response.json();
+    console.log("fetchShopById data: ", response.data);
+    return response.data as ShopDetail;
   } catch (error) {
     console.error(`Error fetching shop with ID ${shopId}:`, error);
     throw error;

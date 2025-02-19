@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from "next/image";
 
 export interface Photo {
   pathfile: string;
@@ -70,11 +71,12 @@ const ImageBanner: React.FC<ImageBannerProps> = ({ photos, basePath = "" }) => {
         onTouchEnd={handleTouchEnd}
       >
         {photos.length > 0 ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={`${process.env.GO_API_URL}/upload/${photos[currentIndex]?.pathfile}`}
+          <Image
+            src={`${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${photos[currentIndex]?.pathfile}`}
             alt={`Slide ${currentIndex + 1}`}
-            className="w-full h-full object-cover transition-all duration-500 rounded-[10px]"
+            width={350}
+            height={216}
+            className="w-full h-full max-w-[350px] max-h-[216px] object-cover transition-all duration-500 rounded-[10px]"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-200">

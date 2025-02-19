@@ -8,7 +8,7 @@ export async function GET(
   try {
     const workshopId = (await context.params).id;
     const response = await fetch(
-      `${process.env.GO_API_URL}/workshops/${workshopId}`
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/workshops/${workshopId}`
     );
 
     if (!response.ok) {

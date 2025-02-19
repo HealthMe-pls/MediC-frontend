@@ -13,6 +13,7 @@ export default function SearchBar({
   const [keyword, setKeyword] = useState<string>("");
   const [results, setResults] = useState<SearchBarInt[]>([]);
   const [isSearching, setIsSearching] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedShopId, setSelectedShopId] = useState<number | null>(null);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1); // ติดตาม index ที่เลือก
   const [hoveredIndex, setHoveredIndex] = useState<number>(-1); // ติดตาม index ที่ hover
@@ -96,7 +97,9 @@ export default function SearchBar({
                       : ""
                   }
                 `}
-                onClick={() => handleSelectShop(shop?.shop_id!)}
+                onClick={() =>
+                  shop?.shop_id !== undefined && handleSelectShop(shop.shop_id)
+                }
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(-1)}
               >
@@ -134,7 +137,7 @@ export default function SearchBar({
                       : ""
                   }
                 `}
-                onClick={() => handleSelectShop(shop?.shop_id!)}
+                onClick={() => shop?.shop_id !== undefined && handleSelectShop(shop.shop_id)}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(-1)}
               >

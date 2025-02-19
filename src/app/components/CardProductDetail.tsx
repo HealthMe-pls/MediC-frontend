@@ -1,11 +1,9 @@
 import { Menu } from "@/utility/shopDetail";
+import Image from "next/image";
 
 interface CardMenuProps {
   menu: Menu; // ใช้ Interface Menu เพื่อกำหนดรูปแบบของ menu prop
 }
-
-// const NEXT_API = process.env.NEXT_URL ;
-// const NEXT_API = "http://127.0.0.1:3000";
 
 const CardProductDetail: React.FC<CardMenuProps> = ({ menu }) => {
   return (
@@ -18,15 +16,17 @@ const CardProductDetail: React.FC<CardMenuProps> = ({ menu }) => {
         <div className="w-[100px] h-[100px] flex-shrink-0">
           {menu.photos?.length ? (
             (() => {
-              const imageUrl = `${process.env.GO_API_URL}/upload/${menu.photos[0]?.pathfile}`;
+              const imageUrl = `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0]?.pathfile}`;
               console.log(imageUrl); // Console log URL ของรูปภาพ
               return (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={imageUrl}
-                  alt={menu.product_name}
-                  className="w-full h-full object-cover rounded-[10px]"
-                />
+                <div className="overflow-hidden max-w-[100px] max-h-[100px] rounded-[10]">
+                  <Image
+                    src={`${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0]?.pathfile}`}
+                    alt={menu.product_name}
+                    width={100}
+                    height={100}
+                  />
+                </div>
               );
             })()
           ) : (

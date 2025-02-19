@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
-import { fetchShopDetail, ShopDetail } from "@/utility/shopDetail";
+import { ShopDetail, fetchShopById } from "@/utility/shopDetail";
 import { format } from "date-fns";
 import Link from "next/link";
-import { th } from "date-fns/locale";
+// import { se, th } from "date-fns/locale";
 import CardMenuSL from "./CardMenuSL";
+// import { set } from "date-fns";
 
 interface block {
   blockName: string;
@@ -20,27 +21,25 @@ const formatTime = (isoString: string): string => {
 };
 const Shopside: React.FC<block> = ({ blockName }) => {
   const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
-  const [shopDetails, setShopDetails] = useState<ShopDetail[]>([]);
+  const [selectedShopDetail, setSelectedShopDetail] = useState<ShopDetail>();
 
   useEffect(() => {
     fetchMapDetail()
       .then((data) => setMapDetails(data))
       .catch((error) => console.error("Error fetching map details:", error));
-  }, []);
-
-  useEffect(() => {
-    fetchShopDetail()
-      .then((data) => setShopDetails(data))
-      .catch((error) => console.error("Error fetching shop details:", error));
+    console.log("mapDetails: ", mapDetails);
   }, []);
 
   const selectedBlock = mapDetails.find(
     (block) => blockName === block.block_name
   );
-
-  const selectedShopDetail = shopDetails.find(
-    (shop) => selectedBlock?.shop_id === shop.shop_id
-  );
+  useEffect(() => {
+    if (selectedBlock) {
+      fetchShopById(selectedBlock.shop_id)
+        .then((data) => setSelectedShopDetail(data))
+        .catch((error) => console.error("Error fetching shop by id:", error));
+    }
+  }, [selectedBlock]);
 
   return (
     <div className="p-4 font-lexend text-[#4C4343] h-[100%]">

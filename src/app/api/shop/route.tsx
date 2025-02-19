@@ -1,9 +1,17 @@
+import { setCorsHeaders } from "@/utility/corsUtils";
 import { NextResponse } from "next/server";
 
 // GET - Fetch all shop
 export async function GET() {
   try {
-    const response = await fetch(`${process.env.GO_API_URL}/shop`);
+    const headers = new Headers();
+    setCorsHeaders(headers);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_GO_API_URL}/shop`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!response.ok) {
       throw new Error("Failed to fetch shop");

@@ -3,11 +3,11 @@ import Header from "../../layouts/Header";
 import Link from "next/link";
 
 const ShopHoursSummaryPage = () => {
-  const shopSet = [
-    { shop_name: "Shop 1" },
-    { shop_name: "Shop 2" },
-    { shop_name: "Shop 3" },
-  ];
+  // const shopSet = [
+  //   { shop_name: "Shop 1" },
+  //   { shop_name: "Shop 2" },
+  //   { shop_name: "Shop 3" },
+  // ];
 
   return (
     <div className="h-screen flex flex-col font-sans">

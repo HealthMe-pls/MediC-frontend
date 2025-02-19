@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
 import { fetchShopDetail, ShopDetail } from "@/utility/shopDetail";
 import { format } from "date-fns";
-import Link from "next/link";
+// import Link from "next/link";
 // import { th } from "date-fns/locale";
 import CardMenuSL from "./CardMenuSL";
 import { useRouter } from "next/navigation";
@@ -25,7 +25,9 @@ const formatTime = (isoString: string): string => {
 };
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Shoplist: React.FC<CateID> = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   label,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onCateChange,
   Cateid = 0,
   setMatchShopID,
@@ -49,6 +51,7 @@ const Shoplist: React.FC<CateID> = ({
     fetchShopDetail()
       .then((data) => setShopDetails(data))
       .catch((error) => console.error("Error fetching shop details:", error));
+    console.log("fetching shopDetails at shoplist: ", shopDetails);
   }, []);
 
   const filteredBlock =
@@ -85,26 +88,26 @@ const Shoplist: React.FC<CateID> = ({
         setSelectedZone(selectedBlock.block_zone);
       }
     }
-  }, [matchShop]);
+  }, [matchShop, mapDetails]);
 
-    const router = useRouter();
+  const router = useRouter();
 
-    const handleNavigation = () => {
-      sessionStorage.setItem("previousPage", window.location.pathname);
-      router.push(`/shop/${selectedBlock?.shop_id}`);
-    };
-  
-    const handleBack = () => {
-      const previousPage = sessionStorage.getItem("previousPage");
-      if (previousPage) {
-        router.push(previousPage);
-      } else {
-        router.back();
-      }
-    };
-  
+  const handleNavigation = () => {
+    sessionStorage.setItem("previousPage", window.location.pathname);
+    router.push(`/shop/${selectedBlock?.shop_id}`);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleBack = () => {
+    const previousPage = sessionStorage.getItem("previousPage");
+    if (previousPage) {
+      router.push(previousPage);
+    } else {
+      router.back();
+    }
+  };
+
   return (
-    
     <div className="p-4 font-lexend text-[#4C4343]">
       {/* Dropdown Block */}
       <div className="p-4 font-lexend text-[#4C4343]">

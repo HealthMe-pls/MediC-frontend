@@ -1,19 +1,24 @@
-import { setCorsHeaders } from "@/utility/corsUtils";
+// import { setCorsHeaders } from "@/utility/corsUtils";
 import { NextResponse } from "next/server";
+import axios from "axios";
+// import { ShopCategory } from "../../../utility/shopcate";
 
 // GET - Fetch all map
 export async function GET() {
   try {
-    const response = await fetch(`${process.env.GO_API_URL}/shopcategory`);
+    const url = `${process.env.NEXT_PUBLIC_GO_API_URL}/shopcategory`;
+    console.log("Fetching Shop Category from URL:", url);
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch shop in api route");
+    const response = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch Shop Category");
     }
-
-    const shopcategory = await response.json();
-    const headers = new Headers();
-    setCorsHeaders(headers);
-    return NextResponse.json(shopcategory, { status: 200, headers });
+    return NextResponse.json(response.data);
   } catch (error) {
     console.error(error);
     return NextResponse.json(

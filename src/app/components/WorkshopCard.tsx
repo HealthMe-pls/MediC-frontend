@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import Image from "next/image";
+// import Link from "next/link";
 import { useRouter } from "next/navigation";
 // Define Workshop interface for type safety
 interface Workshop {
@@ -25,6 +26,19 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
     sessionStorage.setItem("previousPage", window.location.pathname); // Save previous page
     router.push(`/workshops/${workshop.id}`);
   };
+  const myLoader = ({
+    src,
+    width,
+    quality,
+  }: {
+    src: string;
+    width: number;
+    quality?: number;
+  }) => {
+    return `${process.env.NEXT_PUBLIC_GO_API_URL}/${src}?w=${width}&q=${
+      quality || 75
+    }`;
+  };
 
   return (
     <div
@@ -34,10 +48,14 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
       {/* Image Section */}
       <div className="mt-4">
         {workshop.photos?.length ? (
-          <img
-            src={`${process.env.GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`}
+          // eslint-disable-next-line @next/next/no-img-element
+          <Image
+            loader={myLoader}
+            src={workshop.photos[0]?.pathfile}
             alt={`Workshop Image`}
-            className="w-max[350px] h-max-[350px] object-cover transition-all duration-500 rounded-[10px]"
+            width={350}
+            height={350}
+            className="max-w-[350px] max-h-[350px] object-cover transition-all duration-500 rounded-[10px]"
           />
         ) : (
           <div className="w-full h-[200px] bg-gray-300 flex items-center justify-center text-gray-600 rounded-[10px]">

@@ -1,3 +1,4 @@
+import axios from "axios";
 export interface MapDetail {
   block_id: number;
   block_name: string;
@@ -15,12 +16,28 @@ export interface MapChanged {
 
 export async function fetchMapDetail(): Promise<MapDetail[]> {
   try {
-    const response = await fetch(`/api/map`);
-    // console.log("fetch admin response" + response.json());
-    if (!response.ok) {
-      throw new Error("Failed to fetch map");
+    const url = `/api/map`;
+    console.log("Fetching mapdetail from URL:", url);
+
+    const response = await axios.get<MapDetail[]>(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("mapdetail response: ", response);
+
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch Shop Category");
     }
-    return await response.json();
+    console.log("mapdetail response data: ", response.data);
+    return response.data as MapDetail[];
+
+    // const response = await fetch(`${process.env.NEXT_PUBLIC_NEXT_URL}/api/map`);
+    // if (!response.ok) {
+    //   throw new Error("Failed to fetch map");
+    // }
+    // return await response.json();
   } catch (error) {
     console.error("Error fetching map:", error);
     throw error;

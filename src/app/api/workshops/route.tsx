@@ -6,12 +6,12 @@ export async function GET() {
   console.log("Fetching workshops from backend...");
   console.log(
     "Backend URL:",
-    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/workshops`
+    `${process.env.NEXT_PUBLIC_GO_API_URL}/workshops`
   );
 
   try {
     const response = await fetch(
-      `${process.env.GO_API_URL}/workshops`
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/workshops`
     );
 
     if (!response.ok) {
@@ -30,4 +30,3 @@ export async function GET() {
     );
   }
 }
-

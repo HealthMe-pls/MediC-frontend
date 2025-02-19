@@ -31,7 +31,7 @@ const WorkshopDetail = () => {
         try {
           const data = await fetchWorkshopsById(Number(id));
           setWorkshopDetail(data);
-        } catch (error) {
+        } catch {
           setError("Failed to fetch workshop details");
         } finally {
           setLoading(false);

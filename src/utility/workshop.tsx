@@ -1,3 +1,4 @@
+import axios from "axios";
 export interface Photo {
   photo_id: number;
   pathfile: string;
@@ -16,17 +17,18 @@ export interface Workshop {
   start_time: string;
 }
 
-// const NEXT_API = "http://127.0.0.1:3000";
 export async function fetchWorkshops(): Promise<Workshop[]> {
-  console.log("fetchWorkshops: " + process.env.NEXT_URL);
   try {
-    const response = await fetch(`/api/workshops`); // Fetch from your route
+    const url = `/api/workshops`;
+    console.log("Fetching workshops from URL:", url);
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch workshops from the route");
-    }
-
-    return await response.json();
+    const response = await axios.get<Workshop[]>(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("fetchWorkshops at workshop: ", response);
+    return response.data as Workshop[];
   } catch (error) {
     console.error("Error fetching workshops:", error);
     throw error;
@@ -36,14 +38,26 @@ export const fetchWorkshopsById = async (
   id: number
 ): Promise<Workshop | null> => {
   try {
-    const response = await fetch(`/api/workshops/${id}`);
-    if (!response.ok) {
-      console.error(`Failed to fetch workshop: ${response.status}`);
-      return null; // Return null for non-200 status codes
-    }
+    const url = `/api/workshops/${id}`;
+    console.log("Fetching workshops from URL:", url);
 
-    const data = await response.json();
-    return data || null; // Return null if the response is empty
+    const response = await axios.get<Workshop>(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("fetchWorkshops at workshop: ", response);
+    return response.data as Workshop;
+    // const response = await fetch(
+    //   `${process.env.NEXT_PUBLIC_NEXT_URL}/api/workshops/${id}`
+    // );
+    // if (!response.ok) {
+    //   console.error(`Failed to fetch workshop: ${response.status}`);
+    //   return null; // Return null for non-200 status codes
+    // }
+
+    // const data = await response.json();
+    // return data || null; // Return null if the response is empty
   } catch (error) {
     console.error("Error fetching workshop:", error);
     return null; // Return null on network errors or exceptions

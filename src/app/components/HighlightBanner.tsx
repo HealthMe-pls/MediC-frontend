@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { fetchWorkshops, Workshop } from "../../utility/workshop";
-import Link from "next/link";
+// import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const HighlightBanner = () => {
@@ -127,11 +128,14 @@ const HighlightBanner = () => {
                 <div className="relative w-full max-w-[180px] mx-auto mt-[15px] flex items-center justify-center">
                   <div className="w-full aspect-[10/10] flex items-center justify-center">
                     {workshop.photos?.length ? (
-                      <img
-                        src={`${process.env.GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`}
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <Image
+                        src={`${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`}
                         alt={workshop.name}
-                        className="w-full h-full object-cover rounded-md"
-                        onLoad={(e) => {
+                        width={180}
+                        height={180}
+                        className="object-cover rounded-md w-full h-full max-w-[180px] max-h-[180px]"
+                        onLoad={(e: React.SyntheticEvent<HTMLImageElement>) => {
                           const parent = e.currentTarget.parentElement;
                           if (parent) {
                             parent.style.setProperty(
