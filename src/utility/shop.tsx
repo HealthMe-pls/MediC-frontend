@@ -1,18 +1,18 @@
-export interface ShopDetail{
-    id: number;
-    name: string;
-    shop_catagory_id: number;
-    status: number;
-    full_description: string;
-    brief_description: string;
-    entrepreneur_id: number;
-  }
-
-export interface ShopIdName{
-  shop_id: number;
-  shop_name:string;
+export interface ShopDetail {
+  id: number;
+  name: string;
+  shop_catagory_id: number;
+  open_status: boolean;
+  full_description: string;
+  brief_description: string;
+  entrepreneur_id: number;
 }
-  
+
+export interface ShopIdName {
+  shop_id: number;
+  shop_name: string;
+}
+
 export async function fetchShopDetail(): Promise<ShopDetail[]> {
   try {
     const response = await fetch(`http://127.0.0.1:8080/shop`);

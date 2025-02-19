@@ -43,7 +43,7 @@ export interface ShopDetail {
   shop_id: number;
   shop_open_dates: ShopOpenDates; // ใช้ interface ของเวลาเปิด-ปิด
   social_media: SocialMedia; // ใช้ interface ของ Social Media
-  status: boolean;
+  open_status: boolean;
 }
 
 // const NEXT_API = "http://127.0.0.1:3000";

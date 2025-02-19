@@ -74,7 +74,7 @@ const Shopside: React.FC<block> = ({ blockName }) => {
                 </div>
               </div>
               <p className="font-light text-[14px] ">
-                {selectedShopDetail?.status ? (
+                {selectedShopDetail?.open_status ? (
                   <svg
                     width="73"
                     height="23"

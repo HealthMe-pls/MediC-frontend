@@ -227,7 +227,7 @@ const Shoplist: React.FC<CateID> = ({
                 {matchShopDetail?.name ? matchShopDetail.name : "No shop"}
               </h3>
               <p className="text-green-500 font-light text-[14px]">
-                {matchShopDetail?.status ? (
+                {matchShopDetail?.open_status ? (
                   <svg
                     width="73"
                     height="23"
