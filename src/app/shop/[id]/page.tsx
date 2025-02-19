@@ -30,7 +30,7 @@ const ShopPage = () => {
         try {
           const data = await fetchShopById(Number(id));
           setShopDetail(data);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           setError("Failed to fetch shop details");
         } finally {
@@ -71,7 +71,7 @@ const ShopPage = () => {
                   <p className="font-light">{shopDetail.category}</p>
                 </div>
                 <p className="text-green-500 font-light text-[14px]">
-                  {shopDetail?.status ? (
+                  {shopDetail?.open_status ? (
                     <svg
                       width="73"
                       height="23"
