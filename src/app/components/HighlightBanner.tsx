@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { fetchWorkshops, Workshop } from "../../utility/workshop";
-// import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const HighlightBanner = () => {
@@ -11,10 +10,34 @@ const HighlightBanner = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [workshopsPerView, setWorkshopsPerView] = useState<number>(5);
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const autoSlideInterval = 3000;
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
+  const autoSlideInterval = 3000;
+
+  // Dynamically adjust number of visible workshops based on screen size
+  useEffect(() => {
+    const updateSlidesPerView = () => {
+      if (window.innerWidth >= 1600) {
+        setWorkshopsPerView(6);
+      } else if (window.innerWidth >= 1210) {
+        setWorkshopsPerView(5);
+      } else if (window.innerWidth >= 1030) {
+        setWorkshopsPerView(4);
+      } else if (window.innerWidth >= 768) {
+        setWorkshopsPerView(3);
+      } else if (window.innerWidth >= 620) {
+        setWorkshopsPerView(2);
+      } else {
+        setWorkshopsPerView(1);
+      }
+    };
+
+    updateSlidesPerView();
+    window.addEventListener("resize", updateSlidesPerView);
+    return () => window.removeEventListener("resize", updateSlidesPerView);
+  }, []);
 
   // Fetch workshops
   useEffect(() => {
@@ -29,43 +52,39 @@ const HighlightBanner = () => {
       });
   }, []);
 
-  // Auto-slide functionality with hover pause
+  // Auto-slide logic
   useEffect(() => {
     if (workshops.length > 0 && !isHovered) {
       const interval = setInterval(() => {
-        setCurrentIndex((prevIndex) =>
-          prevIndex === workshops.length - 1 ? 0 : prevIndex + 1
-        );
+        handleNext();
       }, autoSlideInterval);
-
       return () => clearInterval(interval);
     }
-  }, [workshops, currentIndex, isHovered]);
+  }, [workshops, isHovered]);
 
-  // Update carousel position when currentIndex changes
+  // Update carousel scroll position
   useEffect(() => {
     if (carouselRef.current) {
       const cardWidth = carouselRef.current.children[0]?.clientWidth || 0;
       const gap =
-        parseInt(window.getComputedStyle(carouselRef.current).gap, 10) || 0;
+        parseInt(window.getComputedStyle(carouselRef.current).gap, 8) || 0;
       const scrollOffset = currentIndex * (cardWidth + gap);
-
-      carouselRef.current.scrollTo({
-        left: scrollOffset,
-        behavior: "smooth",
-      });
+      carouselRef.current.scrollTo({ left: scrollOffset, behavior: "smooth" });
     }
   }, [currentIndex]);
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev === workshops.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) =>
+      prev >= workshops.length - workshopsPerView ? 0 : prev + 1
+    );
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? workshops.length - 1 : prev - 1));
+    setCurrentIndex((prev) =>
+      prev === 0 ? workshops.length - workshopsPerView : prev - 1
+    );
   };
 
-  // Function to store the last page and navigate
   const handleNavigation = (id: number) => {
     sessionStorage.setItem("previousPage", window.location.pathname);
     router.push(`/workshops/${id}`);
@@ -76,8 +95,7 @@ const HighlightBanner = () => {
 
   return (
     <div
-      className="font-lexend bg-[#FFF7EB] rounded-lg py-4 
-      text-center text-black mb-6 p-5 aspect-[15/4] w-full mx-auto "
+      className="font-lexend bg-[#FFF7EB] rounded-lg py-4 text-center text-black mb-6 p-5 aspect-[15/4] w-full mx-auto"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -88,66 +106,60 @@ const HighlightBanner = () => {
         {/* Navigation Buttons */}
         <button
           onClick={handlePrev}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-all"
+          className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-all ${
+            currentIndex === 0 ? "hidden" : ""
+          }`}
           aria-label="Previous workshop"
         >
-          ◀
+          &lt;
         </button>
 
         <button
           onClick={handleNext}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-all"
+          className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow-lg hover:bg-white transition-all ${
+            currentIndex >= workshops.length - workshopsPerView ? "hidden" : ""
+          }`}
           aria-label="Next workshop"
         >
-          ▶
+          &gt;
         </button>
 
         {/* Carousel Container */}
         <div
           ref={carouselRef}
-          className="flex overflow-hidden scroll-snap-x-mandatory scroll-snap-align-center gap-4  "
-          style={{
-            scrollBehavior: "smooth",
-          }}
+          className={`flex overflow-hidden gap-4 ${
+            workshops.length < workshopsPerView
+              ? "justify-start"
+              : "scroll-snap-x-mandatory"
+          }`}
         >
-          {workshops.map((workshop) => (
+          {workshops.map((workshop, index) => (
             <div
-              key={workshop.id}
-              className="relative flex-shrink-0 transition-opacity duration-500
-              md:w-1/3 w-full flex-shrink-0 w-full md:w-1/3 bg-white shadow-lg rounded-lg 
-              aspect-[21/26] max-w-[210px] max-h-[260px] mx-auto hover:border hover:border-gray-300"
-              style={{
-                scrollSnapAlign: "center",
-              }}
-            >
-              {/* Workshop Card */}
+            key={workshop.id}
+            className={`relative flex-shrink-0 bg-white shadow-lg rounded-lg aspect-[21/30] max-w-[210px] max-h-[300px] hover:border hover:border-gray-300 ${
+              workshops.length < workshopsPerView ? "mx-3" : "mx-auto"
+            }`}
+            style={{
+              display:
+                index >= currentIndex && index < currentIndex + workshopsPerView
+                  ? "block"
+                  : "none",
+            }}
+          >
+      
               <button
                 onClick={() => handleNavigation(workshop.id)}
-                className="mt-2 px-4 py-2 rounded-md "
+                className="mt-2 px-4 py-2 rounded-md"
               >
                 <div className="relative w-full max-w-[180px] mx-auto mt-[15px] flex items-center justify-center">
                   <div className="w-full aspect-[10/10] flex items-center justify-center">
                     {workshop.photos?.length ? (
-                      // eslint-disable-next-line @next/next/no-img-element
                       <Image
                         src={`${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`}
                         alt={workshop.name}
                         width={180}
                         height={180}
                         className="object-cover rounded-md w-full h-full max-w-[180px] max-h-[180px]"
-                        onLoad={(e: React.SyntheticEvent<HTMLImageElement>) => {
-                          const parent = e.currentTarget.parentElement;
-                          if (parent) {
-                            parent.style.setProperty(
-                              "min-height",
-                              `${e.currentTarget.clientHeight}px`
-                            );
-                            parent.style.setProperty(
-                              "min-width",
-                              `${e.currentTarget.clientWidth}px`
-                            );
-                          }
-                        }}
                       />
                     ) : (
                       <div className="bg-gray-300 flex items-center justify-center rounded-md min-h-[180px] min-w-[180px]">
@@ -156,7 +168,6 @@ const HighlightBanner = () => {
                     )}
                   </div>
                 </div>
-
                 <div className="p-4">
                   <h3 className="text-lg truncate">{workshop.name}</h3>
                 </div>
@@ -167,16 +178,18 @@ const HighlightBanner = () => {
 
         {/* Navigation Dots */}
         <div className="flex justify-center items-center mt-4 space-x-2">
-          {workshops.map((_, index) => (
+          {Array.from({
+            length: Math.ceil(workshops.length - workshopsPerView + 1),
+          }).map((_, index) => (
             <button
               key={index}
               className={`w-3 h-3 rounded-full ${
-                index === currentIndex
+                index === Math.floor(currentIndex)
                   ? "bg-[#52A794]"
                   : "bg-gray-400 hover:bg-gray-500"
               }`}
               onClick={() => setCurrentIndex(index)}
-              aria-label={`Go to workshop ${index + 1}`}
+              aria-label={`Go to workshop set ${index + 1}`}
             />
           ))}
         </div>
