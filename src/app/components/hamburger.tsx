@@ -57,7 +57,7 @@ const Hamburger: React.FC<HamburgerProps> = ({ isMenuOpen, setIsMenuOpen }) => {
             </li>
             <li>
               <Link
-                href="./"
+                href="../"
                 className="hover:text-gray-300"
                 onClick={() => setIsMenuOpen(false)}
               >

@@ -61,7 +61,7 @@ export default function Home() {
         <div className="bg-yellow-400 py-4 text-center text-black  mb-6">
           <h2>Highlight Workshop - Special Offers this Week!</h2>
         </div>
-        <Link href="/adminPage">
+        <Link href="/adminPage/page">
           <button className="px-4 py-2 bg-blue-500 text-white rounded">
             Go to Admin Page
           </button>
