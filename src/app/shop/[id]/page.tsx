@@ -52,10 +52,13 @@ const ShopPage = () => {
         {shopDetail ? (
           <div className=" font-lexend text-[#4C4343] bg-[#FFF7EB]">
             <div className="p-4 mt-[55px]">
-              {shopDetail.photos?.length > 0 && (
+              {shopDetail.photos.filter((photo) => photo.is_public)?.length >
+                0 && (
                 <div className="">
                   <ImageBanner
-                    photos={shopDetail.photos}
+                    photos={shopDetail.photos.filter(
+                      (photo) => photo.is_public
+                    )}
                     basePath="http://127.0.0.1:3000/"
                   />
                 </div>
@@ -106,7 +109,7 @@ const ShopPage = () => {
               </div>
 
               <p className="mt-4 font-light text-[14px]">
-                &emsp;&emsp;{shopDetail.full_description}
+                &emsp;&emsp;{shopDetail.description}
               </p>
               <div className="text-[18px] font-regular flex items-center  mt-5 mb-2">
                 <svg
@@ -156,16 +159,18 @@ const ShopPage = () => {
               </p>
               {shopDetail?.menus?.length ? (
                 <div className="hide-scrollbar flex-col">
-                  {shopDetail.menus.map((menu) => (
-                    <div
-                      key={menu.id}
-                      style={{
-                        flexShrink: 0,
-                      }}
-                    >
-                      <CardProductDetail menu={menu} />
-                    </div>
-                  ))}
+                  {shopDetail.menus
+                    .filter((menu) => menu.is_public)
+                    .map((menu) => (
+                      <div
+                        key={menu.id}
+                        style={{
+                          flexShrink: 0,
+                        }}
+                      >
+                        <CardProductDetail menu={menu} />
+                      </div>
+                    ))}
                 </div>
               ) : (
                 <p>No menus available</p>
