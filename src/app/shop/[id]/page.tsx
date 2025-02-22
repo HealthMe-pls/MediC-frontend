@@ -52,7 +52,7 @@ const ShopPage = () => {
         {shopDetail ? (
           <div className=" font-lexend text-[#4C4343] bg-[#FFF7EB]">
             <div className="p-4 mt-[55px]">
-              {shopDetail.photos.filter((photo) => photo.is_public)?.length >
+              {shopDetail.photos?.filter((photo) => photo.is_public)?.length >
                 0 && (
                 <div className="">
                   <ImageBanner
@@ -192,10 +192,13 @@ const ShopPage = () => {
                   </svg>
                   Social Media
                 </p>
-                {shopDetail?.social_media ? (
+                {Array.isArray(shopDetail?.social_media) &&
+                shopDetail.social_media.filter((media) => media.is_public)
+                  .length > 0 ? (
                   <ul>
-                    {Array.isArray(shopDetail.social_media) &&
-                      shopDetail.social_media.map((media, index) => (
+                    {shopDetail.social_media
+                      .filter((media) => media.is_public)
+                      .map((media, index) => (
                         <li key={index} className="text-[14px] font-light">
                           {media.platform}:{" "}
                           <a href={media.link}>{media.link}</a>

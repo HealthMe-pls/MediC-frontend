@@ -335,16 +335,19 @@ const Shoplist: React.FC<CateID> = ({
                   }}
                   className="hide-scrollbar"
                 >
-                  {selectedShopDetail.menus.slice(0, 4).map((menu) => (
-                    <div
-                      key={menu.id}
-                      style={{
-                        flexShrink: 0,
-                      }}
-                    >
-                      <CardMenuSL menu={menu} />
-                    </div>
-                  ))}
+                  {selectedShopDetail.menus
+                    .filter((menu) => menu.is_public)
+                    .slice(0, 4)
+                    .map((menu) => (
+                      <div
+                        key={menu.id}
+                        style={{
+                          flexShrink: 0,
+                        }}
+                      >
+                        <CardMenuSL menu={menu} />
+                      </div>
+                    ))}
                 </div>
               ) : (
                 <p>No menus available</p>
@@ -400,7 +403,9 @@ const Shoplist: React.FC<CateID> = ({
                 </svg>
                 Social Media
               </p>
-              {selectedShopDetail?.social_media ? (
+              {Array.isArray(selectedShopDetail?.social_media) &&
+              selectedShopDetail.social_media.filter((media) => media.is_public)
+                .length > 0 ? (
                 <ul>
                   {Array.isArray(selectedShopDetail.social_media) &&
                     selectedShopDetail.social_media.map((media, index) => (
