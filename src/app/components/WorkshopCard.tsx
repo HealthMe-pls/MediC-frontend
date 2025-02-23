@@ -48,15 +48,21 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
       {/* Image Section */}
       <div className="mt-4">
         {workshop.photos?.length ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <Image
-            loader={myLoader}
-            src={workshop.photos[0]?.pathfile}
-            alt={`Workshop Image`}
-            width={350}
-            height={350}
-            className="max-w-[350px] max-h-[350px] object-cover transition-all duration-500 rounded-[10px]"
-          />
+          (() => {
+            const imageUrl = `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`;
+            console.log(imageUrl); // Console log URL ของรูปภาพ
+            return (
+              <div className="max-w-[350px] max-h-[350px] object-cover transition-all duration-500 rounded-[10px]">
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`}
+                  alt={`workshop image`}
+                  width={350 }
+                  height={350}
+                  className="rounded-[10px]"
+                />
+              </div>
+            );
+          })()
         ) : (
           <div className="w-full h-[200px] bg-gray-300 flex items-center justify-center text-gray-600 rounded-[10px]">
             No Image Available
