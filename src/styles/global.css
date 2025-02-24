@@ -15,7 +15,7 @@
   left: 750px;
 }
 
-  @media (max-width: 1050px) {
+  @media (max-width: 1024px) {
     .mapguide-hidden {
       display: none;
     }
@@ -92,13 +92,13 @@ img {
   }
 }
 
-@media (min-width: 1346px) {
+@media (min-width: 1024px) {
   .ipad-view, .mobile-view {
     display: none;
   }
 }
 
-@media (max-width: 1345px) and (min-width: 641px) {
+@media (max-width: 1024px) and (min-width: 640px) {
   .desktop-view, .mobile-view {
     display: none;
   }

@@ -34,6 +34,22 @@ export default function Home() {
     setShowGif(false);
   };
 
+  function useWindowWidth() {
+    const [width, setWidth] = useState(window.innerWidth);
+  
+    useEffect(() => {
+      const handleResize = () => {
+        setWidth(window.innerWidth);
+      };
+  
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+  
+    return width;
+  }
+  const windowWidth = useWindowWidth();
+
   useEffect(() => {
     if (matchShopID !== 0) {
       setTimeout(() => {
@@ -154,8 +170,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="sm:flex hidden w-full gap-8 flex-wrap justify-center mb-[32px]">
-            <div className="w-[600px] min-w-[600px] flex justify-center">
+          <div className="sm:flex hidden w-full gap-8 flex-wrap lg:flex-nowrap justify-center mb-[32px]">
+          <div className="w-[600px] min-w-[600px] flex justify-center">
               <Map
                 selectedCate={selectedCate}
                 setSelectedBlock={setSelectedBlock}
@@ -163,12 +179,12 @@ export default function Home() {
               />
             </div>
 
-            <div className="w-[570px] min-w-[500px] flex justify-center flex-wrap flex-col">
-              <div className="flex flex-wrap desktop-view mx-autu">
+            <div className="relative w-[570px] min-w-[500px] flex justify-center flex-wrap flex-col overflow-visible">
+              <div className="absolute top-8 left-6 flex flex-wrap desktop-view mx-auto">
                 <div className="flex-1 mr-2">
                   <SearchBar
                     setSelectedCate={setSelectedCate}
-                    setMatchShopID={setMatchShopID}
+                    setMatchShopID={setMatchShopID} 
                   />
                 </div>
                 <div className="flex-1 ml-2">
@@ -180,7 +196,7 @@ export default function Home() {
                   />
                 </div>
               </div>
-              <div className="w-full">
+              <div className="w-full absolute top-24">
                 {showGif && !selectedBlock ? (
                   <div className="relative w-full">
                     <Image
@@ -196,7 +212,7 @@ export default function Home() {
                       className="absolute top-2 right-16 p-1 rounded-full mr-2 mt-2"
                       aria-label="Close"
                     >
-                      <span className="text-opacity-50 text-black text-[50px]">
+                      <span className="text-opacity-50 text-black text-[50px] mapguide-hidden">
                         ×
                       </span>
                     </button>
