@@ -20,8 +20,8 @@ export async function createMail(
     });
     console.log("Mail created: ", response.data);
     return response.data;
-  } catch (error: any) {
-    console.error("Error creating Mail:", error.response?.data || error);
+  } catch (error) {
+    console.error("Error creating Mail:", error);
     throw error;
   }
 }

@@ -35,19 +35,25 @@ export default function Home() {
   };
 
   function useWindowWidth() {
-    const [width, setWidth] = useState(window.innerWidth);
-  
+    const [width, setWidth] = useState<number | null>(null);
+
     useEffect(() => {
+      if (typeof window === "undefined") return;
+
       const handleResize = () => {
         setWidth(window.innerWidth);
       };
-  
+
+      // Set initial width when component mounts
+      setWidth(window.innerWidth);
+
       window.addEventListener("resize", handleResize);
       return () => window.removeEventListener("resize", handleResize);
     }, []);
-  
+
     return width;
   }
+
   const windowWidth = useWindowWidth();
 
   useEffect(() => {
@@ -171,11 +177,12 @@ export default function Home() {
           </div>
 
           <div className="sm:flex hidden w-full gap-8 flex-wrap lg:flex-nowrap justify-center mb-[32px]">
-          <div className="w-[600px] min-w-[600px] flex justify-center">
+            <div className="w-[600px] min-w-[600px] flex justify-center z-index-10">
               <Map
                 selectedCate={selectedCate}
                 setSelectedBlock={setSelectedBlock}
                 matchShopID={matchShopID}
+                role=""
               />
             </div>
 
@@ -184,7 +191,7 @@ export default function Home() {
                 <div className="flex-1 mr-2">
                   <SearchBar
                     setSelectedCate={setSelectedCate}
-                    setMatchShopID={setMatchShopID} 
+                    setMatchShopID={setMatchShopID}
                   />
                 </div>
                 <div className="flex-1 ml-2">
@@ -198,7 +205,7 @@ export default function Home() {
               </div>
               <div className="w-full absolute top-24">
                 {showGif && !selectedBlock ? (
-                  <div className="relative w-full">
+                  <div className="relative w-full z-index-1">
                     <Image
                       src={Mapguide}
                       alt="GIF"
@@ -229,6 +236,7 @@ export default function Home() {
               selectedCate={selectedCate}
               setSelectedBlock={setSelectedBlock}
               matchShopID={matchShopID}
+              role=""
             />
           </div>
 

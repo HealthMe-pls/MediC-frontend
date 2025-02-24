@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
 import {
   fetchShopById,
-  fetchShopDetail,
   ShopDetail,
 } from "@/utility/shopDetail";
 import { format } from "date-fns";
@@ -38,7 +37,6 @@ const Shoplist: React.FC<CateID> = ({
   matchShop,
 }) => {
   const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
-  const [shopDetails, setShopDetails] = useState<ShopDetail[]>([]);
   const [selectedZone, setSelectedZone] = useState<string | null>("A");
   const [selectedBlock, setSelectedBlock] = useState<MapDetail | null>(null);
   const [selectedShopDetail, setSelectedShopDetail] =

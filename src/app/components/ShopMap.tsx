@@ -8,7 +8,7 @@ export default function Map({
   selectedCate,
   setSelectedBlock,
   matchShopID,
-  role
+  role,
 }: {
   selectedCate: number;
   setSelectedBlock: (block: string) => void;
@@ -88,7 +88,7 @@ export default function Map({
     pointName: string,
     categoryId: number,
     shopId: number | null,
-    matchShopID: number,
+    matchShopID: number
   ) => {
     const specialPoints = [];
 
@@ -96,48 +96,54 @@ export default function Map({
       specialPoints.push(pointName);
     }
 
-    if(role == "admin"){
+    if (role == "admin") {
       if (specialPoints.includes(pointName)) {
-        return { backgroundColor: "#F0F0F0" ,pointerEvents: "none"};
+        return {
+          backgroundColor: "#F0F0F0",
+          pointerEvents: "none" as React.CSSProperties["pointerEvents"],
+        };
       }
+    } else {
+      return;
     }
-
-  
-    
 
     let style: React.CSSProperties = {};
     const pointLetter = pointName[0];
 
     if (shopId === null) {
-    style = { ...style, opacity: 0, pointerEvents: "none" };
-  } else if (matchShopID === 0) {
-    if (categoryId === selectedCate || selectedCate === 0) {
-      if (pointLetter === "A") {
-        style = { ...style, backgroundColor: "#FFEF9E" };
-      } else if (pointLetter === "B") {
-        style = { ...style, backgroundColor: "#D5EBD6" };
-      } else if (pointLetter === "C") {
-        style = { ...style, backgroundColor: "#CAE5F3" };
+      style = {
+        ...style,
+        opacity: 0,
+        pointerEvents: "none" as React.CSSProperties["pointerEvents"],
+      };
+    } else if (matchShopID === 0) {
+      if (categoryId === selectedCate || selectedCate === 0) {
+        if (pointLetter === "A") {
+          style = { ...style, backgroundColor: "#FFEF9E" };
+        } else if (pointLetter === "B") {
+          style = { ...style, backgroundColor: "#D5EBD6" };
+        } else if (pointLetter === "C") {
+          style = { ...style, backgroundColor: "#CAE5F3" };
+        }
+      } else {
+        style = { ...style, opacity: 0, pointerEvents: "none" };
       }
     } else {
-      style = { ...style, opacity: 0, pointerEvents: "none" };
-    }
-  } else {
-    if (shopId === matchShopID) {
-      if (pointLetter === "A") {
-        style = { ...style, backgroundColor: "#FFEF9E" };
-      } else if (pointLetter === "B") {
-        style = { ...style, backgroundColor: "#D5EBD6" };
-      } else if (pointLetter === "C") {
-        style = { ...style, backgroundColor: "#CAE5F3" };
+      if (shopId === matchShopID) {
+        if (pointLetter === "A") {
+          style = { ...style, backgroundColor: "#FFEF9E" };
+        } else if (pointLetter === "B") {
+          style = { ...style, backgroundColor: "#D5EBD6" };
+        } else if (pointLetter === "C") {
+          style = { ...style, backgroundColor: "#CAE5F3" };
+        }
+      } else {
+        style = { ...style, opacity: 0, pointerEvents: "none" };
       }
-    } else {
-      style = { ...style, opacity: 0, pointerEvents: "none" };
     }
-  }
 
-  return style;
-};
+    return style;
+  };
 
   return (
     // console.log("MapDetails", mapDetails),

@@ -4,10 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 // GET - Fetch entrepreneur by ID
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const id = (await context.params).id;
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_GO_API_URL}/entrepreneur/${id}`
@@ -34,10 +34,10 @@ export async function GET(
 // PUT - Update entrepreneur by ID
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const id = (await context.params).id;
     const body = await req.json();
 
     const response = await fetch(
@@ -72,10 +72,10 @@ export async function PUT(
 // DELETE - Remove entrepreneur by ID
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const id = (await context.params).id;
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_GO_API_URL}/entrepreneur/${id}`,

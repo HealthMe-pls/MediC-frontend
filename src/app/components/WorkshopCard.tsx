@@ -26,19 +26,6 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
     sessionStorage.setItem("previousPage", window.location.pathname); // Save previous page
     router.push(`/workshops/${workshop.id}`);
   };
-  const myLoader = ({
-    src,
-    width,
-    quality,
-  }: {
-    src: string;
-    width: number;
-    quality?: number;
-  }) => {
-    return `${process.env.NEXT_PUBLIC_GO_API_URL}/${src}?w=${width}&q=${
-      quality || 75
-    }`;
-  };
 
   return (
     <div
@@ -56,7 +43,7 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
                 <Image
                   src={`${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`}
                   alt={`workshop image`}
-                  width={350 }
+                  width={350}
                   height={350}
                   className="rounded-[10px]"
                 />

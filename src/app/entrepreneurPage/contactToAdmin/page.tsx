@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, createMail } from "../../../utility/contactToAdmin";
+import { createMail } from "../../../utility/contactToAdmin";
 import { Dialog } from "@headlessui/react";
 
 export default function ManageVendor() {
