@@ -74,7 +74,7 @@ const Shopside: React.FC<block> = ({ blockName }) => {
                 </div>
               </div>
               <p className="font-light text-[14px] ">
-                {selectedShopDetail?.status ? (
+                {selectedShopDetail?.open_status ? (
                   <svg
                     width="73"
                     height="23"
@@ -136,16 +136,19 @@ const Shopside: React.FC<block> = ({ blockName }) => {
                 }}
                 className="hide-scrollbar"
               >
-                {selectedShopDetail.menus.slice(0, 4).map((menu) => (
-                  <div
-                    key={menu.id}
-                    style={{
-                      flexShrink: 0,
-                    }}
-                  >
-                    <CardMenuSL menu={menu} />
-                  </div>
-                ))}
+                {selectedShopDetail.menus
+                  .filter((menu) => menu.is_public)
+                  .slice(0, 4)
+                  .map((menu) => (
+                    <div
+                      key={menu.id}
+                      style={{
+                        flexShrink: 0,
+                      }}
+                    >
+                      <CardMenuSL menu={menu} />
+                    </div>
+                  ))}
               </div>
             ) : (
               <p>No menus available</p>
@@ -201,7 +204,9 @@ const Shopside: React.FC<block> = ({ blockName }) => {
               </svg>
               Social Media
             </p>
-            {selectedShopDetail?.social_media ? (
+            {Array.isArray(selectedShopDetail?.social_media) &&
+            selectedShopDetail.social_media.filter((media) => media.is_public)
+              .length > 0 ? (
               <ul>
                 {Array.isArray(selectedShopDetail.social_media) &&
                   selectedShopDetail.social_media.map((media, index) => (

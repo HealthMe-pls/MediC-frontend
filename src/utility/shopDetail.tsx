@@ -5,12 +5,14 @@ import axios from "axios";
 export interface Photo {
   pathfile: string;
   photo_id: number;
+  is_public: boolean;
 }
 
 export interface SocialMedia {
   id: number;
   link: string;
   platform: string;
+  is_public: boolean;
 }
 
 // Interface สำหรับข้อมูลเวลาเปิด-ปิดร้าน
@@ -27,23 +29,23 @@ export interface Menu {
   price: number;
   product_description: string;
   product_name: string;
+  is_public: boolean;
 }
 
 // Interface หลักของ ShopDetail
 export interface ShopDetail {
-  brief_description: string;
   category: string;
   category_id: number;
   entrepreneur: string;
   entrepreneur_id: number;
-  full_description: string;
+  description: string;
   menus: Menu[]; // เปลี่ยนเป็น array ของเมนู
   name: string;
   photos: Photo[];
   shop_id: number;
   shop_open_dates: ShopOpenDates; // ใช้ interface ของเวลาเปิด-ปิด
   social_media: SocialMedia; // ใช้ interface ของ Social Media
-  status: boolean;
+  open_status: boolean;
 }
 
 // const NEXT_API = "http://127.0.0.1:3000";

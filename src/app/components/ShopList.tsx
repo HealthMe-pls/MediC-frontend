@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
-import { fetchShopDetail, ShopDetail } from "@/utility/shopDetail";
+import {
+  fetchShopById,
+  fetchShopDetail,
+  ShopDetail,
+} from "@/utility/shopDetail";
 import { format } from "date-fns";
 // import Link from "next/link";
 // import { th } from "date-fns/locale";
@@ -37,6 +41,8 @@ const Shoplist: React.FC<CateID> = ({
   const [shopDetails, setShopDetails] = useState<ShopDetail[]>([]);
   const [selectedZone, setSelectedZone] = useState<string | null>("A");
   const [selectedBlock, setSelectedBlock] = useState<MapDetail | null>(null);
+  const [selectedShopDetail, setSelectedShopDetail] =
+    useState<ShopDetail | null>(null);
   const [isShopListVisible, setShopListVisible] = useState<boolean>(false);
 
   console.log(Cateid);
@@ -45,14 +51,34 @@ const Shoplist: React.FC<CateID> = ({
     fetchMapDetail()
       .then((data) => setMapDetails(data))
       .catch((error) => console.error("Error fetching map details:", error));
+    console.log("fetching MapDetails at shoplist: ", mapDetails);
   }, []);
 
+  // useEffect(() => {
+  //   console.log("test ");
+  //   fetchShopDetail()
+  //     .then((data) => setShopDetails(data))
+  //     .catch((error) => console.error("Error fetching shop details:", error));
+  //   console.log("fetching shopDetails at shoplist: ", shopDetails);
+  // }, []);
+
   useEffect(() => {
-    fetchShopDetail()
-      .then((data) => setShopDetails(data))
-      .catch((error) => console.error("Error fetching shop details:", error));
-    console.log("fetching shopDetails at shoplist: ", shopDetails);
-  }, []);
+    if (matchShop === 0) {
+      if (selectedBlock !== null) {
+        fetchShopById(selectedBlock.shop_id)
+          .then((data) => setSelectedShopDetail(data))
+          .catch((error) =>
+            console.error("Error fetching shop details by id:", error)
+          );
+      }
+    } else {
+      fetchShopById(matchShop)
+        .then((data) => setSelectedShopDetail(data))
+        .catch((error) =>
+          console.error("Error fetching shop details by id:", error)
+        );
+    }
+  }, [matchShop, selectedBlock]); // useEffect จะทำงานเมื่อ matchShop หรือ selectedBlock เปลี่ยน
 
   const filteredBlock =
     selectedZone !== null
@@ -68,14 +94,32 @@ const Shoplist: React.FC<CateID> = ({
   //     ? selectedBlock &&
   //       shopDetails.find((shop) => shop.name === selectedBlock.shop_name)
   //     : shopDetails.find((shop) => shop.shop_id === matchShop);
-  const selectedShopDetail =
-    selectedBlock &&
-    shopDetails.find((shop) => shop.name === selectedBlock.shop_name);
+  // const selectedShopDetail =
+  //   selectedBlock &&
+  //   shopDetails.find((shop) => shop.name === selectedBlock.shop_name);
 
-  const matchShopDetail =
-    matchShop === 0
-      ? selectedShopDetail
-      : shopDetails.find((shop) => shop.shop_id === matchShop);
+  // const matchShopDetail =
+  //   matchShop === 0
+  //     ? selectedShopDetail
+  //     : shopDetails.find((shop) => shop.shop_id === matchShop);
+
+  // const getmatchShopDetail = () => {
+  //   if (matchShop === 0) {
+  //     if (selectedBlock !== null) {
+  //       fetchShopById(selectedBlock.shop_id)
+  //         .then((data) => setSelectedShopDetail(data))
+  //         .catch((error) =>
+  //           console.error("Error fetching shop details by id:", error)
+  //         );
+  //     }
+  //   } else {
+  //     fetchShopById(matchShop)
+  //       .then((data) => setSelectedShopDetail(data))
+  //       .catch((error) =>
+  //         console.error("Error fetching shop details by id:", error)
+  //       );
+  //   }
+  // };
 
   useEffect(() => {
     // Trigger the side effect when matchShop changes and is not 0
@@ -220,14 +264,14 @@ const Shoplist: React.FC<CateID> = ({
       {/* รายละเอียดร้านค้า */}
       {isShopListVisible &&
         selectedBlock &&
-        (matchShopDetail?.category_id === Cateid || Cateid === 0) && (
+        (selectedShopDetail?.category_id === Cateid || Cateid === 0) && (
           <div className="pt-4 px-4 bg-white rounded-[10] shadow-md">
             <div className="flex justify-between items-center">
               <h3 className="text-xl font-regular text-[24px] mb-2 ">
-                {matchShopDetail?.name ? matchShopDetail.name : "No shop"}
+                {selectedShopDetail?.name ? selectedShopDetail.name : "No shop"}
               </h3>
               <p className="text-green-500 font-light text-[14px]">
-                {matchShopDetail?.status ? (
+                {selectedShopDetail?.open_status ? (
                   <svg
                     width="73"
                     height="23"
@@ -261,7 +305,7 @@ const Shoplist: React.FC<CateID> = ({
               </p>
             </div>
             <p className="font-light text-[14px] ">
-              {matchShopDetail?.category}
+              {selectedShopDetail?.category}
             </p>
             <div className="mt-4">
               <p className="text-[15px] font-regular flex items-center">
@@ -280,7 +324,7 @@ const Shoplist: React.FC<CateID> = ({
                 </svg>
                 Featured Menu
               </p>
-              {matchShopDetail?.menus?.length ? (
+              {selectedShopDetail?.menus?.length ? (
                 <div
                   style={{
                     display: "flex",
@@ -291,16 +335,19 @@ const Shoplist: React.FC<CateID> = ({
                   }}
                   className="hide-scrollbar"
                 >
-                  {matchShopDetail.menus.slice(0, 4).map((menu) => (
-                    <div
-                      key={menu.id}
-                      style={{
-                        flexShrink: 0,
-                      }}
-                    >
-                      <CardMenuSL menu={menu} />
-                    </div>
-                  ))}
+                  {selectedShopDetail.menus
+                    .filter((menu) => menu.is_public)
+                    .slice(0, 4)
+                    .map((menu) => (
+                      <div
+                        key={menu.id}
+                        style={{
+                          flexShrink: 0,
+                        }}
+                      >
+                        <CardMenuSL menu={menu} />
+                      </div>
+                    ))}
                 </div>
               ) : (
                 <p>No menus available</p>
@@ -323,10 +370,10 @@ const Shoplist: React.FC<CateID> = ({
                 </svg>
                 Business Hours
               </p>
-              {matchShopDetail?.shop_open_dates ? (
+              {selectedShopDetail?.shop_open_dates ? (
                 <ul>
-                  {Array.isArray(matchShopDetail.shop_open_dates) &&
-                    matchShopDetail.shop_open_dates.map((date, index) => (
+                  {Array.isArray(selectedShopDetail.shop_open_dates) &&
+                    selectedShopDetail.shop_open_dates.map((date, index) => (
                       <li key={index} className="text-[14px] font-light">
                         {`${formatDate(date.start_time)} ${formatTime(
                           date.start_time
@@ -356,10 +403,12 @@ const Shoplist: React.FC<CateID> = ({
                 </svg>
                 Social Media
               </p>
-              {matchShopDetail?.social_media ? (
+              {Array.isArray(selectedShopDetail?.social_media) &&
+              selectedShopDetail.social_media.filter((media) => media.is_public)
+                .length > 0 ? (
                 <ul>
-                  {Array.isArray(matchShopDetail.social_media) &&
-                    matchShopDetail.social_media.map((media, index) => (
+                  {Array.isArray(selectedShopDetail.social_media) &&
+                    selectedShopDetail.social_media.map((media, index) => (
                       <li key={index} className="text-[14px] font-light">
                         {media.platform}: <a href={media.link}>{media.link}</a>
                       </li>
