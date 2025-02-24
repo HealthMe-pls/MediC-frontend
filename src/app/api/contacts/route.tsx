@@ -32,6 +32,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    console.log("Incoming request body:", body); // Log ข้อมูลที่ได้รับ
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_GO_API_URL}/contacts`,
@@ -45,16 +46,15 @@ export async function POST(req: Request) {
     );
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Error Response from Go:", errorText);
       throw new Error("Failed to create mail");
     }
 
     const newMail = await response.json();
-    const headers = new Headers();
-    setCorsHeaders(headers);
-
-    return NextResponse.json(newMail, { status: 201, headers });
+    return NextResponse.json(newMail, { status: 201 });
   } catch (error) {
-    console.error(error);
+    console.error("POST Request Error:", error);
     return NextResponse.json(
       { message: "Failed to create mail" },
       { status: 500 }
