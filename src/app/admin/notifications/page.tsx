@@ -8,6 +8,10 @@ import Link from "next/link";
 
 const NotificationsPage = () => {
   const [notifications, setNotifications] = useState<Noti[]>([]);
+  const [filteredNotifications, setFilteredNotifications] = useState<Noti[]>(
+    []
+  );
+  const [searchTerm, setSearchTerm] = useState<string>(""); // สำหรับเก็บข้อความที่ค้นหา
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -15,6 +19,7 @@ const NotificationsPage = () => {
     fetchNotifications()
       .then((data) => {
         setNotifications(data || []);
+        setFilteredNotifications(data || []);
         setLoading(false);
       })
       .catch((err) => {
@@ -22,6 +27,16 @@ const NotificationsPage = () => {
         setLoading(false);
       });
   }, []);
+
+  // ฟังก์ชันสำหรับ handle search
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+    const filtered = notifications.filter((notification) =>
+      notification.from_username.toLowerCase().includes(term)
+    );
+    setFilteredNotifications(filtered);
+  };
 
   return (
     <div className="h-screen flex flex-col font-sans">
@@ -63,33 +78,48 @@ const NotificationsPage = () => {
         <section className="flex-1 p-8">
           <h2 className="text-2xl font-semibold mb-6">Notifications</h2>
 
+          {/* Search Bar */}
+          <div className="mb-6">
+            <input
+              type="text"
+              placeholder="Search by username..."
+              value={searchTerm}
+              onChange={handleSearch}
+              className="w-full p-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
           {/* Loading and Error States */}
           {loading && <p>Loading notifications...</p>}
           {error && <p className="text-red-600">Error: {error}</p>}
 
           {/* Notifications List */}
           <div className="space-y-4">
-            {notifications.length > 0 ? (
-              notifications.map((notification, index) => (
-                <div
-                  key={index}
-                  className="bg-white border border-gray-300 rounded-lg p-4 relative"
-                >
-                  <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
-                    x
-                  </button>
-                  <h3 className="font-semibold">{notification.from_username}</h3>
-                  <p className="mt-1">
-                    <strong>Problem:</strong> {notification.problem || "N/A"}
-                  </p>
-                  <p className="mt-1">
-                    <strong>Detail:</strong> {notification.detail || "N/A"}
-                  </p>
-                </div>
-              ))
-            ) : (
-              !loading && <p>No notifications available.</p>
-            )}
+            {filteredNotifications.length > 0
+              ? filteredNotifications.map((notification, index) => (
+                  <div
+                    key={index}
+                    className="bg-white border border-gray-300 rounded-lg p-4 relative"
+                  >
+                    <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+                      x
+                    </button>
+                    <h3 className="font-semibold">
+                      {notification.from_username}
+                    </h3>
+                    <p className="mt-1">
+                      <strong>Subject:</strong> {notification.problem || "N/A"}
+                    </p>
+                    <p className="mt-1">
+                      <strong>Detail:</strong> {notification.detail || "N/A"}
+                    </p>
+                    <p className="mt-1">
+                      <strong>Contacted at :</strong>{" "}
+                      {notification.contact_to_en || "N/A"}
+                    </p>
+                  </div>
+                ))
+              : !loading && <p>No notifications found.</p>}
           </div>
         </section>
       </main>
