@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
+<<<<<<< Updated upstream
 import Header from "../layouts/Header";
 export default function AdminPage() {
   const [blocks, setBlocks] = useState<Record<number, string>>({});
@@ -17,6 +18,60 @@ export default function AdminPage() {
 
         const initialBlocks = data.reduce((acc, mapDetail) => {
           acc[mapDetail.block_id] = mapDetail.shop_name;
+=======
+import {fetchAdminShopDetail, AdminShopDetail, ShopIdName } from "../../utility/shop";
+import { ChangeMap } from "../../utility/maps";
+import Header from "../layouts/Header"
+import Link from "next/link";
+
+import {
+  createCategory,
+  DeleteCatagory,
+  fetchShopCategory,
+  ShopCategory,
+} from "@/utility/shop";
+
+export default function AdminPageComponent() {
+    const [blocks, setBlocks] = useState<
+      Record<
+        number,
+        { blockName: string; shopName: string | null; shopId: number | null }
+      >
+    >({});
+    const [shopSet, setShopSet] = useState<MapDetail[]>([]); //Block - Shop
+    const [Shops, setShops] = useState<AdminShopDetail[]>([]); // Shops Detail
+    const [ShopIdName, setShopIdName] = useState<ShopIdName[]>([]); //lower case shop name
+    const [editingBlock, setEditingBlock] = useState<number | null>(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [isEdit, setIsEdit] = useState(false);
+  
+    //manage category
+    const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+    const [shopCategory, setShopCategory] = useState<ShopCategory[]>([]);
+    const [isAddingCat, setIsAddingCat] = useState(false);
+    const [categorySearchTerm, setCategorySearchTerm] = useState("");
+  
+    // Fetch map and shop data
+    const fetchData = async () => {
+      try {
+        const [mapData, shopData, categoryData] = await Promise.all([
+          fetchMapDetail(),
+          fetchAdminShopDetail(),
+          fetchShopCategory(),
+        ]);
+  
+        setShopSet(mapData);
+        setShops(shopData);
+        setShopCategory(categoryData);
+        //console.log("category data : ", categoryData);
+  
+        const initialBlocks = mapData.reduce((acc, mapDetail) => {
+          acc[mapDetail.block_id] = {
+            shopName: mapDetail.shop_name,
+            blockName: mapDetail.block_name,
+            shopId: mapDetail.shop_id,
+          };
+>>>>>>> Stashed changes
           return acc;
         }, {} as Record<number, string>);
 

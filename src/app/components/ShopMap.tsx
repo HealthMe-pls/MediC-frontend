@@ -1,7 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import '../../styles/global.css';
+<<<<<<< Updated upstream
 // import Shop from '../../styles/Map.svg'
+=======
+import { fetchShopCategory, ShopCategory } from '@/utility/shop';
+import { fetchMapDetail, MapDetail } from '@/utility/maps';
+>>>>>>> Stashed changes
 
 export default function Map() {
     const points = [

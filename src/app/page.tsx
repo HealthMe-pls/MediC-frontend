@@ -9,7 +9,16 @@ import Footer from "./layouts/Footer";
 import Map from "./components/ShopMap";
 import "../styles/global.css";
 import "./globals.css";
+<<<<<<< Updated upstream
 import { fetchShopCategory, ShopCategory } from "@/utility/shopcate";
+=======
+import Mapguide from "../../public/assets/MapGuide.gif";
+import { fetchShopCategory, ShopCategory } from "@/utility/shop";
+import Filter from "./components/Filter";
+import Shopside from "./components/ShopSide";
+
+
+>>>>>>> Stashed changes
 
 export default function Home() {
   const [marketMaps, setMarketMaps] = useState<MapDetail[]>([]); // State for market maps
