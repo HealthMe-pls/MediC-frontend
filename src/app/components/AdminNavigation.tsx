@@ -20,6 +20,7 @@ const pages = [
   },
   { name: "Edit About Us", path: "/admin/edit-about-us" },
   { name: "Notifications", path: "/admin/notifications" },
+  { name: "Pending Approval", path: "/admin/pending-approval" },
 ];
 
 export default function AdminNavigation({
