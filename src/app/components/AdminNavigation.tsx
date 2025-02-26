@@ -4,6 +4,8 @@ import Logo from "../../../public/assets/logo.png";
 
 interface AdminNavigationProps {
   currentPage: string;
+  isNavOpen: boolean;
+  toggleNav: () => void;
 }
 
 const pages = [
@@ -12,34 +14,51 @@ const pages = [
   { name: "Manage Market Hours", path: "/admin/manage-market-hours" },
   { name: "Manage Shop Hours", path: "/admin/manage-shop-hours" },
   { name: "Shop Hours Summary", path: "/admin/shop-hours-summary" },
-
   {
     name: "Manage Highlighted Workshop & Event",
     path: "/admin/manage-highlighted-workshop",
   },
   { name: "Edit About Us", path: "/admin/edit-about-us" },
-  { name: "Notification", path: "/admin/notifications" },
+  { name: "Notifications", path: "/admin/notifications" },
 ];
 
-export default function AdminNavigation({ currentPage }: AdminNavigationProps) {
+export default function AdminNavigation({
+  currentPage,
+  isNavOpen,
+  toggleNav,
+}: AdminNavigationProps) {
   return (
-    <aside className="w-1/5 min-h-screen bg-white p-4 shadow-md rounded-r-[40px]  border-gray-200">
-      <Image src={Logo} alt="Logo" className="w-[50%] mx-auto my-8" />
-      <div className="space-y-4 ">
-        {pages.map((page, index) => (
-          <Link key={index} href={page.path}>
-            <button
-              className={`my-2 w-full py-3 rounded-20 text-center px-4 font-medium hover:bg-[#DBDBDB] transition-colors duration-200 ${
-                currentPage === page.name
-                  ? "bg-[#D5EBD6]"
-                  : "bg-[#F0F0F0] text-[#929292]"
-              }`}
-            >
-              {page.name}
-            </button>
-          </Link>
-        ))}
-      </div>
-    </aside>
+    <>
+      <aside
+        className={`fixed lg:relative top-0 left-0 w-[250px] min-h-screen bg-white p-4 shadow-md rounded-r-[40px] border-gray-200 transition-transform duration-300 z-20 ${
+          isNavOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Image src={Logo} alt="Logo" className="w-[50%] mx-auto my-8" />
+        <div className="space-y-4">
+          {pages.map((page, index) => (
+            <Link key={index} href={page.path}>
+              <button
+                className={`my-2 w-full py-3 rounded-20 text-center px-4 font-medium hover:bg-[#DBDBDB] transition-colors duration-200 ${
+                  currentPage === page.name
+                    ? "bg-[#D5EBD6]"
+                    : "bg-[#F0F0F0] text-[#929292]"
+                }`}
+                onClick={toggleNav}
+              >
+                {page.name}
+              </button>
+            </Link>
+          ))}
+        </div>
+      </aside>
+      <div
+        className={`fixed inset-0 bg-[#6d6d6d] transition-opacity duration-300 ${
+          isNavOpen ? "opacity-50" : "opacity-0 pointer-events-none"
+        } z-19`}
+        onClick={toggleNav}
+      ></div>
+    </>
   );
 }

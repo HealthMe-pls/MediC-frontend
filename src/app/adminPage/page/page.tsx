@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const ManageMarketMap = () => {
   return (
-    <div className="h-screen flex flex-col font-sans bg-gray-100">
+    <div className="h-screen flex flex-col bg-gray-100">
       <Header />
       <main className="flex flex-1">
         <aside className="w-1/5 bg-white p-6 shadow-md">
