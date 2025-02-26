@@ -15,6 +15,14 @@ export default {
       fontFamily: {
         lexend: ["Lexend", "sans-serif"],
       },
+      borderRadius: {
+        4: "4px",
+        8: "8px",
+        16: "16px",
+        20: "20px",
+        24: "24px",
+        40: "40px",
+      },
     },
   },
   variants: {
