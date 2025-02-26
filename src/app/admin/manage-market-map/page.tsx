@@ -67,7 +67,6 @@ const ManageMarketMap = () => {
       btn.classList.add("bg-gray-200");
     });
 
-    // เพิ่มสี bg-yellow-300 ให้กับปุ่มที่ถูกคลิก
     event.currentTarget.classList.remove("bg-gray-200");
     event.currentTarget.classList.add("bg-yellow-300");
   };
