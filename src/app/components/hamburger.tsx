@@ -81,7 +81,7 @@ const Hamburger: React.FC<HamburgerProps> = ({ isMenuOpen, setIsMenuOpen }) => {
 
             <li>
               <Link
-                href="/adminPage"
+                href="/admin/manage-market-map"
                 className="hover:text-gray-300"
                 onClick={() => setIsMenuOpen(false)}
               >
