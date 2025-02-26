@@ -27,7 +27,7 @@ FROM base as deps
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=package-lock.json,target=package-lock.json \
     --mount=type=cache,target=/root/.npm \
-    npm ci --omit=dev
+    npm ci 
 
 ################################################################################
 # Create a stage for building the application.
@@ -38,7 +38,7 @@ FROM deps as build
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=package-lock.json,target=package-lock.json \
     --mount=type=cache,target=/root/.npm \
-    npm ci
+    npm ci 
 
 # Define build arguments with default values that can be overridden
 ARG NEXT_PUBLIC_GO_API_URL=http://backend:8080
