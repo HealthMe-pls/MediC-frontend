@@ -2,21 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+interface BackButtonProps {
+  previousPage: string;
+}
 
-const BackButton: React.FC = () => {
+export default function BackButton({ previousPage }: BackButtonProps) {
   const router = useRouter();
-  const [previousPage, setPreviousPage] = useState<string | null>(null);
-
-  useEffect(() => {
-    setPreviousPage(sessionStorage.getItem("previousPage") || "/");
-  }, []);
 
   return (
     <div
       className="bg-white w-full h-[50px] fixed top-0 left-0 z-50 shadow-md"
       style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
     >
-      <button onClick={() => router.push(previousPage || "/")} className="pt-4 pl-4">
+      <button
+        onClick={() => router.push(previousPage || "/")}
+        className="pt-4 pl-4"
+      >
         <svg
           width="12"
           height="22"
@@ -32,6 +33,4 @@ const BackButton: React.FC = () => {
       </button>
     </div>
   );
-};
-
-export default BackButton;
+}

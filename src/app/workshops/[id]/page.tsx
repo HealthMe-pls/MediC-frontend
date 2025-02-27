@@ -25,6 +25,12 @@ const WorkshopDetail = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [previousPage, setPreviousPage] = useState<string>("");
+
+  useEffect(() => {
+    setPreviousPage(sessionStorage.getItem("previousPage") || "/");
+  }, []);
+
   useEffect(() => {
     if (id) {
       const fetchData = async () => {
@@ -46,7 +52,7 @@ const WorkshopDetail = () => {
 
   return (
     <div className="font-lexend text-[#4C4343] bg-[#FFF7EB] min-h-screen flex flex-col justify-between">
-      <BackButton />
+      <BackButton previousPage={previousPage} />
 
       <div className="flex flex-row justify-between">
         <div></div>
