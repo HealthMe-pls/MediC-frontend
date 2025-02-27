@@ -23,7 +23,7 @@ export default function WorkshopsPage() {
   }, []);
 
   return (
-    <>
+    <div className="font-lexend ">
       <Header />
       <main className="flex-grow p-8 bg-[#FFF7EB] font-lexend ">
         <h1 className="text-3xl mb-6 text-center">Highlighted Workshops</h1>
@@ -43,7 +43,10 @@ export default function WorkshopsPage() {
           <div className="flex justify-center ml-8 overflow-hidden">
             <div className="flex flex-wrap p-5 justify-start mx-2 w-fit h-fit">
               {workshops.map((workshop) => (
-                <div key={workshop.id} className="justify-between p-5 flex-shrink-0">
+                <div
+                  key={workshop.id}
+                  className="justify-between p-5 flex-shrink-0"
+                >
                   <WorkshopCard workshop={workshop} />
                 </div>
               ))}
@@ -52,6 +55,6 @@ export default function WorkshopsPage() {
         )}
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
