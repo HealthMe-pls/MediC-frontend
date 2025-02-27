@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 
 // // GET - Fetch all workshops
 export async function GET() {
-  console.log("Fetching workshops from backend...");
-  console.log(
-    "Backend URL:",
-    `${process.env.NEXT_PUBLIC_GO_API_URL}/workshops`
-  );
+  // console.log("Fetching workshops from backend...");
+  // console.log(
+  //   "Backend URL:",
+  //   `${process.env.NEXT_PUBLIC_GO_API_URL}/workshops`
+  // );
 
   try {
     const response = await fetch(

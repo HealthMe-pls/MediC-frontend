@@ -16,7 +16,7 @@ export async function fetchShopCategory(): Promise<ShopCategory[]> {
     // setCorsHeaders(headers);
 
     const url = `/api/shopcate`;
-    console.log("Fetching Shop Category from URL:", url);
+    // console.log("Fetching Shop Category from URL:", url);
 
     const response = await axios.get(url, {
       headers: {
@@ -25,12 +25,12 @@ export async function fetchShopCategory(): Promise<ShopCategory[]> {
       },
     });
 
-    console.log("fetchShopCategory at shopcat: ", response);
+    // console.log("fetchShopCategory at shopcat: ", response);
 
     if (response.status !== 200) {
       throw new Error("Failed to fetch Shop Category");
     }
-    console.log("fetchShopCategory at shopcat: ", response.data);
+    // console.log("fetchShopCategory at shopcat: ", response.data);
     return response.data as ShopCategory[];
   } catch (error) {
     console.error("Error fetching Shop Category", error);

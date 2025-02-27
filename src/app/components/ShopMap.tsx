@@ -170,7 +170,7 @@ export default function Map({
               ...getStyleForPoint(point.name, categoryId, shopId, matchShopID),
             }}
             onClick={() => {
-              console.log(`Clicked on ${point.name}`);
+              // console.log(`Clicked on ${point.name}`);
               setSelectedBlock(point.name);
             }}
           >

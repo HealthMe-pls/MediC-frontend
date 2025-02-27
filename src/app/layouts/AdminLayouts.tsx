@@ -15,7 +15,7 @@ export default function AdminLayouts({
 
   const toggleNav = () => {
     setIsNavOpen(!isNavOpen);
-    console.log("toggleNav: ", isNavOpen);
+    // console.log("toggleNav: ", isNavOpen);
   };
 
   const closeNav = () => {

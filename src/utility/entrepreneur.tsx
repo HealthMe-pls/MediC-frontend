@@ -9,7 +9,7 @@ export interface Entrepreneur {
 export async function fetchEntrepreneur(): Promise<Entrepreneur[]> {
   try {
     const url = `/api/entrepreneur`;
-    console.log("Fetching entrepreneur from URL:", url);
+    // console.log("Fetching entrepreneur from URL:", url);
 
     const response = await axios.get<Entrepreneur[]>(url, {
       headers: {
@@ -17,15 +17,15 @@ export async function fetchEntrepreneur(): Promise<Entrepreneur[]> {
       },
     });
 
-    console.log("entrepreneur response: ", response);
+    // console.log("entrepreneur response: ", response);
 
     if (response.status !== 200) {
       throw new Error("Failed to fetch entrepreneur");
     }
-    console.log("entrepreneur response data: ", response.data);
+    // console.log("entrepreneur response data: ", response.data);
     return response.data as Entrepreneur[];
   } catch (error) {
-    console.error("Error entrepreneur:", error);
+    // console.error("Error entrepreneur:", error);
     throw error;
   }
 }
@@ -40,15 +40,15 @@ export async function fetchShopEntById(entId: number): Promise<ShopDetail[]> {
         },
       }
     );
-    console.log("fetchShopByEntID: ", response);
+    // console.log("fetchShopByEntID: ", response);
 
     if (response.status !== 200) {
       throw new Error("Failed to fetch ent'shop");
     }
-    console.log("fetchShopEntById data: ", response.data);
+    // console.log("fetchShopEntById data: ", response.data);
     return response.data as ShopDetail[];
   } catch (error) {
-    console.error(`Error fetching shop with entID ${entId}:`, error);
+    // console.error(`Error fetching shop with entID ${entId}:`, error);
     throw error;
   }
 }
@@ -67,10 +67,10 @@ export async function createEntrepreneur(
         },
       }
     );
-    console.log("Entrepreneur created: ", response.data);
+    // console.log("Entrepreneur created: ", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error creating entrepreneur:", error);
+    // console.error("Error creating entrepreneur:", error);
     throw error;
   }
 }
@@ -90,10 +90,10 @@ export async function editEntrepreneur(
         },
       }
     );
-    console.log("Entrepreneur updated: ", response.data);
+    // console.log("Entrepreneur updated: ", response.data);
     return response.data;
   } catch (error) {
-    console.error(`Error updating entrepreneur with ID ${id}:`, error);
+    // console.error(`Error updating entrepreneur with ID ${id}:`, error);
     throw error;
   }
 }
@@ -106,9 +106,9 @@ export async function deleteEntrepreneur(id: number): Promise<void> {
         "Content-Type": "application/json",
       },
     });
-    console.log(`Entrepreneur with ID ${id} deleted successfully`);
+    // console.log(`Entrepreneur with ID ${id} deleted successfully`);
   } catch (error) {
-    console.error(`Error deleting entrepreneur with ID ${id}:`, error);
+    // console.error(`Error deleting entrepreneur with ID ${id}:`, error);
     throw error;
   }
 }

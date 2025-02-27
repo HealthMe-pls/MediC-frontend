@@ -28,6 +28,6 @@ export const fetchPatientImages = async (
   }
 
   const data = await response.json();
-  console.log(data);
+  // console.log(data);
   return data; // This will be an array of image objects
 };

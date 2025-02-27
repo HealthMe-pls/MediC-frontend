@@ -7,7 +7,7 @@ import axios from "axios";
 export async function GET() {
   try {
     const url = `${process.env.NEXT_PUBLIC_GO_API_URL}/shopcategory`;
-    console.log("Fetching Shop Category from URL:", url);
+    // console.log("Fetching Shop Category from URL:", url);
 
     const response = await axios.get(url, {
       headers: {
@@ -20,7 +20,7 @@ export async function GET() {
     }
     return NextResponse.json(response.data);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return NextResponse.json(
       { message: "Failed to fetch shopcate" },
       { status: 500 }

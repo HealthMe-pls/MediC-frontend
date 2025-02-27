@@ -29,10 +29,10 @@ export default function ManageVendor() {
     setSuccessMessage("");
 
     try {
-      console.log("Sending form data:", formData);
+      // console.log("Sending form data:", formData);
       const newMail = await createMail(formData);
       setSuccessMessage("Mail successfully sent!");
-      console.log("Mail sent: ", newMail);
+      // console.log("Mail sent: ", newMail);
       setFormData({
         from_username: "",
         problem: "",
