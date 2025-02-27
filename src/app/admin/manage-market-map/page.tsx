@@ -12,8 +12,8 @@ import {
   fetchShopCategory,
   ShopCategory,
 } from "@/utility/shopcategory";
-import AdminNavigation from "@/app/components/AdminNavigation";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
+import Map from "@/app/components/ShopMap";
 
 export default function AdminPageComponent() {
   const [blocks, setBlocks] = useState<
@@ -227,27 +227,7 @@ export default function AdminPageComponent() {
       {/* Main Content */}
       {/* Map */}
       <div className="flex-1 p-6  flex flex-col items-center">
-        <div className="relative w-72 h-72 rounded-full border-4 border-gray-500 flex items-center justify-center">
-          {Object.keys(blocks).map((blockId, index) => {
-            const { x, y } = generateBlockPosition(
-              index,
-              Object.keys(blocks).length
-            );
-            return (
-              <div
-                key={blockId}
-                className="absolute w-16 h-16 text-white flex items-center justify-center rounded-full cursor-pointer"
-                style={{
-                  backgroundColor: "blue",
-                  transform: `translate(${x}px, ${y}px)`,
-                }}
-              >
-                <p>{blocks[Number(blockId)].shopName || "no shop"}</p>
-              </div>
-            );
-          })}
-        </div>
-
+        <Map selectedCate={0} setSelectedBlock={(block: string) => {}} matchShopID={0} role="" />
         {isPopUpOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
             <div className="bg-white p-8 rounded-lg shadow-lg w-96">

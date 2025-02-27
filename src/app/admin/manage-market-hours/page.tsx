@@ -1,6 +1,13 @@
+import React from "react";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 
-export default function ManageMarketHours() {
+const ShopHoursSummaryPage = () => {
+  // const shopSet = [
+  //   { shop_name: "Shop 1" },
+  //   { shop_name: "Shop 2" },
+  //   { shop_name: "Shop 3" },
+  // ];
+
   return (
     <AdminLayouts currentPage="Manage Market Hours">
       <div className="h-screen flex flex-col">
@@ -39,4 +46,6 @@ export default function ManageMarketHours() {
       </div>
     </AdminLayouts>
   );
-}
+};
+
+export default ShopHoursSummaryPage;
