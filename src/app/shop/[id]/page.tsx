@@ -9,6 +9,7 @@ import CardProductDetail from "@/app/components/CardProductDetail";
 import BackButton from "@/app/components/BackButton";
 import ImageBanner from "@/app/components/ImageBanner";
 import Footer from "@/app/layouts/Footer";
+
 const formatDate = (isoString: string): string => {
   const date = new Date(isoString); // ใช้ new Date() แทน parseISO
   return format(date, "dd/MM/yyyy EEEE");
@@ -23,6 +24,13 @@ const ShopPage = () => {
   const [shopDetail, setShopDetail] = useState<ShopDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [previousPage, setPreviousPage] = useState<string>("");
+
+  useEffect(() => {
+    setPreviousPage(sessionStorage.getItem("previousPage") || "/");
+
+    // console.log("previous shopdetail page: ", previousPage);
+  }, []);
 
   useEffect(() => {
     if (id) {
@@ -47,7 +55,7 @@ const ShopPage = () => {
 
   return (
     <div className="font-lexend text-[#4C4343] bg-[#FFF7EB] min-h-screen flex flex-col justify-between">
-      <BackButton />
+      <BackButton previousPage={previousPage} />
       <div className="sm:hidden ">
         <div>
           {shopDetail ? (

@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 // import { se, th } from "date-fns/locale";
 import CardMenuSL from "./CardMenuSL";
+import { useRouter } from "next/navigation";
 // import { set } from "date-fns";
 
 interface block {
@@ -27,7 +28,7 @@ const Shopside: React.FC<block> = ({ blockName }) => {
     fetchMapDetail()
       .then((data) => setMapDetails(data))
       .catch((error) => console.error("Error fetching map details:", error));
-    console.log("mapDetails: ", mapDetails);
+    // console.log("mapDetails: ", mapDetails);
   }, []);
 
   const selectedBlock = mapDetails.find(
@@ -40,6 +41,12 @@ const Shopside: React.FC<block> = ({ blockName }) => {
         .catch((error) => console.error("Error fetching shop by id:", error));
     }
   }, [selectedBlock]);
+
+  const router = useRouter();
+  const handleNavigation = () => {
+    sessionStorage.setItem("previousPage", window.location.pathname);
+    router.push(`/shop/${selectedShopDetail?.shop_id}`);
+  };
 
   return (
     <div className="p-4 font-lexend text-[#4C4343] h-[100%]">
@@ -220,13 +227,14 @@ const Shopside: React.FC<block> = ({ blockName }) => {
             )}
           </div>
 
-          <Link href={`/shop/${selectedShopDetail?.shop_id}`}>
-            <div className="mt-4 flex justify-center pb-2">
-              <button className="w-[100%] h-[30px] rounded-[15px] bg-[#F0F0F0] font-light text-[14px]">
-                See More
-              </button>
-            </div>
-          </Link>
+          <div className="mt-4 flex justify-center pb-2">
+            <button
+              className="w-[100%] h-[30px] rounded-[15px] bg-[#F0F0F0] font-light text-[14px]"
+              onClick={handleNavigation}
+            >
+              See More
+            </button>
+          </div>
         </div>
       )}
     </div>
