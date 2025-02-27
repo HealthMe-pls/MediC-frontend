@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export interface Noti {
   id: number;
   problem: string;
@@ -15,6 +17,20 @@ export async function fetchNotifications(): Promise<Noti[]> {
     return await response.json();
   } catch (error) {
     console.error("Error fetxhing contract:", error);
+    throw error;
+  }
+}
+
+export async function deleteNotifications(id: number): Promise<void> {
+  try {
+    await axios.delete(`/api/contacts/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    // console.log(`Entrepreneur with ID ${id} deleted successfully`);
+  } catch (error) {
+    // console.error(`Error deleting entrepreneur with ID ${id}:`, error);
     throw error;
   }
 }
