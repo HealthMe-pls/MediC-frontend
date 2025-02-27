@@ -7,7 +7,7 @@ import Header from "../../layouts/Header";
 import Link from "next/link";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 
-const NotificationsPage = () => {
+const ReportedIssuesPage = () => {
   const [notifications, setNotifications] = useState<Noti[]>([]);
   const [filteredNotifications, setFilteredNotifications] = useState<Noti[]>(
     []
@@ -40,7 +40,7 @@ const NotificationsPage = () => {
   };
 
   return (
-    <AdminLayouts currentPage="Notifications">
+    <AdminLayouts currentPage="Reported Issues">
       {/* Search Bar */}
       <div className="mb-6">
         <input
@@ -86,4 +86,4 @@ const NotificationsPage = () => {
   );
 };
 
-export default NotificationsPage;
+export default ReportedIssuesPage;

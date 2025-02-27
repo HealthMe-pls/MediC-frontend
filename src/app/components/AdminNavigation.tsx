@@ -12,14 +12,13 @@ const pages = [
   { name: "Manage Market Map", path: "/admin/manage-market-map" },
   { name: "Manage Vendor", path: "/admin/manage-vendor" },
   { name: "Manage Market Hours", path: "/admin/manage-market-hours" },
-  { name: "Manage Shop Hours", path: "/admin/manage-shop-hours" },
   { name: "Shop Hours Summary", path: "/admin/shop-hours-summary" },
   {
     name: "Manage Highlighted Workshop & Event",
     path: "/admin/manage-highlighted-workshop",
   },
   { name: "Edit About Us", path: "/admin/edit-about-us" },
-  { name: "Notifications", path: "/admin/notifications" },
+  { name: "Reported Issues", path: "/admin/reported-issues" },
   { name: "Pending Approval", path: "/admin/pending-approval" },
 ];
 
