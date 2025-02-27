@@ -44,4 +44,5 @@
   overflow: hidden; /* Prevent overflow */
   white-space: nowrap; /* Prevent wrapping */
   padding: 0 20px;
+  font-weight: normal;
 }
