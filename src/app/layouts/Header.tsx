@@ -6,7 +6,9 @@ import Hamburger from "../components/hamburger";
 // import styles from "../../styles/Header.module.css";
 import Bar from "./bar";
 import Logo from "../../../public/assets/logo.png";
-const Header = () => {
+import CustomerNavigation from "../components/CustomerNavigation";
+
+export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("Eng");
 
@@ -17,7 +19,6 @@ const Header = () => {
   return (
     <div>
       <Bar />
-
       {/* <div className={styles.header}> */}
       <div className="flex justify-between p-4 bg-white font-lexend">
         <div className="flex-none justify-start">
@@ -27,6 +28,7 @@ const Header = () => {
             Bamboo Family Market
           </h1> */}
         </div>
+        <CustomerNavigation />
         <div className="flex justify-aroud ">
           {/* <div className="text-sm sm:text-lg flex"> */}
           <div className="flex">
@@ -54,7 +56,7 @@ const Header = () => {
           </div>
           {/* </div> */}
           <div
-            className="cursor-pointer flex justify-around mt-6 ml-5"
+            className="cursor-pointer flex justify-around mt-6 ml-5 lg:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {/* <div  onClick={() => setIsMenuOpen(!isMenuOpen)}> */}
@@ -64,6 +66,4 @@ const Header = () => {
       </div>
     </div>
   );
-};
-
-export default Header;
+}
