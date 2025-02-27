@@ -26,7 +26,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    console.log(body);
+    // console.log(body);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/shopcategory`,
       {

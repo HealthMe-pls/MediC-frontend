@@ -86,9 +86,9 @@ export default function AdminPageComponent() {
     }
   }, [editingBlock]);
 
-  useEffect(() => {
-    console.log("isEdit changed:", isEdit);
-  }, [isEdit]);
+  // useEffect(() => {
+  //   console.log("isEdit changed:", isEdit);
+  // }, [isEdit]);
 
   const handleEditClick = (blockId: number) => {
     if (editingBlock === blockId) {

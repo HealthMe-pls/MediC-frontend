@@ -43,13 +43,13 @@ const Shoplist: React.FC<CateID> = ({
     useState<ShopDetail | null>(null);
   const [isShopListVisible, setShopListVisible] = useState<boolean>(false);
 
-  console.log(Cateid);
+  // console.log(Cateid);
 
   useEffect(() => {
     fetchMapDetail()
       .then((data) => setMapDetails(data))
       .catch((error) => console.error("Error fetching map details:", error));
-    console.log("fetching MapDetails at shoplist: ", mapDetails);
+    // console.log("fetching MapDetails at shoplist: ", mapDetails);
   }, []);
 
   // useEffect(() => {
@@ -142,6 +142,7 @@ const Shoplist: React.FC<CateID> = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleBack = () => {
     const previousPage = sessionStorage.getItem("previousPage");
+    console.log("previousPage at shoplist: ", previousPage);
     if (previousPage) {
       router.push(previousPage);
     } else {

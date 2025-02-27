@@ -20,17 +20,17 @@ export interface Workshop {
 export async function fetchWorkshops(): Promise<Workshop[]> {
   try {
     const url = `/api/workshops`;
-    console.log("Fetching workshops from URL:", url);
+    // console.log("Fetching workshops from URL:", url);
 
     const response = await axios.get<Workshop[]>(url, {
       headers: {
         "Content-Type": "application/json",
       },
     });
-    console.log("fetchWorkshops at workshop: ", response);
+    // console.log("fetchWorkshops at workshop: ", response);
     return response.data as Workshop[];
   } catch (error) {
-    console.error("Error fetching workshops:", error);
+    // console.error("Error fetching workshops:", error);
     throw error;
   }
 }
@@ -39,14 +39,14 @@ export const fetchWorkshopsById = async (
 ): Promise<Workshop | null> => {
   try {
     const url = `/api/workshops/${id}`;
-    console.log("Fetching workshops from URL:", url);
+    // console.log("Fetching workshops from URL:", url);
 
     const response = await axios.get<Workshop>(url, {
       headers: {
         "Content-Type": "application/json",
       },
     });
-    console.log("fetchWorkshops at workshop: ", response);
+    // console.log("fetchWorkshops at workshop: ", response);
     return response.data as Workshop;
     // const response = await fetch(
     //   `${process.env.NEXT_PUBLIC_NEXT_URL}/api/workshops/${id}`
@@ -59,7 +59,7 @@ export const fetchWorkshopsById = async (
     // const data = await response.json();
     // return data || null; // Return null if the response is empty
   } catch (error) {
-    console.error("Error fetching workshop:", error);
+    // console.error("Error fetching workshop:", error);
     return null; // Return null on network errors or exceptions
   }
 };

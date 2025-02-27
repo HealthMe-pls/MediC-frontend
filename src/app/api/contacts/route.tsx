@@ -32,7 +32,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    console.log("Incoming request body:", body); // Log ข้อมูลที่ได้รับ
+    // console.log("Incoming request body:", body); // Log ข้อมูลที่ได้รับ
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_GO_API_URL}/contacts`,

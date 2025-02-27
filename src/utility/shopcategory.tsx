@@ -31,7 +31,7 @@ export const DeleteCatagory = async (id: number): Promise<void> => {
     throw new Error("Account data is required");
   }
 
-  console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}`);
+  // console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}`);
 
   const response = await fetch(`http://127.0.0.1:8080/shopcategory/${id}`, {
     method: "DELETE",
@@ -41,13 +41,13 @@ export const DeleteCatagory = async (id: number): Promise<void> => {
     body: JSON.stringify(id),
   });
 
-  console.log({
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(id),
-  });
+  // console.log({
+  //   method: "DELETE",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify(id),
+  // });
 
   if (!response.ok) {
     const errorData = await response.json();
@@ -64,7 +64,7 @@ export const createCategory = async (
     throw new Error("Account data is required");
   }
 
-  console.log(`${NEXT_API}`);
+  // console.log(`${NEXT_API}`);
 
   const response = await fetch(`${NEXT_API}/shopcategory`, {
     method: "POST",
@@ -74,13 +74,13 @@ export const createCategory = async (
     body: JSON.stringify(shopCategory),
   });
 
-  console.log({
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(shopCategory),
-  });
+  // console.log({
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify(shopCategory),
+  // });
 
   if (!response.ok) {
     const errorData = await response.json();

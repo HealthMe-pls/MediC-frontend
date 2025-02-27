@@ -54,7 +54,7 @@ export interface ShopDetail {
 export async function fetchShopDetail(): Promise<ShopDetail[]> {
   try {
     const url = `/api/shop`;
-    console.log("Fetching Shop detail from URL:", url);
+    // console.log("Fetching Shop detail from URL:", url);
 
     const response = await axios.get<ShopDetail[]>(url, {
       headers: {
@@ -63,7 +63,7 @@ export async function fetchShopDetail(): Promise<ShopDetail[]> {
     });
     return response.data as ShopDetail[];
   } catch (error) {
-    console.error("Error fetching shop:", error);
+    // console.error("Error fetching shop:", error);
     throw error;
   }
 }
@@ -88,15 +88,15 @@ export async function fetchShopById(shopId: number): Promise<ShopDetail> {
         "Content-Type": "application/json",
       },
     });
-    console.log("fetchShopByID: ", response);
+    // console.log("fetchShopByID: ", response);
 
     if (response.status !== 200) {
       throw new Error("Failed to fetch Shop Category");
     }
-    console.log("fetchShopById data: ", response.data);
+    // console.log("fetchShopById data: ", response.data);
     return response.data as ShopDetail;
   } catch (error) {
-    console.error(`Error fetching shop with ID ${shopId}:`, error);
+    // console.error(`Error fetching shop with ID ${shopId}:`, error);
     throw error;
   }
 }

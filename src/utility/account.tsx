@@ -10,7 +10,7 @@ export interface Account {
       throw new Error("Account data is required");
     }
   
-    console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}`);
+    // console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}`);
   
     const response = await fetch(`${NEXT_API}/entrepreneur`, {
       method: "POST",
@@ -20,13 +20,13 @@ export interface Account {
       body: JSON.stringify(account),
     });
   
-    console.log({
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(account),
-    });
+    // console.log({
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(account),
+    // });
   
     if (!response.ok) {
       const errorData = await response.json();
