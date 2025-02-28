@@ -36,7 +36,7 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
       <div className="mt-4">
         {workshop.photos?.length ? (
           (() => {
-            const imageUrl = `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`;
+            // const imageUrl = `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`;
             // console.log(imageUrl); // Console log URL ของรูปภาพ
             return (
               <div className="max-w-[350px] max-h-[350px] object-cover transition-all duration-500 rounded-[10px]">

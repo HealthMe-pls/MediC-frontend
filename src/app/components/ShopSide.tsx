@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
 import { ShopDetail, fetchShopById } from "@/utility/shopDetail";
 import { format } from "date-fns";
-import Link from "next/link";
+// import Link from "next/link";
 // import { se, th } from "date-fns/locale";
 import CardMenuSL from "./CardMenuSL";
 import { useRouter } from "next/navigation";

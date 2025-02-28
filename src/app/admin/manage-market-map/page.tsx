@@ -138,13 +138,13 @@ export default function AdminPageComponent() {
     setIsEdit(true);
   };
 
-  const generateBlockPosition = (index: number, total: number) => {
-    const angle = (index / total) * 2 * Math.PI;
-    const radius = 140;
-    const x = radius * Math.cos(angle);
-    const y = radius * Math.sin(angle);
-    return { x, y };
-  };
+  // const generateBlockPosition = (index: number, total: number) => {
+  //   const angle = (index / total) * 2 * Math.PI;
+  //   const radius = 140;
+  //   const x = radius * Math.cos(angle);
+  //   const y = radius * Math.sin(angle);
+  //   return { x, y };
+  // };
 
   const handleSaveChanges = async () => {
     try {
@@ -227,7 +227,12 @@ export default function AdminPageComponent() {
       {/* Main Content */}
       {/* Map */}
       <div className="flex-1 p-6  flex flex-col items-center">
-        <Map selectedCate={0} setSelectedBlock={(block: string) => {}} matchShopID={0} role="" />
+        <Map
+          selectedCate={0}
+          setSelectedBlock={() => {}}
+          matchShopID={0}
+          role=""
+        />
         {isPopUpOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
             <div className="bg-white p-8 rounded-lg shadow-lg w-96">

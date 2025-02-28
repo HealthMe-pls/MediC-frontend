@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { fetchNotifications, Noti } from "@/utility/notifications";
 import React from "react";
-import Header from "../../layouts/Header";
-import Link from "next/link";
+
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 
 const ReportedIssuesPage = () => {

@@ -16,7 +16,7 @@ const CardProductDetail: React.FC<CardMenuProps> = ({ menu }) => {
         <div className="w-[100px] h-[100px] flex-shrink-0">
           {menu.photos?.length ? (
             (() => {
-              const imageUrl = `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0]?.pathfile}`;
+              // const imageUrl = `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0]?.pathfile}`;
               // console.log(imageUrl); // Console log URL ของรูปภาพ
               return (
                 <div className="overflow-hidden max-w-[100px] max-h-[100px] rounded-[10]">
