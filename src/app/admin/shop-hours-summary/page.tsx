@@ -1,6 +1,5 @@
 import React from "react";
-import Header from "../../layouts/Header";
-import Link from "next/link";
+
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 export default function ShopHoursSummaryPage() {
   // Assuming 'shopSet' data is passed as a prop or fetched from an API

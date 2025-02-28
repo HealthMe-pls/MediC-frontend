@@ -1,8 +1,6 @@
 //อันนี้เหมือนจะไม่ได้ใช้
 import React from "react";
-import Header from "../../layouts/Header";
-import Link from "next/link";
-import AdminNavigation from "@/app/components/AdminNavigation";
+
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 
 const ShopHoursSummaryPage = () => {

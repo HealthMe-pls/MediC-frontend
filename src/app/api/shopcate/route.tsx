@@ -22,7 +22,8 @@ export async function GET() {
   } catch (error) {
     // console.error(error);
     return NextResponse.json(
-      { message: "Failed to fetch shopcate" },
+      { message: "Failed to fetch shopcate", error },
+      
       { status: 500 }
     );
   }

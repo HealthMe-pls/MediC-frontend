@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createMail } from "../../../utility/contactToAdmin";
+// import { createMail } from "../../../utility/contactToAdmin";
 import { Dialog } from "@headlessui/react";
 
 export default function ManageVendor() {
@@ -30,7 +30,7 @@ export default function ManageVendor() {
 
     try {
       // console.log("Sending form data:", formData);
-      const newMail = await createMail(formData);
+      // const newMail = await createMail(formData);
       setSuccessMessage("Mail successfully sent!");
       // console.log("Mail sent: ", newMail);
       setFormData({
