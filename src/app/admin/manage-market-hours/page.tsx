@@ -3,8 +3,39 @@ import AdminLayouts from "@/app/layouts/AdminLayouts";
 export default function ManageMarketHours() {
   return (
     <AdminLayouts currentPage="Manage Market Hours">
-      <div className="flex flex-row justify-center items-center">
-        <div>this is Manage Market Hours</div>
+      <div className="h-screen flex flex-col">
+        <section className="flex-1 p-8">
+          <div className="flex justify-between items-center mb-6">
+            <button className="bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-lg transition duration-200">
+              Add Date
+            </button>
+          </div>
+
+          <div className="flex justify-center items-center mb-6">
+            <button className="mx-2">&lt;</button>
+            <span className="text-lg font-medium">December 2024</span>
+            <button className="mx-2">&gt;</button>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse table-auto">
+              <thead>
+                <tr className="bg-gray-200">
+                  <th className="border px-4 py-2 text-left">Opening Date</th>
+                  <th className="border px-4 py-2 text-left">From</th>
+                  <th className="border px-4 py-2 text-left">To</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b">
+                  <td className="px-4 py-2">Sunday, 1 Dec 2024</td>
+                  <td className="px-4 py-2">09:00</td>
+                  <td className="px-4 py-2">20:00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
     </AdminLayouts>
   );
