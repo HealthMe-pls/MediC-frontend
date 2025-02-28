@@ -227,7 +227,12 @@ export default function AdminPageComponent() {
       {/* Main Content */}
       {/* Map */}
       <div className="flex-1 p-6  flex flex-col items-center">
-        <Map selectedCate={0} setSelectedBlock={(block: string) => {}} matchShopID={0} role="" />
+        <Map
+          selectedCate={0}
+          setSelectedBlock={(block: string) => {}}
+          matchShopID={0}
+          role=""
+        />
         {isPopUpOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
             <div className="bg-white p-8 rounded-lg shadow-lg w-96">
@@ -351,7 +356,6 @@ export default function AdminPageComponent() {
                   <th className="border border-gray-300 px-4 py-2">
                     Block Name
                   </th>
-                  <th className="border border-gray-300 px-4 py-2">Shop ID</th>
                   <th className="border border-gray-300 px-4 py-2">Name</th>
                   <th className="border border-gray-300 px-4 py-2">Actions</th>
                 </tr>
@@ -361,9 +365,6 @@ export default function AdminPageComponent() {
                   <tr key={blockId}>
                     <td className="border border-gray-300 px-4 py-4 text-center">
                       {details.blockName}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-4 text-center">
-                      {details.shopId}
                     </td>
                     <td
                       className="border border-gray-300 px-4 py-2 text-center"

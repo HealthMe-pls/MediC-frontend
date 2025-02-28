@@ -63,3 +63,52 @@ export const fetchWorkshopsById = async (
     return null; // Return null on network errors or exceptions
   }
 };
+
+export const deleteWorkshop = async (id: number): Promise<void> => {
+  try {
+    const url = `/api/workshops/${id}`;
+    await axios.delete(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error(`Error deleting workshop with id ${id}:`, error);
+    throw error;
+  }
+};
+
+export const updateWorkshop = async (
+  id: number,
+  workshopData: Partial<Workshop>
+): Promise<Workshop> => {
+  try {
+    const url = `/api/workshops/${id}`;
+    const response = await axios.put<Workshop>(url, workshopData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating workshop with id ${id}:`, error);
+    throw error;
+  }
+};
+
+export const createWorkshop = async (
+  workshopData: Partial<Omit<Workshop, "id">>  
+): Promise<Workshop> => {
+  try {
+    const url = `/api/workshops`;
+    const response = await axios.post<Workshop>(url, workshopData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating workshop:", error);
+    throw error;
+  }
+};
