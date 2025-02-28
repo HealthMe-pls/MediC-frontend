@@ -229,7 +229,7 @@ export default function AdminPageComponent() {
       <div className="flex-1 p-6  flex flex-col items-center">
         <Map
           selectedCate={0}
-          setSelectedBlock={() => {}}
+          setSelectedBlock={(block: string) => {}}
           matchShopID={0}
           role=""
         />
@@ -356,7 +356,6 @@ export default function AdminPageComponent() {
                   <th className="border border-gray-300 px-4 py-2">
                     Block Name
                   </th>
-                  <th className="border border-gray-300 px-4 py-2">Shop ID</th>
                   <th className="border border-gray-300 px-4 py-2">Name</th>
                   <th className="border border-gray-300 px-4 py-2">Actions</th>
                 </tr>
@@ -366,9 +365,6 @@ export default function AdminPageComponent() {
                   <tr key={blockId}>
                     <td className="border border-gray-300 px-4 py-4 text-center">
                       {details.blockName}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-4 text-center">
-                      {details.shopId}
                     </td>
                     <td
                       className="border border-gray-300 px-4 py-2 text-center"
