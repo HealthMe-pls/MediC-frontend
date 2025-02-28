@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
-import { fetchShopDetail, ShopDetail } from "@/utility/shopDetail";
+import { fetchShopDetail, ShopDetail } from "@/utility/shop";
 import { format } from "date-fns";
 import Link from "next/link";
 // import { th } from "date-fns/locale";

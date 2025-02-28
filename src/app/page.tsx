@@ -12,7 +12,7 @@ import SearchBar from "./components/SearchBar";
 import "../styles/global.css";
 import "./globals.css";
 import Mapguide from "../../public/assets/MapGuide.gif";
-import { fetchShopCategory, ShopCategory } from "@/utility/shopcate";
+import { fetchShopCategory, ShopCategory } from "@/utility/shop";
 import Filter from "./components/Filter";
 import Shopside from "./components/ShopSide";
 

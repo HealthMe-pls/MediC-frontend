@@ -12,7 +12,7 @@ import {
   DeleteCatagory,
   fetchShopCategory,
   ShopCategory,
-} from "@/utility/shopcategory";
+} from "@/utility/shop";
 
 export default function AdminPageComponent() {
     const [blocks, setBlocks] = useState<
@@ -61,7 +61,7 @@ export default function AdminPageComponent() {
   
         //reduce ShopDetail data -> [shop_id][shop_name]
         const shopIdNameRecord: ShopIdName[] = shopData.map((item) => ({
-          shop_id: item.id,
+          shop_id: item.shop_id,
           shop_name: item.name,
         }));
   
