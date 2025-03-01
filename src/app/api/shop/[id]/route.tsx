@@ -66,3 +66,39 @@ export async function DELETE(
     );
   }
 }
+
+export async function PUT(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const shopId = (await context.params).id;
+    const shopData = await req.json();
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/admin/shop/${shopId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(shopData),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to update shop in API route");
+    }
+
+    const updatedWorkshop = await response.json();
+    const headers = new Headers();
+    setCorsHeaders(headers);
+    return NextResponse.json(updatedWorkshop, { status: 200, headers });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { message: "Failed to updateshop in API route" },
+      { status: 500 }
+    );
+  }
+}
