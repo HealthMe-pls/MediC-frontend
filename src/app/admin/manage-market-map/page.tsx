@@ -4,6 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import { fetchMapDetail } from "../../../utility/maps";
 import { fetchShopDetail, ShopIdName } from "../../../utility/shop";
 import { ChangeMap } from "../../../utility/maps";
+import { createShopByAdmin } from "@/utility/shopDetail";
+import ShopFormModal, { ShopFormData } from "@/app/components/ShopFormModal";
+
 // import Link from "next/link";
 
 import {
@@ -14,6 +17,7 @@ import {
 } from "@/utility/shopcategory";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 import Map from "@/app/components/ShopMap";
+import ShopTable from "@/app/components/ShopTable";
 
 export default function AdminPageComponent() {
   const [blocks, setBlocks] = useState<
@@ -34,6 +38,9 @@ export default function AdminPageComponent() {
   const [shopCategory, setShopCategory] = useState<ShopCategory[]>([]);
   const [isAddingCat, setIsAddingCat] = useState(false);
   const [categorySearchTerm, setCategorySearchTerm] = useState("");
+
+  const [isShopModalOpen, setIsShopModalOpen] = useState(false);
+  const [shopFormData, setShopFormData] = useState<ShopFormData | null>(null);
 
   // Fetch map and shop data
   const fetchData = async () => {
@@ -74,6 +81,27 @@ export default function AdminPageComponent() {
     }
   };
 
+  const handleOpenAddShopModal = () => {
+    setShopFormData({
+      name: "",
+      shop_category_id: 1,
+      description: "",
+      entrepreneur_id: 1,
+    });
+    setIsShopModalOpen(true);
+  };
+
+  const handleCreateShop = async (formData: ShopFormData) => {
+    try {
+      await createShopByAdmin(formData);
+      console.log("Shop created successfully!");
+      setIsShopModalOpen(false);
+      fetchData();
+    } catch (error) {
+      console.error("Error creating shop:", error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -100,32 +128,42 @@ export default function AdminPageComponent() {
     }
   };
 
-  const handleShopSelect = (
+  const handleShopSelect = async (
     blockId: number,
     selectedShop: { shop_id: number; shop_name: string }
   ) => {
-    // Update block with selected shop details
-    setBlocks((prevBlocks) => ({
-      ...prevBlocks,
-      [blockId]: {
-        blockName: prevBlocks[blockId]?.blockName || "",
-        shopName: selectedShop.shop_name,
-        shopId: selectedShop.shop_id,
-      },
-    }));
-    setIsEdit(true);
-    setEditingBlock(null);
+    try {
+      // อัปเดต UI ทันทีเพื่อให้ dropdown ดู responsive
+      setBlocks((prevBlocks) => ({
+        ...prevBlocks,
+        [blockId]: {
+          blockName: prevBlocks[blockId]?.blockName || "",
+          shopName: selectedShop.shop_name,
+          shopId: selectedShop.shop_id,
+        },
+      }));
+
+      // เรียก API เพื่อบันทึกค่าที่เปลี่ยนแปลง
+      await ChangeMap([
+        {
+          block_id: blockId,
+          block_name: blocks[blockId].blockName,
+          shop_id: selectedShop.shop_id,
+        },
+      ]);
+
+      console.log("Shop updated successfully!");
+    } catch (error) {
+      console.error("Error updating shop:", error);
+      alert("Failed to update shop. Please try again.");
+    }
   };
 
-  //search for shop name
-  const filteredShops = ShopIdName.filter(
-    ({ shop_name }) =>
-      shop_name && shop_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
-  const handleRemoveShop = (blockId: number) => {
+  const handleRemoveShop = async (blockId: number) => {
     const confirmRemove = window.confirm(`Remove shop from block ${blockId}?`);
     if (confirmRemove) {
+      console.log("remove");
       setBlocks((prevBlocks) => ({
         ...prevBlocks,
         [blockId]: {
@@ -134,40 +172,15 @@ export default function AdminPageComponent() {
           shopId: null,
         },
       }));
+
+      await ChangeMap([
+        {
+          block_id: blockId,
+          block_name: blocks[blockId].blockName,
+          shop_id: null,
+        },
+      ]);
     }
-    setIsEdit(true);
-  };
-
-  const generateBlockPosition = (index: number, total: number) => {
-    const angle = (index / total) * 2 * Math.PI;
-    const radius = 140;
-    const x = radius * Math.cos(angle);
-    const y = radius * Math.sin(angle);
-    return { x, y };
-  };
-
-  const handleSaveChanges = async () => {
-    try {
-      const mapChangedData = Object.entries(blocks).map(
-        ([blockId, { blockName, shopId }]) => ({
-          block_id: Number(blockId),
-          block_name: blockName,
-          shop_id: shopId,
-        })
-      );
-
-      await ChangeMap(mapChangedData);
-      setIsEdit(false);
-      alert("Changes saved successfully!");
-    } catch (error) {
-      console.error("Error saving changes:", error);
-      alert("Failed to save changes. Please try again.");
-    }
-  };
-
-  const handleCancelChanges = async () => {
-    await fetchData();
-    setIsEdit(false);
   };
 
   const handleManageCategory = () => {
@@ -231,7 +244,7 @@ export default function AdminPageComponent() {
           selectedCate={0}
           setSelectedBlock={(block: string) => {}}
           matchShopID={0}
-          role=""
+          role="admin"
         />
         {isPopUpOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
@@ -306,126 +319,38 @@ export default function AdminPageComponent() {
           </div>
         )}
 
+        {isShopModalOpen && (
+          <ShopFormModal
+            isOpen={isShopModalOpen}
+            onClose={() => setIsShopModalOpen(false)}
+            onSubmit={handleCreateShop}
+            initialData={shopFormData || undefined}
+          />
+        )}
+
         {/* Edit Table */}
         <div className="mt-8 w-full">
-          {isEdit ? (
-            <div>
-              <div className="flex justify-between">
-                <h2 className="text-xl font-bold mb-4">Manage Shops</h2>
-                <button
-                  onClick={handleManageCategory}
-                  className="m-1 p-3 bg-gray-300 rounded"
-                >
-                  Manage catagory
-                </button>
-              </div>
-              <div className="mb-1 flex justify-end">
-                <button
-                  disabled={!isEdit}
-                  onClick={handleSaveChanges}
-                  className="p-3 mr-2 bg-green-500 text-white rounded"
-                >
-                  Save Changes
-                </button>
-                <button
-                  disabled={!isEdit}
-                  onClick={handleCancelChanges}
-                  className="p-3 bg-gray-500 text-white rounded"
-                >
-                  Cancel
-                </button>
-              </div>
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-bold mb-4">Manage Shops</h2>
+            <div className="flex justify-self-end items-center">
+              <button
+                onClick={handleOpenAddShopModal}
+                className="m-3 p-3 bg-blue-100  rounded"
+              >
+                + Add Shop
+              </button>
+              <button
+                onClick={handleManageCategory}
+                className="m-3 p-3 bg-gray-300 rounded"
+              >
+                Manage catagory
+              </button>
             </div>
-          ) : (
-            <div>
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold mb-4">Manage Shops</h2>
-                <button
-                  onClick={handleManageCategory}
-                  className="m-3 p-3 bg-gray-300 rounded"
-                >
-                  Manage catagory
-                </button>
-              </div>
-            </div>
-          )}
-          <div className="max-h-[300px] overflow-y-auto">
-            <table className="w-full border-collapse border border-gray-300 bg-white ">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border border-gray-300 px-4 py-2">
-                    Block Name
-                  </th>
-                  <th className="border border-gray-300 px-4 py-2">Name</th>
-                  <th className="border border-gray-300 px-4 py-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(blocks).map(([blockId, details]) => (
-                  <tr key={blockId}>
-                    <td className="border border-gray-300 px-4 py-4 text-center">
-                      {details.blockName}
-                    </td>
-                    <td
-                      className="border border-gray-300 px-4 py-2 text-center"
-                      style={{ width: "200px" }}
-                    >
-                      {editingBlock === Number(blockId) ? (
-                        <div>
-                          <input
-                            type="text"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            ref={inputRef}
-                            className="p-2 border border-gray-300 rounded w-full"
-                            placeholder="Search shop..."
-                          />
-                          {filteredShops !== null ? (
-                            <ul className="border border-gray-300 mt-2 rounded bg-white max-h-40 overflow-y-auto">
-                              {filteredShops.map(({ shop_id, shop_name }) => (
-                                <li
-                                  key={shop_name}
-                                  className="p-2 hover:bg-gray-100 cursor-pointer"
-                                  onClick={() =>
-                                    handleShopSelect(Number(blockId), {
-                                      shop_id,
-                                      shop_name,
-                                    })
-                                  }
-                                >
-                                  {shop_name}
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p className="text-gray-500 mt-2">
-                              No shop found...
-                            </p>
-                          )}
-                        </div>
-                      ) : (
-                        <span>{details.shopName || "-"}</span>
-                      )}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2 text-center">
-                      <button
-                        onClick={() => handleEditClick(Number(blockId))}
-                        className="p-2 bg-blue-500 text-white rounded"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleRemoveShop(Number(blockId))}
-                        className="p-2 bg-red-500 text-white rounded ml-2"
-                      >
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
+
+          <ShopTable
+            {...{ blocks, ShopIdName, handleShopSelect, handleRemoveShop }}
+          />
         </div>
       </div>
     </AdminLayouts>

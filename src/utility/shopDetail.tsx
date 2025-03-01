@@ -68,19 +68,6 @@ export async function fetchShopDetail(): Promise<ShopDetail[]> {
   }
 }
 
-// ฟังก์ชันดึงข้อมูลร้านค้าตาม shopId
-// export async function fetchShopById(shopId: number): Promise<ShopDetail> {
-//   try {
-//     const response = await fetch(`http://127.0.0.1:8080/shop/${shopId}`);
-//     if (!response.ok) {
-//       throw new Error(`Failed to fetch shop with ID: ${shopId}`);
-//     }
-//     return await response.json();
-//   } catch (error) {
-//     console.error(`Error fetching shop with ID ${shopId}:`, error);
-//     throw error;
-//   }
-// }
 export async function fetchShopById(shopId: number): Promise<ShopDetail> {
   try {
     const response = await axios.get<ShopDetail>(`/api/shop/${shopId}`, {
@@ -100,3 +87,52 @@ export async function fetchShopById(shopId: number): Promise<ShopDetail> {
     throw error;
   }
 }
+
+export const deleteShopByAdmin = async (id: number): Promise<void> => {
+  try {
+    const url = `/api/shop/${id}`;
+    await axios.delete(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error(`Error deleting workshop with id ${id}:`, error);
+    throw error;
+  }
+};
+
+export const updateShopByAdmin = async (
+  id: number,
+  workshopData: Partial<ShopDetail>
+): Promise<ShopDetail> => {
+  try {
+    const url = `/api/shop/${id}`;
+    const response = await axios.put<ShopDetail>(url, workshopData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating workshop with id ${id}:`, error);
+    throw error;
+  }
+};
+
+export const createShopByAdmin = async (
+  workshopData: Partial<Omit<ShopDetail, "id">>
+): Promise<ShopDetail> => {
+  try {
+    const url = `/api/shop`;
+    const response = await axios.post<ShopDetail>(url, workshopData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating workshop:", error);
+    throw error;
+  }
+};
