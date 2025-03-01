@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";  // Import useRouter from Next.js
 import { loginEntrepreneur, AuthResponse } from "@/utility/login"; // Make sure to import your login function
 
 const Login = () => {
@@ -8,6 +9,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const router = useRouter();  // Initialize the router
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +27,7 @@ const Login = () => {
       // Store token in localStorage or cookies
       if (response.token) {
         localStorage.setItem("authToken", response.token); // Or use cookies for better security
+          // Redirect to the dashboard page after login
       }
     }
   };
@@ -62,6 +65,11 @@ const Login = () => {
           Login successful! Your token: {token}
         </div>
       )}
+
+      {/* Button to go to the next page */}
+      <button onClick={() => router.push("/entrepreneurLogin")} style={{ marginTop: "10px" }}>
+        Go to Next Page
+      </button>
     </div>
   );
 };
