@@ -1,3 +1,9 @@
+import axios from "axios";
+
+export interface MarketOpenResponse {
+  market_open_dates: MarketOpenDate[];
+}
+
 export interface MarketOpenDate {
     id: number;
     date: string;
@@ -7,7 +13,7 @@ export interface MarketOpenDate {
 
 export async function fetchMarketOpenDates(): Promise<MarketOpenDate[]> {
     try {
-      const url = `/api/market-open-dates`;
+      const url = `/api/marketOpenDates`;
       console.log("Fetching market-open-dates from URL:", url);
   
       const response = await axios.get<MarketOpenDate[]>(url, {
