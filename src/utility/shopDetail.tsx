@@ -1,7 +1,6 @@
 // import { headers } from "next/headers";
 import axios from "axios";
 
-
 // Interface สำหรับข้อมูล Social Media
 export interface Photo {
   pathfile: string;
@@ -26,7 +25,7 @@ export interface ShopOpenDates {
 
 // Interface สำหรับข้อมูลเมนูร้านค้า (กรณีที่ต้องการรายละเอียดเมนู)
 export interface Menu {
-  id: string;
+  id: number;
   photos: Photo[];
   price: number;
   product_description: string;

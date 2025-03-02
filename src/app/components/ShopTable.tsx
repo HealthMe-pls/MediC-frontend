@@ -9,7 +9,16 @@ import {
   updateSocialByAdmin,
   createSocialByAdmin,
 } from "@/utility/social";
-import ShopFormModal, { ShopFormData, SocialFormData } from "./ShopFormModal";
+import ShopFormModal, {
+  ShopFormData,
+  SocialFormData,
+  MenuFormData,
+} from "./ShopFormModal";
+import {
+  createMenuByAdmin,
+  deleteMenu,
+  updateMenuByAdmin,
+} from "@/utility/menu";
 
 interface ShopTableProps {
   blocks: Record<
@@ -36,6 +45,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
   const [editSocialData, setEditSocialData] = useState<SocialFormData[] | null>(
     null
   );
+  const [editMenuData, setEditMenuData] = useState<MenuFormData[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
@@ -62,6 +72,20 @@ const ShopTable: React.FC<ShopTableProps> = ({
               }))
             : [];
 
+          const newMenuData: MenuFormData[] = shop.menus
+            ? shop.menus.map((menu) => ({
+                id: menu.id,
+                img:
+                  menu.photos?.length > 0
+                    ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0].pathfile}`
+                    : "",
+                product_name: menu.product_name,
+                product_description: menu.product_description,
+                price: menu.price,
+                shop_id: shop.shop_id,
+              }))
+            : [];
+
           // ป้องกันการตั้งค่า state ถ้าข้อมูลไม่เปลี่ยน
           setEditShopData((prev) =>
             JSON.stringify(prev) === JSON.stringify(newShopData)
@@ -72,6 +96,11 @@ const ShopTable: React.FC<ShopTableProps> = ({
             JSON.stringify(prev) === JSON.stringify(newSocialData)
               ? prev
               : newSocialData
+          );
+          setEditMenuData((prev) =>
+            JSON.stringify(prev) === JSON.stringify(newMenuData)
+              ? prev
+              : newMenuData
           );
         }
       } catch (error) {
@@ -99,9 +128,114 @@ const ShopTable: React.FC<ShopTableProps> = ({
   //   }
   // };
 
+  const handleSocialUpdate = async (
+    shopId: number,
+    socialData: SocialFormData[]
+  ) => {
+    try {
+      const deletedSocials = editSocialData?.filter(
+        (oldSocial) =>
+          !socialData.some((newSocial) => newSocial.id === oldSocial.id)
+      );
+
+      for (const social of deletedSocials || []) {
+        if (social.id) {
+          console.log("delete social id : " + social.id);
+          await deleteSocialMedia(social.id);
+        }
+      }
+
+      const updatedSocials = socialData.filter((newSocial) =>
+        editSocialData?.some(
+          (oldSocial) =>
+            oldSocial.id === newSocial.id &&
+            (oldSocial.platform !== newSocial.platform ||
+              oldSocial.name !== newSocial.name ||
+              oldSocial.link !== newSocial.link)
+        )
+      );
+
+      for (const social of updatedSocials) {
+        console.log("update social id : " + social.id);
+        await updateSocialByAdmin(social.id!, social);
+      }
+
+      const newSocials = socialData.filter(
+        (newSocial) =>
+          !editSocialData?.some((oldSocial) => oldSocial.id === newSocial.id)
+      );
+
+      for (const social of newSocials) {
+        const newSocial = {
+          name: social.name,
+          platform: social.platform,
+          link: social.link,
+          shop_id: shopId,
+        };
+        console.log("create new social for shop : " + shopId);
+        await createSocialByAdmin(newSocial);
+      }
+    } catch (error) {
+      console.error("Error updating social media:", error);
+    }
+  };
+
+  const handleMenuUpdate = async (shopId: number, menuData: MenuFormData[]) => {
+    try {
+      const deletedMenus = editMenuData?.filter(
+        (oldMenu) => !menuData.some((newMenu) => newMenu.id === oldMenu.id)
+      );
+
+      for (const menu of deletedMenus || []) {
+        if (menu.id) {
+          console.log("delete menuid : " + menu.id);
+          await deleteMenu(menu.id);
+        }
+      }
+
+      const updatedMenus = menuData.filter((newMenu) =>
+        editMenuData?.some(
+          (oldMenu) =>
+            oldMenu.id === newMenu.id &&
+            (oldMenu.product_name !== newMenu.product_name ||
+              oldMenu.product_description !== newMenu.product_description ||
+              oldMenu.price !== newMenu.price) // ต้องมีการเปลี่ยนแปลงจริง ๆ
+        )
+      );
+
+      for (const menu of updatedMenus) {
+        const upMenu = {
+          product_name: menu.product_name,
+          product_description: menu.product_description,
+          price: menu.price,
+          shop_id: shopId,
+        };
+        console.log("update menuid : " + menu.id);
+        await updateMenuByAdmin(menu.id!, upMenu);
+      }
+
+      const newMenus = menuData.filter(
+        (newMenu) => !editMenuData?.some((oldMenu) => oldMenu.id === newMenu.id)
+      );
+
+      for (const menu of newMenus) {
+        const createMenu = {
+          product_name: menu.product_name,
+          product_description: menu.product_description,
+          price: menu.price,
+          shop_id: shopId,
+        };
+        await createMenuByAdmin(createMenu);
+      }
+    } catch (error) {
+      console.error("Error updating social media:", error);
+    }
+  };
+
   const handleSubmit = async (
     formData: ShopFormData,
-    socialData: SocialFormData[]
+    socialData: SocialFormData[],
+    menuData: MenuFormData[]
   ) => {
     if (!editShopData || !editShopData.id) {
       console.error("Shop ID is missing!");
@@ -113,54 +247,10 @@ const ShopTable: React.FC<ShopTableProps> = ({
       await updateShopByAdmin(editShopData.id, formData);
       console.log("Shop updated successfully!");
 
-      const deletedSocials = editSocialData?.filter(
-        (oldSocial) =>
-          !socialData.some(
-            (newSocial) =>
-              newSocial.platform === oldSocial.platform &&
-              newSocial.name === oldSocial.name &&
-              newSocial.link === oldSocial.link
-          )
-      );
+      // จัดการ Social Data
+      await handleSocialUpdate(editShopData.id, socialData);
 
-      for (const social of deletedSocials || []) {
-        if (social.id) {
-          await deleteSocialMedia(social.id);
-        }
-      }
-
-      const updatedSocials = socialData.filter((newSocial) =>
-        editSocialData?.some(
-          (oldSocial) =>
-            oldSocial.platform === newSocial.platform &&
-            oldSocial.name === newSocial.name &&
-            oldSocial.link === newSocial.link
-        )
-      );
-
-      const newSocials = socialData.filter(
-        (newSocial) =>
-          !editSocialData?.some(
-            (oldSocial) =>
-              oldSocial.platform === newSocial.platform &&
-              oldSocial.name === newSocial.name &&
-              oldSocial.link === newSocial.link
-          )
-      );
-
-      for (const social of updatedSocials) {
-        await updateSocialByAdmin(social.id!, social);
-      }
-
-      for (const social of newSocials) {
-        const newSocial = {
-          name: social.name,
-          platform: social.platform,
-          link: social.link,
-          shop_id: editShopData.id,
-        };
-        await createSocialByAdmin(newSocial);
-      }
+      await handleMenuUpdate(editShopData.id, menuData);
 
       setIsModalOpen(false);
     } catch (error) {
@@ -329,6 +419,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
         onSubmit={handleSubmit}
         initialData={editShopData || undefined}
         initialSocialData={editSocialData || []}
+        initialMenuData={editMenuData || undefined}
       />
     </div>
   );
