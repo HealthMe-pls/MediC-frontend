@@ -108,12 +108,12 @@ export async function fetchShopById(shopId: number): Promise<ShopDetail> {
   }
 }
 
-export async function fetchShopOpenDates(): Promise<ShopOpenDates[]> {
+export async function fetchShopOpenDates(): Promise<ShopOpenResponse> {
   try {
     const url = `/api/shopOpenDates`;
     // console.log("Fetching entrepreneur from URL:", url);
 
-    const response = await axios.get<ShopOpenDates[]>(url, {
+    const response = await axios.get<ShopOpenResponse>(url, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -125,7 +125,7 @@ export async function fetchShopOpenDates(): Promise<ShopOpenDates[]> {
       throw new Error("Failed to fetch entrepreneur");
     }
     // console.log("entrepreneur response data: ", response.data);
-    return response.data as ShopOpenDates[];
+    return response.data as ShopOpenResponse;
   } catch (error) {
     // console.error("Error entrepreneur:", error);
     throw error;
