@@ -6,7 +6,6 @@ import {
   createWorkshop,
   deleteWorkshop,
   updateWorkshop,
-  Photo,
 } from "../../../utility/workshop";
 import React from "react";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
