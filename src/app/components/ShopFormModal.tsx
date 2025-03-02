@@ -5,9 +5,14 @@ import { fetchEntrepreneur, Entrepreneur } from "@/utility/entrepreneur";
 interface ShopFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: ShopFormData, socialData: SocialFormData[]) => void;
+  onSubmit: (
+    data: ShopFormData,
+    socialData: SocialFormData[],
+    menuData: MenuFormData[]
+  ) => void;
   initialData?: ShopFormData;
   initialSocialData?: SocialFormData[];
+  initialMenuData?: MenuFormData[];
 }
 
 export interface ShopFormData {
@@ -26,12 +31,22 @@ export interface SocialFormData {
   shop_id: number;
 }
 
+export interface MenuFormData {
+  id?: number;
+  img: File | string;
+  product_name: string;
+  product_description: string;
+  price: number;
+  shop_id: number;
+}
+
 const ShopFormModal: React.FC<ShopFormModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
   initialData,
   initialSocialData = [],
+  initialMenuData = [],
 }) => {
   const [formData, setFormData] = useState<ShopFormData>({
     name: "",
@@ -41,6 +56,9 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
   });
   const [socialFormData, setSocialFormData] = useState<SocialFormData[]>(
     initialSocialData || []
+  );
+  const [menuFormData, setMenuFormData] = useState<MenuFormData[]>(
+    initialMenuData || []
   );
   const [categories, setCategories] = useState<ShopCategory[]>([]);
   const [entrepreneurs, setEntrepreneurs] = useState<Entrepreneur[]>([]);
@@ -74,6 +92,42 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     setSocialFormData(socialFormData.filter((_, i) => i !== index));
   };
 
+  // เพิ่มข้อมูลเมนูใหม่
+  const handleAddMenu = () => {
+    setMenuFormData([
+      ...menuFormData,
+      {
+        id: Date.now(),
+        img: new File([], ""),
+        product_name: "",
+        product_description: "",
+        price: 0,
+        shop_id: 0,
+      },
+    ]);
+  };
+
+  // อัปเดตข้อมูลเมนู
+  const handleMenuChange = (
+    index: number,
+    field: keyof MenuFormData,
+    value: string | number | File
+  ) => {
+    setMenuFormData((prev) => {
+      const updatedMenus = [...prev];
+      updatedMenus[index] = {
+        ...updatedMenus[index],
+        [field]: value,
+      } as MenuFormData;
+      return updatedMenus;
+    });
+  };
+
+  // ลบข้อมูลเมนู
+  const handleRemoveMenu = (index: number) => {
+    setMenuFormData(menuFormData.filter((_, i) => i !== index));
+  };
+
   const resetForm = () => {
     setFormData(
       initialData || {
@@ -83,7 +137,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
         entrepreneur_id: 1,
       }
     );
-
+    setMenuFormData(initialMenuData || []);
     setSocialFormData(initialSocialData || []);
   };
 
@@ -112,12 +166,6 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    if (initialData) {
-      setFormData(initialData);
-    }
-  }, [initialData]);
-
   // ปิดการ scroll เมื่อ modal เปิด
   useEffect(() => {
     if (isOpen) {
@@ -132,6 +180,12 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
   }, [isOpen]);
 
   useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
+
+  useEffect(() => {
     if (initialSocialData.length > 0) {
       setSocialFormData(initialSocialData);
     } else if (socialFormData.length === 0) {
@@ -140,6 +194,29 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
       ]);
     }
   }, [initialSocialData]);
+
+  useEffect(() => {
+    setMenuFormData((prevMenuData) => {
+      if (
+        initialMenuData.length > 0 &&
+        JSON.stringify(prevMenuData) !== JSON.stringify(initialMenuData)
+      ) {
+        return initialMenuData;
+      } else if (initialMenuData.length === 0 && prevMenuData.length === 0) {
+        return [
+          {
+            id: Date.now(),
+            img: new File([], ""), // ใช้ File ว่างๆ เป็นค่าเริ่มต้น
+            product_name: "",
+            product_description: "",
+            price: 0,
+            shop_id: 0,
+          },
+        ];
+      }
+      return prevMenuData;
+    });
+  }, [initialMenuData]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -154,7 +231,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData, socialFormData);
+    onSubmit(formData, socialFormData, menuFormData);
     onClose();
   };
 
@@ -162,7 +239,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full ml-[234px] max-w-2xl relative max-h-[650px] overflow-y-auto scrollbar-hide">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[full] ml-[234px] relative max-h-[650px] overflow-y-auto scrollbar-hide">
         <h2 className="text-xl mb-4">
           {initialData ? "Edit Shop" : "Add Shop"}
         </h2>
@@ -273,6 +350,142 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
                     <button
                       type="button"
                       onClick={() => handleRemoveSocial(index)}
+                      className="bg-red-500 text-white p-1 rounded"
+                    >
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {/* ปุ่มเพิ่มเมนู */}
+          <div className="flex flex-row items-center mt-4">
+            <p className="mr-3">Menus:</p>
+            <button
+              type="button"
+              onClick={handleAddMenu}
+              className="bg-green-200 w-[50px] h-[30px] rounded"
+            >
+              Add
+            </button>
+          </div>
+
+          {/* ตารางแสดงรายการเมนู */}
+          <table className="w-full border mt-2">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="p-2 border">Image</th>
+                <th className="p-2 border">Product Name</th>
+                <th className="p-2 border">Description</th>
+                <th className="p-2 border">Price</th>
+                <th className="p-2 border">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {menuFormData.map((menu, index) => (
+                <tr key={menu.id}>
+                  <td className="p-2 border">
+                    <div
+                      className="relative w-24 h-24 border rounded flex items-center justify-center overflow-hidden cursor-pointer"
+                      onClick={() =>
+                        document.getElementById(`fileInput-${index}`)?.click()
+                      }
+                    >
+                      {menu.img ? (
+                        <img
+                          src={
+                            menu.img instanceof File
+                              ? URL.createObjectURL(menu.img)
+                              : menu.img
+                          }
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null; // ป้องกัน loop error
+                            handleMenuChange(index, "img", ""); // รีเซ็ตเป็นค่าว่าง
+                          }}
+                        />
+                      ) : (
+                        <button
+                          type="button"
+                          className="bg-gray-200 text-gray-600 p-2 rounded"
+                        >
+                          Upload
+                        </button>
+                      )}
+                    </div>
+                    <input
+                      id={`fileInput-${index}`}
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          handleMenuChange(index, "img", e.target.files[0]);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                  </td>
+
+                  <td className="p-2 border h-24">
+                    <input
+                      type="text"
+                      value={menu.product_name}
+                      onChange={(e) =>
+                        handleMenuChange(index, "product_name", e.target.value)
+                      }
+                      className="border p-1 w-full h-full"
+                      placeholder="Product Name"
+                    />
+                  </td>
+                  <td className="p-2 border relative ">
+                    <div className="relative">
+                      <textarea
+                        value={menu.product_description}
+                        onChange={(e) => {
+                          if (e.target.value.length <= 200) {
+                            handleMenuChange(
+                              index,
+                              "product_description",
+                              e.target.value
+                            );
+                          }
+                        }}
+                        onFocus={() =>
+                          (document.body.style.overflow = "hidden")
+                        }
+                        onBlur={() => (document.body.style.overflow = "auto")}
+                        className="border p-2 w-full h-24 resize-none pr-10 scrollbar-hide" // Padding ขวาให้เว้นที่ตัวนับ
+                        placeholder="Description (Max 200 characters)"
+                      />
+                      <span className="absolute bottom-1 right-2 text-xs text-gray-500 mb-2">
+                        {menu.product_description.length}/200
+                      </span>
+                    </div>
+                  </td>
+
+                  <td className="p-2 border w-[70px]">
+                    <input
+                      type="number"
+                      value={menu.price}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/^0+/, ""); // ลบ 0 นำหน้า
+                        handleMenuChange(
+                          index,
+                          "price",
+                          value ? parseFloat(value) : 0
+                        );
+                      }}
+                      className="border p-1 w-full appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      placeholder="Price"
+                    />
+                  </td>
+
+                  <td className="p-2 border text-center">
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveMenu(index)}
                       className="bg-red-500 text-white p-1 rounded"
                     >
                       Remove

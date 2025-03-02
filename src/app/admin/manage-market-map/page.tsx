@@ -8,6 +8,7 @@ import { createShopByAdmin, fetchShopDetail } from "@/utility/shopDetail";
 import ShopFormModal, {
   ShopFormData,
   SocialFormData,
+  MenuFormData,
 } from "@/app/components/ShopFormModal";
 import CategoryManager from "@/app/components/CategoryManager";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
@@ -15,7 +16,8 @@ import Map from "@/app/components/ShopMap";
 import ShopTable from "@/app/components/ShopTable";
 import ModalManageShopList from "@/app/components/ModalManageShopList";
 import { createSocialByAdmin } from "@/utility/social";
-import { fetchShopByName } from "@/utility/searchbar";
+import { fetchShopByName} from "@/utility/searchbar";
+import { createMenuByAdmin } from "@/utility/menu";
 
 export default function AdminPageComponent() {
   const [blocks, setBlocks] = useState<
@@ -97,7 +99,8 @@ export default function AdminPageComponent() {
 
   const handleCreateShop = async (
     formData: ShopFormData,
-    socialData: SocialFormData[]
+    socialData: SocialFormData[],
+    menuData: MenuFormData[]
   ) => {
     try {
       await createShopByAdmin(formData); // รอให้ API สร้างร้านค้าเสร็จ
@@ -115,6 +118,16 @@ export default function AdminPageComponent() {
             shop_id: shop.id, // ใช้ id จาก response
           };
           await createSocialByAdmin(newSocial); // เรียก API สำหรับ Social ทีละตัว
+        }
+
+        for (const menu of menuData) {
+          const newMenu = {
+            product_name: menu.product_name,
+            product_description: menu.product_description,
+            price: menu.price,
+            shop_id: shop.id, // ใช้ id จาก response
+          };
+          await createMenuByAdmin(newMenu); // เรียก API สำหรับ Social ทีละตัว
         }
         console.log("Shop created successfully!");
         setIsShopModalOpen(false);
@@ -211,6 +224,7 @@ export default function AdminPageComponent() {
             onSubmit={handleCreateShop}
             initialData={shopFormData || undefined}
             initialSocialData={undefined}
+            initialMenuData={undefined}
           />
         )}
 
