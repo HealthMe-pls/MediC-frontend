@@ -1,9 +1,5 @@
 import axios from "axios";
 
-export interface MarketOpenResponse {
-  market_open_dates: MarketOpenDate[];
-}
-
 export interface MarketOpenDate {
   id: number;
   date: string;
@@ -11,17 +7,27 @@ export interface MarketOpenDate {
   end_time: string;
 }
 
-export async function fetchMarketOpenDates(): Promise<MarketOpenResponse> {
+export interface MarketOpenDatesResponse {
+  market_open_dates: MarketOpenDate[];
+}
+
+export async function fetchMarketOpenDates(): Promise<MarketOpenDate[]> {
   try {
-    const url = `/api/marketOpenDates`;
+    const url = "http://127.0.0.1:8080/marketDate/";
     console.log("Fetching market-open-dates from URL:", url);
 
-    const response = await axios.get<MarketOpenResponse>(url, {
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const response = await axios.get<MarketOpenDatesResponse>(url, {
+      headers: { "Content-Type": "application/json" },
     });
-    return response.data as MarketOpenResponse;
+
+    const filteredDates = response.data.market_open_dates.map((item) => ({
+      id: item.id,
+      date: item.date,
+      start_time: item.start_time,
+      end_time: item.end_time,
+    }));
+
+    return filteredDates;
   } catch (error) {
     console.error("Error fetching market-open-dates:", error);
     throw error;
