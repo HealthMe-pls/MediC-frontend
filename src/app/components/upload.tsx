@@ -50,7 +50,7 @@ export default function UploadImage({ uploadType, uploadID }: UploadImageProps) 
       setUploading(true);
       const uploadFunction = uploadFunctions[uploadType]; // Get the correct function
       const uploadedPhoto = await uploadFunction(file, uploadID);
-      setMessage(`✅ Image uploaded successfully! Path: ${uploadedPhoto.path_file}`);
+      setMessage(`✅ Image uploaded successfully! Path: ${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${uploadedPhoto.path_file}`);
     } catch (error) {
       setMessage("❌ Error uploading image.");
     } finally {
