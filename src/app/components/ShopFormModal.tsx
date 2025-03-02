@@ -34,21 +34,23 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
   const [entrepreneurs, setEntrepreneurs] = useState<Entrepreneur[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [categoriesData, entrepreneursData] = await Promise.all([
-          fetchShopCategory(),
-          fetchEntrepreneur(),
-        ]);
-        setCategories(categoriesData);
-        setEntrepreneurs(entrepreneursData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+    if (isOpen) {
+      const fetchData = async () => {
+        try {
+          const [categoriesData, entrepreneursData] = await Promise.all([
+            fetchShopCategory(),
+            fetchEntrepreneur(),
+          ]);
+          setCategories(categoriesData);
+          setEntrepreneurs(entrepreneursData);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
 
-    fetchData();
-  }, []);
+      fetchData();
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (initialData) {
@@ -90,7 +92,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full ml-[234px] max-w-2xl relative">
         <h2 className="text-xl mb-4">
           {initialData ? "Edit Shop" : "Add Shop"}
         </h2>

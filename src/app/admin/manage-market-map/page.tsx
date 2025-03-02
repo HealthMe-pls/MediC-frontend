@@ -6,18 +6,12 @@ import { fetchShopDetail, ShopIdName } from "../../../utility/shop";
 import { ChangeMap } from "../../../utility/maps";
 import { createShopByAdmin } from "@/utility/shopDetail";
 import ShopFormModal, { ShopFormData } from "@/app/components/ShopFormModal";
-
-// import Link from "next/link";
-
-import {
-  createCategory,
-  DeleteCatagory,
-  fetchShopCategory,
-  ShopCategory,
-} from "@/utility/shopcategory";
+import CategoryManager from "@/app/components/CategoryManager";
+import { fetchShopCategory } from "@/utility/shopcategory";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 import Map from "@/app/components/ShopMap";
 import ShopTable from "@/app/components/ShopTable";
+import ModalManageShopList from "@/app/components/ModalManageShopList";
 
 export default function AdminPageComponent() {
   const [blocks, setBlocks] = useState<
@@ -30,17 +24,21 @@ export default function AdminPageComponent() {
   // const [Shops, setShops] = useState<ShopDetail[]>([]); // Shops Detail
   const [ShopIdName, setShopIdName] = useState<ShopIdName[]>([]); //lower case shop name
   const [editingBlock, setEditingBlock] = useState<number | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isEdit, setIsEdit] = useState(false);
-
-  //manage category
-  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
-  const [shopCategory, setShopCategory] = useState<ShopCategory[]>([]);
-  const [isAddingCat, setIsAddingCat] = useState(false);
-  const [categorySearchTerm, setCategorySearchTerm] = useState("");
 
   const [isShopModalOpen, setIsShopModalOpen] = useState(false);
   const [shopFormData, setShopFormData] = useState<ShopFormData | null>(null);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [isShopListModalOpen, setIsShopListModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredBlocks = Object.entries(blocks)
+    .filter(([_, block]) =>
+      block.blockName.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .reduce(
+      (acc, [key, value]) => ({ ...acc, [key]: value }),
+      {} as typeof blocks
+    );
 
   // Fetch map and shop data
   const fetchData = async () => {
@@ -50,11 +48,6 @@ export default function AdminPageComponent() {
         fetchShopDetail(),
         fetchShopCategory(),
       ]);
-
-      // setShopSet(mapData);
-      // setShops(shopData);
-      setShopCategory(categoryData);
-      //console.log("category data : ", categoryData);
 
       const initialBlocks = mapData.reduce((acc, mapDetail) => {
         acc[mapDetail.block_id] = {
@@ -80,6 +73,16 @@ export default function AdminPageComponent() {
       console.error("Error fetching map details:", error);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!isShopModalOpen && !isCategoryModalOpen && !isShopListModalOpen) {
+      fetchData();
+    }
+  }, [isShopModalOpen, isCategoryModalOpen, isShopListModalOpen]);
 
   const handleOpenAddShopModal = () => {
     setShopFormData({
@@ -118,16 +121,6 @@ export default function AdminPageComponent() {
   //   console.log("isEdit changed:", isEdit);
   // }, [isEdit]);
 
-  const handleEditClick = (blockId: number) => {
-    if (editingBlock === blockId) {
-      setEditingBlock(null);
-      setSearchTerm(""); // Reset search term when exiting edit mode
-    } else {
-      setEditingBlock(blockId);
-      setSearchTerm(""); // Clear search term when entering edit mode
-    }
-  };
-
   const handleShopSelect = async (
     blockId: number,
     selectedShop: { shop_id: number; shop_name: string }
@@ -159,7 +152,6 @@ export default function AdminPageComponent() {
     }
   };
 
-
   const handleRemoveShop = async (blockId: number) => {
     const confirmRemove = window.confirm(`Remove shop from block ${blockId}?`);
     if (confirmRemove) {
@@ -183,141 +175,19 @@ export default function AdminPageComponent() {
     }
   };
 
-  const handleManageCategory = () => {
-    if (isPopUpOpen) {
-      setIsPopUpOpen(false);
-    } else {
-      setIsPopUpOpen(true);
-    }
-  };
-
-  const categoryInputRef = useRef<HTMLInputElement | null>(null);
-  const handleAddCategories = () => {
-    setIsAddingCat(true);
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    setCategorySearchTerm;
-    categoryInputRef.current?.focus();
-  };
-
-  const handleConfirmCat = async (name: string) => {
-    try {
-      const category = {
-        name: name,
-      };
-      await createCategory(category);
-      setIsAddingCat(false);
-      setIsPopUpOpen(false); // Close the popup
-      fetchData();
-      setIsPopUpOpen(true); // Reopen the popup
-      setCategorySearchTerm("");
-    } catch (error) {
-      console.error("Error adding category:", error);
-    }
-  };
-
-  const handleCancelAdd = () => {
-    setIsAddingCat(false);
-  };
-
-  const handleDeleteCat = async (id: number, name: string) => {
-    const confirmRemove = window.confirm(`Remove Category ${name}?`);
-    if (confirmRemove) {
-      try {
-        await DeleteCatagory(id);
-        setIsPopUpOpen(false); // Close the popup
-        fetchData();
-        setIsPopUpOpen(true); // Reopen the popup
-        alert("Category removed successfully!");
-      } catch (error) {
-        console.error("Error removing category:", error);
-        alert("An error occurred while removing the category.");
-      }
-    }
-  };
-
   return (
     <AdminLayouts currentPage="Manage Market Map">
       {/* Main Content */}
       {/* Map */}
       <div className="flex-1 p-6  flex flex-col items-center">
-        <Map
-          selectedCate={0}
-          setSelectedBlock={(block: string) => {}}
-          matchShopID={0}
-          role="admin"
-        />
-        {isPopUpOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-              <div className="flex justify-between">
-                <h2 className="text-xl font-bold mb-4">Manage Categories</h2>
-                {/* Close Button */}
-                <button
-                  onClick={handleManageCategory}
-                  className="p-2 text-black rounded"
-                >
-                  x
-                </button>
-              </div>
-
-              {isAddingCat ? (
-                <ul>
-                  <div>
-                    {shopCategory.map((category) => (
-                      <li key={category.id} className="p-2 border-b">
-                        {category.name}
-                      </li>
-                    ))}
-                    <input
-                      type="text"
-                      value={categorySearchTerm}
-                      onChange={(e) => setCategorySearchTerm(e.target.value)}
-                      ref={categoryInputRef}
-                      className="m-2 p-2"
-                      placeholder="Add Category..."
-                    />
-                    <button
-                      className="align-middle"
-                      onClick={() => handleConfirmCat(categorySearchTerm)}
-                    >
-                      ✔
-                    </button>
-                    <button
-                      className="align-middle ml-3"
-                      onClick={handleCancelAdd}
-                    >
-                      ❌
-                    </button>
-                  </div>
-                </ul>
-              ) : (
-                <ul>
-                  {shopCategory.map((category) => (
-                    <li key={category.id} className="p-2 border-b">
-                      <button
-                        onClick={() =>
-                          handleDeleteCat(category.id, category.name)
-                        }
-                        className=" mr-3"
-                      >
-                        ✖
-                      </button>
-                      {category.name}
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {!isAddingCat && (
-                <button
-                  onClick={handleAddCategories}
-                  className="mt-5 px-5 bg-green-200 rounded"
-                >
-                  Add
-                </button>
-              )}
-            </div>
-          </div>
-        )}
+        <div className="w-[430px]">
+          <Map
+            selectedCate={0}
+            setSelectedBlock={(block: string) => {}}
+            matchShopID={0}
+            role="admin"
+          />
+        </div>
 
         {isShopModalOpen && (
           <ShopFormModal
@@ -331,7 +201,15 @@ export default function AdminPageComponent() {
         {/* Edit Table */}
         <div className="mt-8 w-full">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold mb-4">Manage Shops</h2>
+            <div className=" flex items-center gap-4 w-[55%]">
+              <input
+                type="text"
+                placeholder="Search by block name..."
+                className="w-full p-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
             <div className="flex justify-self-end items-center">
               <button
                 onClick={handleOpenAddShopModal}
@@ -340,7 +218,13 @@ export default function AdminPageComponent() {
                 + Add Shop
               </button>
               <button
-                onClick={handleManageCategory}
+                onClick={() => setIsShopListModalOpen(true)}
+                className="m-3 p-3 bg-gray-300 rounded"
+              >
+                Manage Shop List
+              </button>
+              <button
+                onClick={() => setIsCategoryModalOpen(true)}
                 className="m-3 p-3 bg-gray-300 rounded"
               >
                 Manage catagory
@@ -349,7 +233,21 @@ export default function AdminPageComponent() {
           </div>
 
           <ShopTable
-            {...{ blocks, ShopIdName, handleShopSelect, handleRemoveShop }}
+            {...{
+              blocks: filteredBlocks,
+              ShopIdName,
+              handleShopSelect,
+              handleRemoveShop,
+            }}
+          />
+
+          <CategoryManager
+            isOpen={isCategoryModalOpen}
+            onClose={() => setIsCategoryModalOpen(false)}
+          />
+          <ModalManageShopList
+            isOpen={isShopListModalOpen}
+            onClose={() => setIsShopListModalOpen(false)}
           />
         </div>
       </div>

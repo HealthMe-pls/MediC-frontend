@@ -3,7 +3,6 @@ import {
   updateShopByAdmin,
   fetchShopDetail,
   fetchShopById,
-  ShopDetail,
 } from "@/utility/shopDetail";
 import ShopFormModal, { ShopFormData } from "./ShopFormModal";
 
@@ -29,6 +28,8 @@ const ShopTable: React.FC<ShopTableProps> = ({
   const [blockStatus, setBlockStatus] = useState<Record<number, boolean>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editShopData, setEditShopData] = useState<ShopFormData | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 5;
 
   const handleOpenModal = async (shopId: number | null) => {
     if (shopId) {
@@ -108,8 +109,15 @@ const ShopTable: React.FC<ShopTableProps> = ({
     }
   };
 
+  const paginatedBlocks = Object.entries(blocks).slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  const totalPages = Math.ceil(Object.entries(blocks).length / rowsPerPage);
+
   return (
-    <div className="max-h-[300px] overflow-y-auto">
+    <div className="max-h-[500px] overflow-y-auto">
       <table className="w-full border-collapse border border-gray-300 bg-white">
         <thead>
           <tr className="bg-gray-100">
@@ -120,7 +128,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {Object.entries(blocks).map(([blockId, details]) => {
+          {paginatedBlocks.map(([blockId, details]) => {
             const shopId = details.shopId;
 
             return (
@@ -154,7 +162,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
                     ))}
                   </select>
                 </td>
-                <td className="border border-gray-300 px-4 py-4 text-center flex justify-center items-center">
+                <td className="border border-gray-300 px-4 py-4 text-center flex justify-center h-[65px]">
                   {shopId ? (
                     <button
                       onClick={() => toggleStatus(shopId)}
@@ -165,8 +173,8 @@ const ShopTable: React.FC<ShopTableProps> = ({
                       <span
                         className={`w-6 h-6 bg-white rounded-full shadow-md transition-transform ${
                           blockStatus[shopId]
-                            ? "translate-x-6 bg-green-700"
-                            : "translate-x-0 bg-red-700"
+                            ? "translate-x-6 bg-green-500"
+                            : "translate-x-0 bg-red-500"
                         }`}
                       ></span>
                     </button>
@@ -187,6 +195,21 @@ const ShopTable: React.FC<ShopTableProps> = ({
           })}
         </tbody>
       </table>
+      <div className="flex justify-center mt-4">
+        {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+          (page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`mx-1 px-3 py-1 rounded ${
+                currentPage === page ? "bg-gray-500 text-white" : "bg-gray-200"
+              }`}
+            >
+              {page}
+            </button>
+          )
+        )}
+      </div>
       <ShopFormModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
