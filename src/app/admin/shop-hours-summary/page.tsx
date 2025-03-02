@@ -6,7 +6,7 @@ import { jsPDF } from "jspdf";
 import { autoTable } from 'jspdf-autotable'
 import isBetween from "dayjs/plugin/isBetween";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
-import { fetchShopOpenDates, ShopOpenDates } from "@/utility/shopDetail";
+import { fetchShopOpenDates, ShopOpenDates } from "@/utility/shopHourSummary";
 import { fetchMarketOpenDates, MarketOpenDate } from "@/utility/ManageMarketHours";
 
 
@@ -33,8 +33,8 @@ const ShopHoursSummaryPage = () => {
           fetchMarketOpenDates(),
         ]);
         
-        const shopData = shopDateData.shop_open_dates ;
-        const marketData = marketDateData.market_open_dates;
+        const shopData = shopDateData;
+        const marketData = marketDateData;
         
         setMarketOpenDate(marketData);
         setShopOpenDate(shopData); 

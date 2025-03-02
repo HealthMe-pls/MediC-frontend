@@ -164,91 +164,14 @@ export default function AdminPageComponent() {
           shopId: null,
         },
       }));
-    }
-    setIsEdit(true);
-  };
 
-  const generateBlockPosition = (index: number, total: number) => {
-    const angle = (index / total) * 2 * Math.PI;
-    const radius = 140;
-    const x = radius * Math.cos(angle);
-    const y = radius * Math.sin(angle);
-    return { x, y };
-  };
-
-  const handleSaveChanges = async () => {
-    try {
-      const mapChangedData = Object.entries(blocks).map(
-        ([blockId, { blockName, shopId }]) => ({
-          block_id: Number(blockId),
-          block_name: blockName,
-          shop_id: shopId,
-        })
-      );
-
-      await ChangeMap(mapChangedData);
-      setIsEdit(false);
-      alert("Changes saved successfully!");
-    } catch (error) {
-      console.error("Error saving changes:", error);
-      alert("Failed to save changes. Please try again.");
-    }
-  };
-
-  const handleCancelChanges = async () => {
-    await fetchData();
-    setIsEdit(false);
-  };
-
-  const handleManageCategory = () => {
-    if (isPopUpOpen) {
-      setIsPopUpOpen(false);
-    } else {
-      setIsPopUpOpen(true);
-    }
-  };
-
-  const categoryInputRef = useRef<HTMLInputElement | null>(null);
-  const handleAddCategories = () => {
-    setIsAddingCat(true);
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    setCategorySearchTerm;
-    categoryInputRef.current?.focus();
-  };
-
-  const handleConfirmCat = async (name: string) => {
-    try {
-      const category = {
-        name: name,
-      };
-      await createCategory(category);
-      setIsAddingCat(false);
-      setIsPopUpOpen(false); // Close the popup
-      fetchData();
-      setIsPopUpOpen(true); // Reopen the popup
-      setCategorySearchTerm("");
-    } catch (error) {
-      console.error("Error adding category:", error);
-    }
-  };
-
-  const handleCancelAdd = () => {
-    setIsAddingCat(false);
-  };
-
-  const handleDeleteCat = async (id: number, name: string) => {
-    const confirmRemove = window.confirm(`Remove Category ${name}?`);
-    if (confirmRemove) {
-      try {
-        await DeleteCatagory(id);
-        setIsPopUpOpen(false); // Close the popup
-        fetchData();
-        setIsPopUpOpen(true); // Reopen the popup
-        alert("Category removed successfully!");
-      } catch (error) {
-        console.error("Error removing category:", error);
-        alert("An error occurred while removing the category.");
-      }
+      await ChangeMap([
+        {
+          block_id: blockId,
+          block_name: blocks[blockId].blockName,
+          shop_id: null,
+        },
+      ]);
     }
   };
 
@@ -257,20 +180,14 @@ export default function AdminPageComponent() {
       {/* Main Content */}
       {/* Map */}
       <div className="flex-1 p-6  flex flex-col items-center">
-        <Map selectedCate={0} setSelectedBlock={(block: string) => {}} matchShopID={0} role="" />
-        {isPopUpOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-              <div className="flex justify-between">
-                <h2 className="text-xl font-bold mb-4">Manage Categories</h2>
-                {/* Close Button */}
-                <button
-                  onClick={handleManageCategory}
-                  className="p-2 text-black rounded"
-                >
-                  x
-                </button>
-              </div>
+        <div className="w-[430px]">
+          <Map
+            selectedCate={0}
+            setSelectedBlock={(block: string) => {}}
+            matchShopID={0}
+            role="admin"
+          />
+        </div>
 
         {isShopModalOpen && (
           <ShopFormModal
