@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { fetchMapDetail } from "../../../utility/maps";
 import { fetchShopDetail, ShopIdName } from "../../../utility/shop";
 import { ChangeMap } from "../../../utility/maps";
 import { createShopByAdmin } from "@/utility/shopDetail";
 import ShopFormModal, { ShopFormData } from "@/app/components/ShopFormModal";
 import CategoryManager from "@/app/components/CategoryManager";
-import { fetchShopCategory } from "@/utility/shopcategory";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 import Map from "@/app/components/ShopMap";
 import ShopTable from "@/app/components/ShopTable";
@@ -23,7 +22,6 @@ export default function AdminPageComponent() {
   // const [shopSet, setShopSet] = useState<MapDetail[]>([]); //Block - Shop
   // const [Shops, setShops] = useState<ShopDetail[]>([]); // Shops Detail
   const [ShopIdName, setShopIdName] = useState<ShopIdName[]>([]); //lower case shop name
-  const [editingBlock, setEditingBlock] = useState<number | null>(null);
 
   const [isShopModalOpen, setIsShopModalOpen] = useState(false);
   const [shopFormData, setShopFormData] = useState<ShopFormData | null>(null);
@@ -32,7 +30,7 @@ export default function AdminPageComponent() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredBlocks = Object.entries(blocks)
-    .filter(([_, block]) =>
+    .filter(([, block]) =>
       block.blockName.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .reduce(
@@ -43,10 +41,9 @@ export default function AdminPageComponent() {
   // Fetch map and shop data
   const fetchData = async () => {
     try {
-      const [mapData, shopData, categoryData] = await Promise.all([
+      const [mapData, shopData] = await Promise.all([
         fetchMapDetail(),
         fetchShopDetail(),
-        fetchShopCategory(),
       ]);
 
       const initialBlocks = mapData.reduce((acc, mapDetail) => {
@@ -110,13 +107,6 @@ export default function AdminPageComponent() {
   }, []);
 
   // Focus input when editing
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  useEffect(() => {
-    if (editingBlock !== null && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [editingBlock]);
-
   // useEffect(() => {
   //   console.log("isEdit changed:", isEdit);
   // }, [isEdit]);
@@ -183,7 +173,7 @@ export default function AdminPageComponent() {
         <div className="w-[430px]">
           <Map
             selectedCate={0}
-            setSelectedBlock={(block: string) => {}}
+            setSelectedBlock={() => {}}
             matchShopID={0}
             role="admin"
           />

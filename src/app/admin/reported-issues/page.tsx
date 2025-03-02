@@ -7,10 +7,6 @@ import {
   deleteNotifications,
 } from "@/utility/notifications";
 import React from "react";
-<<<<<<< HEAD
-
-=======
->>>>>>> 874b81b (can delete single & multiple issues)
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 
 const ReportedIssuesPage = () => {

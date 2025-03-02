@@ -96,38 +96,14 @@ export async function fetchShopById(shopId: number): Promise<ShopDetail> {
   }
 }
 
-<<<<<<< HEAD
-export async function fetchShopOpenDates(): Promise<ShopOpenDates[]> {
-  try {
-    const url = `/api/shopOpenDates`;
-    // console.log("Fetching entrepreneur from URL:", url);
-
-    const response = await axios.get<ShopOpenDates[]>(url, {
-=======
 export const deleteShopByAdmin = async (id: number): Promise<void> => {
   try {
     const url = `/api/shop/${id}`;
     await axios.delete(url, {
->>>>>>> 2ceda65 (add edit shop without photo social menu)
       headers: {
         "Content-Type": "application/json",
       },
     });
-<<<<<<< HEAD
-
-    // console.log("entrepreneur response: ", response);
-
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch entrepreneur");
-    }
-    // console.log("entrepreneur response data: ", response.data);
-    return response.data as ShopOpenDates[];
-  } catch (error) {
-    // console.error("Error entrepreneur:", error);
-    throw error;
-  }
-}
-=======
   } catch (error) {
     console.error(`Error deleting workshop with id ${id}:`, error);
     throw error;
@@ -168,4 +144,3 @@ export const createShopByAdmin = async (
     throw error;
   }
 };
->>>>>>> 2ceda65 (add edit shop without photo social menu)

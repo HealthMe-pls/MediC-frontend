@@ -6,14 +6,6 @@ export async function GET() {
   try {
     const headers = new Headers();
     setCorsHeaders(headers);
-<<<<<<< HEAD
-    const response = await fetch(`${process.env.NEXT_PUBLIC_GO_API_URL}/shopdetail`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-=======
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_GO_API_URL}/shopdetail`,
       {
@@ -23,8 +15,6 @@ export async function GET() {
         },
       }
     );
->>>>>>> 2ceda65 (add edit shop without photo social menu)
-
     if (!response.ok) {
       throw new Error("Failed to fetch shop");
     }
