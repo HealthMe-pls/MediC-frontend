@@ -5,8 +5,9 @@ import { fetchEntrepreneur, Entrepreneur } from "@/utility/entrepreneur";
 interface ShopFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: ShopFormData) => void;
+  onSubmit: (data: ShopFormData, socialData: SocialFormData[]) => void;
   initialData?: ShopFormData;
+  initialSocialData?: SocialFormData[];
 }
 
 export interface ShopFormData {
@@ -17,11 +18,20 @@ export interface ShopFormData {
   entrepreneur_id: number;
 }
 
+export interface SocialFormData {
+  id?: number;
+  name: string;
+  platform: string;
+  link: string;
+  shop_id: number;
+}
+
 const ShopFormModal: React.FC<ShopFormModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
   initialData,
+  initialSocialData = [],
 }) => {
   const [formData, setFormData] = useState<ShopFormData>({
     name: "",
@@ -29,9 +39,40 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     description: "",
     entrepreneur_id: 1,
   });
-
+  const [socialFormData, setSocialFormData] = useState<SocialFormData[]>(
+    initialSocialData || []
+  );
   const [categories, setCategories] = useState<ShopCategory[]>([]);
   const [entrepreneurs, setEntrepreneurs] = useState<Entrepreneur[]>([]);
+
+  // เพิ่มข้อมูล Social Media ใหม่
+  const handleAddSocial = () => {
+    setSocialFormData([
+      ...socialFormData,
+      { id: Date.now(), platform: "", name: "", link: "", shop_id: 0 },
+    ]);
+  };
+
+  // อัปเดตข้อมูล Social Media
+  const handleSocialChange = (
+    index: number,
+    field: keyof SocialFormData,
+    value: string
+  ) => {
+    setSocialFormData((prev) => {
+      const updatedSocials = [...prev];
+      updatedSocials[index] = {
+        ...updatedSocials[index],
+        [field]: value,
+      } as SocialFormData;
+      return updatedSocials;
+    });
+  };
+
+  // ลบข้อมูล Social Media
+  const handleRemoveSocial = (index: number) => {
+    setSocialFormData(socialFormData.filter((_, i) => i !== index));
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -54,7 +95,11 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
 
   useEffect(() => {
     if (initialData) {
-      setFormData(initialData);
+      setFormData((prev = initialData) =>
+        JSON.stringify(prev) === JSON.stringify(initialData)
+          ? prev
+          : initialData
+      );
     }
   }, [initialData]);
 
@@ -71,6 +116,10 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    setSocialFormData(initialSocialData);
+  }, [initialSocialData]);
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -84,7 +133,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit(formData, socialFormData);
     onClose();
   };
 
@@ -92,7 +141,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full ml-[234px] max-w-2xl relative">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full ml-[234px] max-w-2xl relative max-h-[650px] overflow-y-auto scrollbar-hide">
         <h2 className="text-xl mb-4">
           {initialData ? "Edit Shop" : "Add Shop"}
         </h2>
@@ -105,7 +154,6 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
             placeholder="Shop Name"
             className="border p-2 rounded"
           />
-
           <select
             name="shop_category_id"
             value={formData.shop_category_id}
@@ -121,7 +169,6 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
               </option>
             ))}
           </select>
-
           <textarea
             name="description"
             value={formData.description}
@@ -130,7 +177,6 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
             className="border p-2 rounded resize-y min-h-[150px] max-h-[300px]"
             rows={3}
           />
-
           <select
             name="entrepreneur_id"
             value={formData.entrepreneur_id}
@@ -146,6 +192,75 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
               </option>
             ))}
           </select>
+          <div className="flex flex-row items-center">
+            <p className="mr-3">Social Media:</p>
+            <button
+              type="button"
+              onClick={handleAddSocial}
+              className="bg-green-200 w-[50px] h-[30px] rounded"
+            >
+              Add
+            </button>
+          </div>
+
+          <table className="w-full border mt-2">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="p-2 border">Platform</th>
+                <th className="p-2 border">Account Name</th>
+                <th className="p-2 border">Link</th>
+                <th className="p-2 border">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {socialFormData.map((social, index) => (
+                <tr key={social.id}>
+                  <td className="p-2 border">
+                    <input
+                      type="text"
+                      value={social.platform}
+                      onChange={(e) =>
+                        handleSocialChange(index, "platform", e.target.value)
+                      }
+                      className="border p-1 w-full"
+                      placeholder="Platform"
+                    />
+                  </td>
+                  <td className="p-2 border">
+                    <input
+                      type="text"
+                      value={social.name}
+                      onChange={(e) =>
+                        handleSocialChange(index, "name", e.target.value)
+                      }
+                      className="border p-1 w-full"
+                      placeholder="Account Name"
+                    />
+                  </td>
+                  <td className="p-2 border">
+                    <input
+                      type="text"
+                      value={social.link}
+                      onChange={(e) =>
+                        handleSocialChange(index, "link", e.target.value)
+                      }
+                      className="border p-1 w-full"
+                      placeholder="Link"
+                    />
+                  </td>
+                  <td className="p-2 border text-center">
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSocial(index)}
+                      className="bg-red-500 text-white p-1 rounded"
+                    >
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
           <div className="flex justify-end gap-2">
             <button

@@ -39,5 +39,5 @@ export default {
       borderColor: ["checked"], // รองรับ checked:border
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar-hide")],
 } satisfies Config;

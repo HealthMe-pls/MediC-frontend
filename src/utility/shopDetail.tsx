@@ -10,6 +10,7 @@ export interface Photo {
 
 export interface SocialMedia {
   id: number;
+  name: string;
   link: string;
   platform: string;
   is_public: boolean;
@@ -44,7 +45,7 @@ export interface ShopDetail {
   photos: Photo[];
   shop_id: number;
   shop_open_dates: ShopOpenDates; // ใช้ interface ของเวลาเปิด-ปิด
-  social_media: SocialMedia; // ใช้ interface ของ Social Media
+  social_media: SocialMedia[]; // ใช้ interface ของ Social Media
   open_status: boolean;
 }
 

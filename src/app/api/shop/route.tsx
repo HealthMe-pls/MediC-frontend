@@ -36,13 +36,16 @@ export async function POST(req: Request) {
   try {
     const shopData = await req.json();
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_GO_API_URL}/shop`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(shopData),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/createshop/admin`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(shopData),
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to create shop (in route)");

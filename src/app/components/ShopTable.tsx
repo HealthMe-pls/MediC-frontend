@@ -4,7 +4,7 @@ import {
   fetchShopDetail,
   fetchShopById,
 } from "@/utility/shopDetail";
-import ShopFormModal, { ShopFormData } from "./ShopFormModal";
+import ShopFormModal, { ShopFormData, SocialFormData } from "./ShopFormModal";
 
 interface ShopTableProps {
   blocks: Record<
@@ -28,6 +28,9 @@ const ShopTable: React.FC<ShopTableProps> = ({
   const [blockStatus, setBlockStatus] = useState<Record<number, boolean>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editShopData, setEditShopData] = useState<ShopFormData | null>(null);
+  const [editSocialData, setEditSocialData] = useState<SocialFormData[] | null>(
+    null
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
@@ -36,19 +39,42 @@ const ShopTable: React.FC<ShopTableProps> = ({
       try {
         const shop = await fetchShopById(shopId);
         if (shop) {
-          setEditShopData({
+          const newShopData: ShopFormData = {
             id: shop.shop_id,
             name: shop.name,
             shop_category_id: shop.category_id,
             description: shop.description || "",
             entrepreneur_id: shop.entrepreneur_id,
-          });
+          };
+
+          const newSocialData: SocialFormData[] = shop.social_media
+            ? shop.social_media.map((social) => ({
+                id: social.id,
+                name: social.name,
+                platform: social.platform,
+                link: social.link,
+                shop_id: shop.shop_id,
+              }))
+            : [];
+
+          // ป้องกันการตั้งค่า state ถ้าข้อมูลไม่เปลี่ยน
+          setEditShopData((prev) =>
+            JSON.stringify(prev) === JSON.stringify(newShopData)
+              ? prev
+              : newShopData
+          );
+          setEditSocialData((prev) =>
+            JSON.stringify(prev) === JSON.stringify(newSocialData)
+              ? prev
+              : newSocialData
+          );
         }
       } catch (error) {
         console.error("Error fetching shop details:", error);
       }
     } else {
       setEditShopData(null);
+      setEditSocialData([]); // รีเซ็ต social data เมื่อเป็นการเพิ่มร้านค้าใหม่
     }
     setIsModalOpen(true);
   };
@@ -72,7 +98,6 @@ const ShopTable: React.FC<ShopTableProps> = ({
     const loadShops = async () => {
       try {
         const shops = await fetchShopDetail();
-        console.log("🛠 API Response:", shops);
 
         if (!Array.isArray(shops)) {
           throw new Error("Invalid shop data format");
@@ -85,15 +110,19 @@ const ShopTable: React.FC<ShopTableProps> = ({
           return acc;
         }, {} as Record<number, boolean>);
 
-        console.log("Fixed Initial Block Status:", initialStatus);
-        setBlockStatus(initialStatus);
+        // ป้องกันการ setState ซ้ำถ้าข้อมูลเดิม
+        setBlockStatus((prev) =>
+          JSON.stringify(prev) === JSON.stringify(initialStatus)
+            ? prev
+            : initialStatus
+        );
       } catch (error) {
         console.error("Error fetching shop details:", error);
       }
     };
 
     loadShops();
-  }, []);
+  }, []); // ✅ มี Dependency Array แล้ว ป้องกัน loop
 
   const toggleStatus = async (shopId: number) => {
     if (shopId === null) return;
@@ -171,7 +200,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
                       }`}
                     >
                       <span
-                        className={`w-6 h-6 bg-white rounded-full shadow-md transition-transform ${
+                        className={`w-6 h-6  rounded-full shadow-md transition-transform ${
                           blockStatus[shopId]
                             ? "translate-x-6 bg-green-500"
                             : "translate-x-0 bg-red-500"
@@ -183,12 +212,16 @@ const ShopTable: React.FC<ShopTableProps> = ({
                   )}
                 </td>
                 <td className="border border-gray-300 px-4 py-2 text-center">
-                  <button
-                    onClick={() => handleOpenModal(details.shopId)}
-                    className="p-2 bg-gray-500 text-white rounded"
-                  >
-                    Edit Shop Detail
-                  </button>
+                  {shopId ? (
+                    <button
+                      onClick={() => handleOpenModal(details.shopId)}
+                      className="p-2 bg-gray-500 text-white rounded"
+                    >
+                      Edit Shop Detail
+                    </button>
+                  ) : (
+                    <span className="text-gray-400">No Shop</span>
+                  )}
                 </td>
               </tr>
             );
@@ -215,6 +248,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmit}
         initialData={editShopData || undefined}
+        initialSocialData={editSocialData || []}
       />
     </div>
   );
