@@ -90,6 +90,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
                 }))
             : [];
 
+
           // ป้องกันการตั้งค่า state ถ้าข้อมูลไม่เปลี่ยน
           setEditShopData((prev) =>
             JSON.stringify(prev) === JSON.stringify(newShopData)
