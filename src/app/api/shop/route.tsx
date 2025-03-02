@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const headers = new Headers();
     setCorsHeaders(headers);
-    const response = await fetch(`${process.env.NEXT_PUBLIC_GO_API_URL}/shop`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_GO_API_URL}/shopdetail`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
