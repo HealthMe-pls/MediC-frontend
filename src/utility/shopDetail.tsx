@@ -1,7 +1,6 @@
 // import { headers } from "next/headers";
 import axios from "axios";
 
-
 // Interface สำหรับข้อมูล Social Media
 export interface Photo {
   pathfile: string;
