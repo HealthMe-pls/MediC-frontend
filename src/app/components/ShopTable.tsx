@@ -4,6 +4,11 @@ import {
   fetchShopDetail,
   fetchShopById,
 } from "@/utility/shopDetail";
+import {
+  deleteSocialMedia,
+  updateSocialByAdmin,
+  createSocialByAdmin,
+} from "@/utility/social";
 import ShopFormModal, { ShopFormData, SocialFormData } from "./ShopFormModal";
 
 interface ShopTableProps {
@@ -79,15 +84,84 @@ const ShopTable: React.FC<ShopTableProps> = ({
     setIsModalOpen(true);
   };
 
-  const handleSubmit = async (formData: ShopFormData) => {
+  // const handleSubmit = async (formData: ShopFormData,socialData: SocialFormData[]) => {
+  //   if (!editShopData || !editShopData.id) {
+  //     console.error("Shop ID is missing!");
+  //     return;
+  //   }
+
+  //   try {
+  //     await updateShopByAdmin(editShopData.id, formData);
+  //     console.log("Shop updated successfully!");
+  //     setIsModalOpen(false);
+  //   } catch (error) {
+  //     console.error("Error updating shop:", error);
+  //   }
+  // };
+
+  const handleSubmit = async (
+    formData: ShopFormData,
+    socialData: SocialFormData[]
+  ) => {
     if (!editShopData || !editShopData.id) {
       console.error("Shop ID is missing!");
       return;
     }
 
     try {
+      // อัปเดตร้านค้า
       await updateShopByAdmin(editShopData.id, formData);
       console.log("Shop updated successfully!");
+
+      const deletedSocials = editSocialData?.filter(
+        (oldSocial) =>
+          !socialData.some(
+            (newSocial) =>
+              newSocial.platform === oldSocial.platform &&
+              newSocial.name === oldSocial.name &&
+              newSocial.link === oldSocial.link
+          )
+      );
+
+      for (const social of deletedSocials || []) {
+        if (social.id) {
+          await deleteSocialMedia(social.id);
+        }
+      }
+
+      const updatedSocials = socialData.filter((newSocial) =>
+        editSocialData?.some(
+          (oldSocial) =>
+            oldSocial.platform === newSocial.platform &&
+            oldSocial.name === newSocial.name &&
+            oldSocial.link === newSocial.link
+        )
+      );
+
+      const newSocials = socialData.filter(
+        (newSocial) =>
+          !editSocialData?.some(
+            (oldSocial) =>
+              oldSocial.platform === newSocial.platform &&
+              oldSocial.name === newSocial.name &&
+              oldSocial.link === newSocial.link
+          )
+      );
+
+      for (const social of updatedSocials) {
+        await updateSocialByAdmin(social.id!, social);
+      }
+
+      for (const social of newSocials) {
+        const newSocial = {
+          name: social.name,
+          platform: social.platform,
+          link: social.link,
+          shop_id: editShopData.id,
+        };
+        await createSocialByAdmin(newSocial);
+      }
+
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error updating shop:", error);
@@ -150,9 +224,15 @@ const ShopTable: React.FC<ShopTableProps> = ({
       <table className="w-full border-collapse border border-gray-300 bg-white">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border border-gray-300 px-4 py-2">Block Name</th>
-            <th className="border border-gray-300 px-4 py-2">Shop Name</th>
-            <th className="border border-gray-300 px-4 py-2">Close | Open</th>
+            <th className="border border-gray-300 px-4 py-2 w-[200px]">
+              Block Name
+            </th>
+            <th className="border border-gray-300 px-4 py-2 w-[300px]">
+              Shop Name
+            </th>
+            <th className="border border-gray-300 px-4 py-2 w-[200px]">
+              Close | Open
+            </th>
             <th className="border border-gray-300 px-4 py-2">Actions</th>
           </tr>
         </thead>
