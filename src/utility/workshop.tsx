@@ -60,7 +60,7 @@ export const fetchWorkshopsById = async (
     // return data || null; // Return null if the response is empty
   } catch (error) {
     // console.error("Error fetching workshop:", error);
-    return null; // Return null on network errors or exceptions
+    throw error; // Return null on network errors or exceptions
   }
 };
 

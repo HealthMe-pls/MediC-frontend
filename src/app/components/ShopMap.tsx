@@ -104,7 +104,7 @@ export default function Map({
         };
       }
     } else {
-      return;
+        
     }
 
     let style: React.CSSProperties = {};
