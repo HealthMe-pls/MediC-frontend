@@ -22,7 +22,6 @@ export default function AdminPageComponent() {
   // const [shopSet, setShopSet] = useState<MapDetail[]>([]); //Block - Shop
   // const [Shops, setShops] = useState<ShopDetail[]>([]); // Shops Detail
   const [ShopIdName, setShopIdName] = useState<ShopIdName[]>([]); //lower case shop name
-
   const [isShopModalOpen, setIsShopModalOpen] = useState(false);
   const [shopFormData, setShopFormData] = useState<ShopFormData | null>(null);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);

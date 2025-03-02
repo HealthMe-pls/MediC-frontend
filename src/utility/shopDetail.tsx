@@ -10,23 +10,17 @@ export interface Photo {
 
 export interface SocialMedia {
   id: number;
+  name: string;
   link: string;
   platform: string;
   is_public: boolean;
 }
 
 // Interface สำหรับข้อมูลเวลาเปิด-ปิดร้าน
-// เนื่องจาก controller ส่ง object ของ array มา
-export interface ShopOpenResponse {
-  shop_open_dates: ShopOpenDates[];
-}
-
 export interface ShopOpenDates {
+  end_time: string;
   id: number;
   start_time: string;
-  end_time: string;
-  shop: ShopDetail;
-  margetOpenDate: string;
 }
 
 // Interface สำหรับข้อมูลเมนูร้านค้า (กรณีที่ต้องการรายละเอียดเมนู)
@@ -51,7 +45,7 @@ export interface ShopDetail {
   photos: Photo[];
   shop_id: number;
   shop_open_dates: ShopOpenDates; // ใช้ interface ของเวลาเปิด-ปิด
-  social_media: SocialMedia; // ใช้ interface ของ Social Media
+  social_media: SocialMedia[]; // ใช้ interface ของ Social Media
   open_status: boolean;
 }
 
