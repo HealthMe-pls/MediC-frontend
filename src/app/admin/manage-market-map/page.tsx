@@ -5,13 +5,18 @@ import { fetchMapDetail } from "../../../utility/maps";
 import { fetchShopDetail, ShopIdName } from "../../../utility/shop";
 import { ChangeMap } from "../../../utility/maps";
 import { createShopByAdmin } from "@/utility/shopDetail";
-import ShopFormModal, { ShopFormData } from "@/app/components/ShopFormModal";
+import ShopFormModal, {
+  ShopFormData,
+  SocialFormData,
+} from "@/app/components/ShopFormModal";
 import CategoryManager from "@/app/components/CategoryManager";
 import { fetchShopCategory } from "@/utility/shopcategory";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 import Map from "@/app/components/ShopMap";
 import ShopTable from "@/app/components/ShopTable";
 import ModalManageShopList from "@/app/components/ModalManageShopList";
+import { createSocialByAdmin } from "@/utility/social";
+import { fetchShopByName, ShopByname } from "@/utility/searchbar";
 
 export default function AdminPageComponent() {
   const [blocks, setBlocks] = useState<
@@ -94,12 +99,33 @@ export default function AdminPageComponent() {
     setIsShopModalOpen(true);
   };
 
-  const handleCreateShop = async (formData: ShopFormData) => {
+  const handleCreateShop = async (
+    formData: ShopFormData,
+    socialData: SocialFormData[]
+  ) => {
     try {
-      await createShopByAdmin(formData);
-      console.log("Shop created successfully!");
-      setIsShopModalOpen(false);
-      fetchData();
+      await createShopByAdmin(formData); // รอให้ API สร้างร้านค้าเสร็จ
+      const shop = await fetchShopByName(formData.name); // ใช้ await เพื่อรอข้อมูล
+
+      console.log(shop);
+
+      if (shop && shop.id) {
+        // ตรวจสอบว่ามี id กลับมาหรือไม่
+        for (const social of socialData) {
+          const newSocial = {
+            name: social.name,
+            platform: social.platform,
+            link: social.link,
+            shop_id: shop.id, // ใช้ id จาก response
+          };
+          await createSocialByAdmin(newSocial); // เรียก API สำหรับ Social ทีละตัว
+        }
+        console.log("Shop created successfully!");
+        setIsShopModalOpen(false);
+        fetchData();
+      } else {
+        throw new Error("Shop ID not found in response");
+      }
     } catch (error) {
       console.error("Error creating shop:", error);
     }
@@ -195,6 +221,7 @@ export default function AdminPageComponent() {
             onClose={() => setIsShopModalOpen(false)}
             onSubmit={handleCreateShop}
             initialData={shopFormData || undefined}
+            initialSocialData={undefined}
           />
         )}
 

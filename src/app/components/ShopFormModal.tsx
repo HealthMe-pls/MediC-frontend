@@ -74,6 +74,25 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     setSocialFormData(socialFormData.filter((_, i) => i !== index));
   };
 
+  const resetForm = () => {
+    setFormData(
+      initialData || {
+        name: "",
+        shop_category_id: 1,
+        description: "",
+        entrepreneur_id: 1,
+      }
+    );
+
+    setSocialFormData(initialSocialData || []);
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      resetForm();
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     if (isOpen) {
       const fetchData = async () => {
@@ -95,11 +114,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
 
   useEffect(() => {
     if (initialData) {
-      setFormData((prev = initialData) =>
-        JSON.stringify(prev) === JSON.stringify(initialData)
-          ? prev
-          : initialData
-      );
+      setFormData(initialData);
     }
   }, [initialData]);
 
@@ -117,7 +132,13 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
   }, [isOpen]);
 
   useEffect(() => {
-    setSocialFormData(initialSocialData);
+    if (initialSocialData.length > 0) {
+      setSocialFormData(initialSocialData);
+    } else if (socialFormData.length === 0) {
+      setSocialFormData([
+        { id: Date.now(), platform: "", name: "", link: "", shop_id: 0 },
+      ]);
+    }
   }, [initialSocialData]);
 
   const handleChange = (
@@ -265,7 +286,10 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
           <div className="flex justify-end gap-2">
             <button
               type="button"
-              onClick={onClose}
+              onClick={() => {
+                resetForm(); // คืนค่าเดิม
+                onClose(); // ปิด Modal
+              }}
               className="p-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
             >
               Cancel
