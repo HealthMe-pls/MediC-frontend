@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server"; 
+import { NextResponse } from "next/server";
 
 // GET - Fetch all shop catogory
 export async function GET() {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/shopcategory`
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/shopcategory`
     );
 
     if (!response.ok) {
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     // console.log(body);
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/shopcategory`,
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/shopcategory`,
       {
         method: "POST",
         body: JSON.stringify(body),
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     );
 
     if (!response.ok) {
-      throw new Error("Failed to create admin frontend1");
+      throw new Error("Failed to create shop category");
     }
 
     const newAdmin = await response.json();
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { message: "Failed to create admin frontend2" },
+      { message: "Failed to create shop category" },
       { status: 500 }
     );
   }

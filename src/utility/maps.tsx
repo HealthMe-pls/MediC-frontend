@@ -1,4 +1,5 @@
 import axios from "axios";
+import { setCorsHeaders } from "./corsUtils";
 export interface MapDetail {
   block_id: number;
   block_name: string;
@@ -49,15 +50,21 @@ export const ChangeMap = async (mapChanged: MapChanged[]): Promise<void> => {
     throw new Error("Account data is required");
   }
 
+  console.log("mapChanged: ", mapChanged);
+
+  const header = new Headers();
+  setCorsHeaders(header);
   // console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}`);
 
-  const response = await fetch(`http://127.0.0.1:8080/Allmap`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(mapChanged),
-  });
+  const response = await axios.put(
+    `${process.env.NEXT_PUBLIC_GO_API_URL}/Allmap`,
+    mapChanged,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   // console.log({
   //   method: "PUT",
@@ -67,10 +74,11 @@ export const ChangeMap = async (mapChanged: MapChanged[]): Promise<void> => {
   //   body: JSON.stringify(mapChanged),
   // });
 
-  if (!response.ok) {
-    const errorData = await response.json();
+  if (response.status !== 200) {
+    const errorData = response.data as { message?: string };
     throw new Error(
       `Failed to edit: ${errorData.message || response.statusText}`
     );
   }
+  return;
 };

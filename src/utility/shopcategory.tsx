@@ -1,4 +1,5 @@
 import { ShopDetail } from "./shop";
+import axios from "axios";
 
 export interface ShopCategory {
   id: number;
@@ -10,18 +11,31 @@ export interface CategoryName {
   name: string;
 }
 
-const NEXT_API = "http://localhost:8080";
-
 export async function fetchShopCategory(): Promise<ShopCategory[]> {
   try {
-    const response = await fetch(`http://127.0.0.1:8080/shopcategory`);
-    // console.log("fetch admin response" + response.json());
-    if (!response.ok) {
-      throw new Error("Failed to fetch shop");
+    // Set CORS headers
+    // const headers = new Headers();
+    // setCorsHeaders(headers);
+
+    const url = `/api/shopcategory`;
+    // console.log("Fetching Shop Category from URL:", url);
+
+    const response = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+
+    // console.log("fetchShopCategory at shopcat: ", response);
+
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch Shop Category");
     }
-    return await response.json();
+    // console.log("fetchShopCategory at shopcat: ", response.data);
+    return response.data as ShopCategory[];
   } catch (error) {
-    console.error("Error fetching shop:", error);
+    console.error("Error fetching Shop Category", error);
     throw error;
   }
 }
@@ -33,7 +47,7 @@ export const DeleteCatagory = async (id: number): Promise<void> => {
 
   // console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}`);
 
-  const response = await fetch(`http://127.0.0.1:8080/shopcategory/${id}`, {
+  const response = await fetch(`/api/shopcategory/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -66,7 +80,7 @@ export const createCategory = async (
 
   // console.log(`${NEXT_API}`);
 
-  const response = await fetch(`${NEXT_API}/shopcategory`, {
+  const response = await fetch(`/api/shopcategory`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { fetchMapDetail } from "../../../utility/maps";
-import { fetchShopDetail, ShopIdName } from "../../../utility/shop";
+import { ShopIdName } from "../../../utility/shop";
 import { ChangeMap } from "../../../utility/maps";
-import { createShopByAdmin } from "@/utility/shopDetail";
+import { createShopByAdmin, fetchShopDetail } from "@/utility/shopDetail";
 import ShopFormModal, { ShopFormData } from "@/app/components/ShopFormModal";
 import CategoryManager from "@/app/components/CategoryManager";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
@@ -59,7 +59,7 @@ export default function AdminPageComponent() {
 
       //reduce ShopDetail data -> [shop_id][shop_name]
       const shopIdNameRecord: ShopIdName[] = shopData.map((item) => ({
-        shop_id: item.id,
+        shop_id: item.shop_id,
         shop_name: item.name,
       }));
 

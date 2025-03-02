@@ -15,7 +15,7 @@ export interface SocialMedia {
   is_public: boolean;
 }
 
-// Interface สำหรับข้อมูลเวลาเปิด-ปิดร้าน 
+// Interface สำหรับข้อมูลเวลาเปิด-ปิดร้าน
 // เนื่องจาก controller ส่ง object ของ array มา
 export interface ShopOpenResponse {
   shop_open_dates: ShopOpenDates[];
@@ -55,21 +55,20 @@ export interface ShopDetail {
   open_status: boolean;
 }
 
-
 // const NEXT_API = "http://127.0.0.1:3000";
 
 // ฟังก์ชันดึงข้อมูลร้านค้าทั้งหมด
-export async function fetchShopDetail(): Promise<ShopOpenResponse[]> {
+export async function fetchShopDetail(): Promise<ShopDetail[]> {
   try {
     const url = `/api/shop`;
     // console.log("Fetching Shop detail from URL:", url);
 
-    const response = await axios.get<ShopOpenResponse[]>(url, {
+    const response = await axios.get<ShopDetail[]>(url, {
       headers: {
         "Content-Type": "application/json",
       },
     });
-    return response.data as ShopOpenResponse[];
+    return response.data as ShopDetail[];
   } catch (error) {
     // console.error("Error fetching shop:", error);
     throw error;
