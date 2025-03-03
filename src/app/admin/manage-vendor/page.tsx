@@ -110,7 +110,7 @@ export default function ManageVendor() {
       <div className="p-4 text-[#4C4343]">
         {/*Add Vendor*/}
         <div className="flex justify-end">
-          <button onClick={() => openModal()} className="bg-blue-100 text-[#4C4343] py-2 px-4 rounded-xl mb-4">
+          <button onClick={() => openModal()} className="bg-blue-100 text-[#4C4343] py-2 px-4 rounded-2xl mb-4">
             + Add Vendor
           </button>
         </div>
@@ -131,7 +131,7 @@ export default function ManageVendor() {
               <tr key={ent.id} className="text-center">
                 <td className="p-4">{ent.username}</td>
                 <td className="p-4">{ent.username}</td>
-                <td className="p-4 ">
+                <td className="p-4 flex items-center justify-center">
                   {visiblePasswords[ent.username] ? ent.password : "••••••"}
                   <button onClick={() => togglePasswordVisibility(ent.username)} className="ml-2">
                     {visiblePasswords[ent.username] ? <EyeOffIcon /> : <EyeIcon />}
@@ -139,10 +139,10 @@ export default function ManageVendor() {
                 </td>
                 <td className="p-4">{shopCounts[ent.id] ?? "Loading..."}</td>
                 <td className="">
-                  <button onClick={() => openModal(ent)} className="bg-gray-300 text-[#4C4343] px-7 py-1 rounded-xl mx-1">
+                  <button onClick={() => openModal(ent)} className="bg-gray-300 text-[#4C4343] px-7 py-1 rounded-2xl mx-1">
                     Edit
                   </button>
-                  <button onClick={() => confirmDelete(ent.id, ent.username)} className="bg-red-300 text-[#4C4343] px-7 py-1 rounded-xl">
+                  <button onClick={() => confirmDelete(ent.id, ent.username)} className="bg-red-300 text-[#4C4343] px-7 py-1 rounded-2xl">
                     Delete
                   </button>
                 </td>
