@@ -420,22 +420,32 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
                         //     handleMenuChange(index, "img", ""); // รีเซ็ตเป็นค่าว่าง
                         //   }}
                         // />
-                        <Image
-                          src={
-                            menu.img instanceof File
-                              ? URL.createObjectURL(menu.img)
-                              : menu.img
-                          }
-                          alt="Preview"
-                          className="w-full h-full object-cover"
-                          onError={(
-                            e: React.SyntheticEvent<HTMLImageElement, Event>
-                          ) => {
-                            const target = e.currentTarget as HTMLImageElement;
-                            target.onerror = null; // ป้องกัน loop error
-                            handleMenuChange(index, "img", ""); // รีเซ็ตเป็นค่าว่าง
-                          }}
-                        />
+                        <div className="relative w-full h-full group">
+                          {/* รูปภาพ */}
+                          <Image
+                            src={
+                              menu.img instanceof File
+                                ? URL.createObjectURL(menu.img)
+                                : menu.img
+                            }
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                            width={200} // ต้องกำหนดขนาด ถ้าใช้ next/image
+                            height={200}
+                            onError={(
+                              e: React.SyntheticEvent<HTMLImageElement, Event>
+                            ) => {
+                              const target =
+                                e.currentTarget as HTMLImageElement;
+                              target.onerror = null; // ป้องกัน loop error
+                              handleMenuChange(index, "img", ""); // รีเซ็ตเป็นค่าว่าง
+                            }}
+                          />
+                          {/* Overlay เมื่อ hover */}
+                          <div className="absolute inset-0 bg-black/25 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                            <span className="text-white">Upload</span>
+                          </div>
+                        </div>
                       ) : (
                         <button
                           type="button"
@@ -486,7 +496,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
                           (document.body.style.overflow = "hidden")
                         }
                         onBlur={() => (document.body.style.overflow = "auto")}
-                        className="border p-2 w-full h-24 resize-none pr-10 scrollbar-hide" // Padding ขวาให้เว้นที่ตัวนับ
+                        className="border p-2 w-full min-h-24 resize-none pr-10 scrollbar-hide resize-y " // Padding ขวาให้เว้นที่ตัวนับ
                         placeholder="Description (Max 200 characters)"
                       />
                       <span className="absolute bottom-1 right-2 text-xs text-gray-500 mb-2">
