@@ -5,11 +5,13 @@ import axios from "axios";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const id = (await context.params).id;
+
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_GO_API_URL}/marketDate/${params.id}`
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/marketDate/${id}`
     );
     return NextResponse.json(response.data);
   } catch (error) {
@@ -19,12 +21,14 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const id = (await context.params).id;
+
     const body = await req.json();
     const response = await axios.put(
-      `${process.env.NEXT_PUBLIC_GO_API_URL}/marketDate/${params.id}`,
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/marketDate/${id}`,
       body
     );
     return NextResponse.json(response.data);
@@ -38,11 +42,13 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const id = (await context.params).id;
+
     await axios.delete(
-      `${process.env.NEXT_PUBLIC_GO_API_URL}/marketDate/${params.id}`
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/marketDate/${id}`
     );
     return NextResponse.json({ message: "Market open date deleted" });
   } catch (error) {

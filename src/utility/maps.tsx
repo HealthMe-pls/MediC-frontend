@@ -56,15 +56,11 @@ export const ChangeMap = async (mapChanged: MapChanged[]): Promise<void> => {
   setCorsHeaders(header);
   // console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}`);
 
-  const response = await axios.put(
-    `${process.env.NEXT_PUBLIC_GO_API_URL}/Allmap`,
-    mapChanged,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const response = await axios.put(`/api/map`, mapChanged, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   // console.log({
   //   method: "PUT",

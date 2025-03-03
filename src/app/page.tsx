@@ -182,6 +182,7 @@ export default function Home() {
               setSelectedBlock={setSelectedBlock}
               matchShopID={matchShopID}
               role=""
+              mapUpdate={Date.now()}
             />
           </div>
 
@@ -236,6 +237,7 @@ export default function Home() {
             setSelectedBlock={setSelectedBlock}
             matchShopID={matchShopID}
             role=""
+            mapUpdate={Date.now()}
           />
         </div>
 
