@@ -79,7 +79,6 @@ const ManageMaketHours = () => {
     if (selectedMonth === 11) setSelectedYear((prev) => prev + 1);
   };
 
-  // Reset form fields and errors
   const resetForm = () => {
     setNewDate("");
     setStartHour("");
@@ -99,11 +98,14 @@ const ManageMaketHours = () => {
     setIsModalOpen(true);
   };
 
-  // เมื่อกด Edit ให้เติมค่าในฟอร์มตามข้อมูลที่เลือก
   const handleEditClick = (item: MarketOpenDate) => {
     setEditingDate(item);
-    setNewDate(item.date.split("T")[0]); // extract YYYY-MM-DD
-
+    const localDate = new Date(item.date);
+    const year = localDate.getFullYear();
+    const month = String(localDate.getMonth() + 1).padStart(2, "0");
+    const day = String(localDate.getDate()).padStart(2, "0");
+    setNewDate(`${year}-${month}-${day}`);
+  
     const startTimeStr = new Date(item.start_time).toLocaleTimeString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
@@ -111,7 +113,7 @@ const ManageMaketHours = () => {
     const [sHour, sMinute] = startTimeStr.split(":");
     setStartHour(sHour);
     setStartMinute(sMinute);
-
+  
     const endTimeStr = new Date(item.end_time).toLocaleTimeString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
@@ -119,11 +121,10 @@ const ManageMaketHours = () => {
     const [eHour, eMinute] = endTimeStr.split(":");
     setEndHour(eHour);
     setEndMinute(eMinute);
-
+  
     setIsModalOpen(true);
   };
 
-  // เมื่อกด Delete ให้แสดง modal สำหรับยืนยัน
   const handleDeleteClick = (item: MarketOpenDate) => {
     setDateToDelete(item);
     setIsDeleteModalOpen(true);

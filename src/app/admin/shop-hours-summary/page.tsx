@@ -62,62 +62,41 @@ const ShopHoursSummaryPage = () => {
   const exportAsPDF = () => {
     const doc = new jsPDF();
 
-    // Add title
+    // Title
     doc.setFontSize(18);
     doc.text("Shop Hours Summary", 14, 16);
 
-    // Group the shop data by month
-    const groupedByMonth = shopOpenDate.reduce((groups, shop) => {
-      const monthYear = dayjs(shop.start_time).format("MMM YYYY");
-      if (!groups[monthYear]) {
-        groups[monthYear] = [];
-      }
-      groups[monthYear].push(shop);
-      return groups;
-    }, {} as Record<string, ShopOpenDates[]>);
+    // กรองข้อมูลเฉพาะเดือนที่เปิดอยู่
+    const filteredShops = shopOpenDate.filter((shop) =>
+      dayjs(shop.start_time).isBetween(startDate, endDate, null, "[]")
+    );
 
-    // Add tables for each month
-    let currentY = 30; // starting position for the first table
-    for (const monthYear in groupedByMonth) {
-      if (groupedByMonth.hasOwnProperty(monthYear)) {
-        // Add month title
-        doc.setFontSize(14);
-        doc.text(monthYear, 14, currentY);
-        currentY += 10;
-
-        // Add table header
-        doc.setFontSize(12);
-        const header = ["Shop Name", "Opening Date", "From", "To"];
-        const columns = [header];
-
-        // Add table data for the current month
-        const data = groupedByMonth[monthYear].map((shop) => [
-          `Shop ${shop.id}`,
-          dayjs(shop.start_time).format("ddd, D MMM YYYY"),
-          dayjs(shop.start_time).format("HH:mm"),
-          dayjs(shop.end_time).format("HH:mm"),
-        ]);
-
-        // Add data to table
-        autoTable(doc, {
-          head: columns,
-          body: data,
-          startY: currentY,
-          theme: "grid",
-        });
-
-        // Update currentY for the next section
-        currentY = doc.internal.pageSize.height - 10; // Calculate the Y position for the next page
-        // Ensure that we move to the next page if there is not enough space
-        if (currentY > doc.internal.pageSize.height - 40) {
-          doc.addPage();
-          currentY = 30; // Reset to the top of the new page
-        }
-      }
+    if (filteredShops.length === 0) {
+      alert("No shop data for the selected period.");
+      return;
     }
 
-    // Save the PDF
-    doc.save("shop_hours_summary.pdf");
+    // จัดกลุ่มข้อมูลตามเดือน
+    const monthYear = startDate.format("MMM YYYY");
+    doc.setFontSize(14);
+    doc.text(monthYear, 14, 30);
+
+    const data = filteredShops.map((shop) => [
+      `Shop ${shop.id}`,
+      dayjs(shop.start_time).format("ddd, D MMM YYYY"),
+      dayjs(shop.start_time).format("HH:mm"),
+      dayjs(shop.end_time).format("HH:mm"),
+    ]);
+
+    autoTable(doc, {
+      head: [["Shop Name", "Opening Date", "From", "To"]],
+      body: data,
+      startY: 40,
+      theme: "grid",
+    });
+
+    // บันทึก PDF
+    doc.save(`shop_hours_${startDate.format("YYYY_MM")}.pdf`);
   };
   return (
     <>
