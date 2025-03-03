@@ -81,12 +81,12 @@ export default function AdminPageComponent() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      fetchData();
-    }, 10000);
-    return () => clearInterval(intervalId);
-  }, []);
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     fetchData();
+  //   }, 10000);
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   useEffect(() => {
     if (!isShopModalOpen && !isCategoryModalOpen && !isShopListModalOpen) {
@@ -162,7 +162,6 @@ export default function AdminPageComponent() {
   //   }
   // }, [editingBlock]);
 
-
   // const inputRef = useRef<HTMLInputElement | null>(null);
   // useEffect(() => {
   //   if (editingBlock !== null && inputRef.current) {
@@ -190,7 +189,7 @@ export default function AdminPageComponent() {
           shop_id: selectedShop.shop_id,
         },
       ]);
-  
+
       console.log("Shop updated successfully!");
       fetchData();
     } catch (error) {
@@ -198,7 +197,6 @@ export default function AdminPageComponent() {
       alert("Failed to update shop. Please try again.");
     }
   };
-  
 
   const handleRemoveShop = async (blockId: number) => {
     const confirmRemove = window.confirm(`Remove shop from block ${blockId}?`);
@@ -229,13 +227,13 @@ export default function AdminPageComponent() {
       {/* Map */}
       <div className="flex-1 p-6  flex flex-col items-center">
         <div className="w-[430px]">
-        <Map
-          selectedCate={0}
-          setSelectedBlock={() => {}}
-          matchShopID={0}
-          role="admin"
-          mapUpdate={Date.now()} 
-        />
+          <Map
+            selectedCate={0}
+            setSelectedBlock={() => {}}
+            matchShopID={0}
+            role="admin"
+            mapUpdate={Date.now()}
+          />
         </div>
 
         {isShopModalOpen && (
