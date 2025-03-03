@@ -244,53 +244,66 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
           {initialData ? "Edit Shop" : "Add Shop"}
         </h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Shop Name"
-            className="border p-2 rounded"
-          />
-          <select
-            name="shop_category_id"
-            value={formData.shop_category_id}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          >
-            <option value="" disabled>
-              Select Category
-            </option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Description"
-            className="border p-2 rounded resize-y min-h-[150px] max-h-[300px]"
-            rows={3}
-          />
-          <select
-            name="entrepreneur_id"
-            value={formData.entrepreneur_id}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          >
-            <option value="" disabled>
-              Select Entrepreneur
-            </option>
-            {entrepreneurs.map((entrepreneur) => (
-              <option key={entrepreneur.id} value={entrepreneur.id}>
-                {entrepreneur.username}
-              </option>
-            ))}
-          </select>
           <div className="flex flex-row items-center">
+            <p className="mr-2 w-[150px]">Shop Name: </p>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Shop Name"
+              className="border p-2 rounded w-full"
+            />
+          </div>
+          <div className="flex flex-row items-center">
+            <p className="mr-2 w-[150px]">Shop Category: </p>
+            <select
+              name="shop_category_id"
+              value={formData.shop_category_id}
+              onChange={handleChange}
+              className="border p-2 rounded w-full"
+            >
+              <option value="" disabled>
+                Select Category
+              </option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-row w-full">
+            <p className="mr-2 w-[150px]">Description: </p>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Description"
+              className="border p-2 rounded resize-y min-h-[150px] max-h-[300px] w-full"
+              rows={3}
+            />
+          </div>
+
+          <div className="flex flex-row w-full items-center">
+            <p className="mr-2 w-[150px]">Owned By: </p>
+            <select
+              name="entrepreneur_id"
+              value={formData.entrepreneur_id}
+              onChange={handleChange}
+              className="border p-2 rounded w-full"
+            >
+              <option value="" disabled>
+                Select Entrepreneur
+              </option>
+              {entrepreneurs.map((entrepreneur) => (
+                <option key={entrepreneur.id} value={entrepreneur.id}>
+                  {entrepreneur.username}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-row items-center mt-2">
             <p className="mr-3">Social Media:</p>
             <button
               type="button"
@@ -301,7 +314,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
             </button>
           </div>
 
-          <table className="w-full border mt-2">
+          <table className="w-full border">
             <thead>
               <tr className="bg-gray-200">
                 <th className="p-2 border">Platform</th>
@@ -372,7 +385,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
           </div>
 
           {/* ตารางแสดงรายการเมนู */}
-          <table className="w-full border mt-2">
+          <table className="w-full border">
             <thead>
               <tr className="bg-gray-200">
                 <th className="p-2 border">Image</th>

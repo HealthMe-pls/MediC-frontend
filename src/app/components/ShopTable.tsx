@@ -63,27 +63,31 @@ const ShopTable: React.FC<ShopTableProps> = ({
           };
 
           const newSocialData: SocialFormData[] = shop.social_media
-            ? shop.social_media.map((social) => ({
-                id: social.id,
-                name: social.name,
-                platform: social.platform,
-                link: social.link,
-                shop_id: shop.shop_id,
-              }))
+            ? shop.social_media
+                .filter((social) => social.is_public)
+                .map((social) => ({
+                  id: social.id,
+                  name: social.name,
+                  platform: social.platform,
+                  link: social.link,
+                  shop_id: shop.shop_id,
+                }))
             : [];
 
           const newMenuData: MenuFormData[] = shop.menus
-            ? shop.menus.map((menu) => ({
-                id: menu.id,
-                img:
-                  menu.photos?.length > 0
-                    ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0].pathfile}`
-                    : "",
-                product_name: menu.product_name,
-                product_description: menu.product_description,
-                price: menu.price,
-                shop_id: shop.shop_id,
-              }))
+            ? shop.menus
+                .filter((menu) => menu.is_public) // กรองเฉพาะเมนูที่ isPublic เป็น true
+                .map((menu) => ({
+                  id: menu.id,
+                  img:
+                    menu.photos?.length > 0
+                      ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0].pathfile}`
+                      : "",
+                  product_name: menu.product_name,
+                  product_description: menu.product_description,
+                  price: menu.price,
+                  shop_id: shop.shop_id,
+                }))
             : [];
 
           // ป้องกันการตั้งค่า state ถ้าข้อมูลไม่เปลี่ยน
@@ -351,7 +355,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
                         }
                       }
                     }}
-                    className="p-2 border border-gray-300 rounded w-full bg-white"
+                    className="p-2 border border-gray-300 rounded w-[400px] bg-white"
                   >
                     <option value="">- No Shop -</option>
                     {ShopIdName.map(({ shop_id, shop_name }) => (
