@@ -1,15 +1,14 @@
 "use client";
-
 import { useState } from "react";
-import { useRouter } from "next/navigation";  // Import useRouter from Next.js
-import { loginEntrepreneur, AuthResponse } from "@/utility/login"; // Make sure to import your login function
+import { useRouter } from "next/navigation";
+import { loginEntrepreneur, AuthResponse } from "@/utility/login"; // Assuming this function is already implemented
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const router = useRouter();  // Initialize the router
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,10 +23,10 @@ const Login = () => {
       setError(response.error);
     } else {
       setToken(response.token || "");
-      // Store token in localStorage or cookies
       if (response.token) {
-        localStorage.setItem("authToken", response.token); // Or use cookies for better security
-          // Redirect to the dashboard page after login
+        localStorage.setItem("authToken", response.token); // Store token
+        console.log("Token stored:", localStorage.getItem("authToken"));
+        router.push("/entrepreneurLogin"); // Navigate to the next page
       }
     }
   };
@@ -58,18 +57,8 @@ const Login = () => {
         </div>
         <button type="submit">Login</button>
       </form>
-
       {error && <div style={{ color: "red" }}>{error}</div>}
-      {token && (
-        <div style={{ color: "green" }}>
-          Login successful! Your token: {token}
-        </div>
-      )}
-
-      {/* Button to go to the next page */}
-      <button onClick={() => router.push("/entrepreneurLogin")} style={{ marginTop: "10px" }}>
-        Go to Next Page
-      </button>
+      {token && <div style={{ color: "green" }}>Login successful! Token: {token}</div>}
     </div>
   );
 };
