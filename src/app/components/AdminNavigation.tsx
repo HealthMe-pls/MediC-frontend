@@ -17,9 +17,10 @@ const pages = [
     name: "Manage Highlighted Workshop & Event",
     path: "/admin/manage-highlighted-workshop",
   },
-  { name: "Edit About Us", path: "/admin/edit-about-us" },
+
   { name: "Reported Issues", path: "/admin/reported-issues" },
   { name: "Pending Approval", path: "/admin/pending-approval" },
+  { name: "Edit About Us", path: "/admin/edit-about-us" },
 ];
 
 export default function AdminNavigation({
