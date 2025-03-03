@@ -2,30 +2,70 @@
 
 import { useEffect, useState } from "react";
 import { getShopDetailsByLoggedInEntrepreneur, Shop } from "@/utility/entrepreneurLogin";
+import { logoutEntrepreneur } from "@/utility/login"; // Import the logout function
+import { useRouter } from "next/navigation"; // Import the useRouter hook for navigation
 
 const Dashboard = () => {
   const [shopData, setShopData] = useState<Shop[]>([]);  // Initialize as an empty array
   const [error, setError] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);  // State to track if user is logged in
+  const router = useRouter(); // Instantiate the router
 
   useEffect(() => {
-    const fetchShopData = async () => {
-      try {
-        const response = await getShopDetailsByLoggedInEntrepreneur();
-        
-        if ("error" in response) {
-          setError(response.error);
-          setShopData([]);  // Ensure it's an empty array, not null
-        } else {
-          setShopData(response);
-        }
-      } catch (err) {
-        setError("Failed to load shop data");
-        setShopData([]);  // Ensure it's an empty array
-      }
-    };
+    // Check if the user is logged in (by checking if the token exists)
+    const token = localStorage.getItem("authToken");
 
-    fetchShopData();
-  }, []);
+    if (!token) {
+      setIsLoggedIn(false);  // If no token is found, the user is not logged in
+      router.push("/login");  // Redirect to login page
+    } else {
+      // Fetch shop data if the user is logged in
+      const fetchShopData = async () => {
+        try {
+          const response = await getShopDetailsByLoggedInEntrepreneur();  // Pass token for authentication
+          
+          if ("error" in response) {
+            setError(response.error);
+            setShopData([]);  // Ensure it's an empty array, not null
+          } else {
+            setShopData(response);
+          }
+        } catch (err) {
+          setError("Failed to load shop data");
+          setShopData([]);  // Ensure it's an empty array
+        }
+      };
+
+      fetchShopData();
+    }
+  }, [router]);
+
+  const handleLogout = async () => {
+    try {
+      // Get the token from localStorage (or wherever it's stored)
+      const token = localStorage.getItem("authToken");
+
+      if (token) {
+        // Call the imported logout function with the token
+        await logoutEntrepreneur(token);
+
+        // Update the state to reflect logged-out status
+        setIsLoggedIn(false);
+
+        // Clear the token from localStorage
+        localStorage.removeItem("authToken");
+
+        // Optionally, redirect the user to the login page after logout
+        router.push("/login");  // Navigate to the login page after successful logout
+      } else {
+        console.error("No token found, cannot log out.");
+        // Optionally redirect to login if the token is not found
+        router.push("/login");
+      }
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
 
   return (
     <div>
@@ -56,6 +96,13 @@ const Dashboard = () => {
         </div>
       ) : (
         <p>{error ? "No shops found." : "Loading your shop data..."}</p>
+      )}
+
+      {/* Logout Button */}
+      {isLoggedIn && (
+        <button onClick={handleLogout} style={{ marginTop: "20px" }}>
+          Log Out
+        </button>
       )}
     </div>
   );
