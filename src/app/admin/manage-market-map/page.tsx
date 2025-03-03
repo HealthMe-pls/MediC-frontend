@@ -155,6 +155,13 @@ export default function AdminPageComponent() {
   // useEffect(() => {
   //   console.log("isEdit changed:", isEdit);
   // }, [isEdit]);
+  // const inputRef = useRef<HTMLInputElement | null>(null);
+  // useEffect(() => {
+  //   if (editingBlock !== null && inputRef.current) {
+  //     inputRef.current.focus();
+  //   }
+  // }, [editingBlock]);
+
 
   // const inputRef = useRef<HTMLInputElement | null>(null);
   // useEffect(() => {
@@ -176,7 +183,6 @@ export default function AdminPageComponent() {
           shopId: selectedShop.shop_id,
         },
       }));
-
       await ChangeMap([
         {
           block_id: blockId,
@@ -184,7 +190,7 @@ export default function AdminPageComponent() {
           shop_id: selectedShop.shop_id,
         },
       ]);
-
+  
       console.log("Shop updated successfully!");
       fetchData();
     } catch (error) {
@@ -192,6 +198,7 @@ export default function AdminPageComponent() {
       alert("Failed to update shop. Please try again.");
     }
   };
+  
 
   const handleRemoveShop = async (blockId: number) => {
     const confirmRemove = window.confirm(`Remove shop from block ${blockId}?`);
@@ -222,13 +229,13 @@ export default function AdminPageComponent() {
       {/* Map */}
       <div className="flex-1 p-6  flex flex-col items-center">
         <div className="w-[430px]">
-          <Map
-            selectedCate={0}
-            setSelectedBlock={() => {}}
-            matchShopID={0}
-            role="admin"
-            mapUpdate={Date.now()}
-          />
+        <Map
+          selectedCate={0}
+          setSelectedBlock={() => {}}
+          matchShopID={0}
+          role="admin"
+          mapUpdate={Date.now()} 
+        />
         </div>
 
         {isShopModalOpen && (
