@@ -176,7 +176,7 @@ export default function Home() {
             />
           </div>
         </div>
-        <div className="flex flex-wrap ipad-view w-[575px] justify-center mx-auto ">
+        <div className="absolute flex flex-wrap ipad-view w-[575px] justify-center mx-auto z-[9999]">
           <div className="flex-1 mr-2">
             <SearchBar
               setSelectedCate={setSelectedCate}
