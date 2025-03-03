@@ -12,6 +12,15 @@ import AdminLayouts from "@/app/layouts/AdminLayouts";
 import Image from "next/image";
 
 const ManageHighlightedWorkshop = () => {
+  const [formImg, setFormImg] = useState<{
+    cover_img: File | string;
+    sec_img: File | string;
+    thr_img: File | string;
+  }>({
+    cover_img: "",
+    sec_img: "",
+    thr_img: "",
+  });
   const [formData, setFormData] = useState<{
     name: string;
     description: string;
@@ -55,6 +64,16 @@ const ManageHighlightedWorkshop = () => {
   const filteredWorkshops = workshops.filter((workshop) =>
     workshop.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    key: "cover_img" | "sec_img" | "thr_img"
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormImg((prev) => ({ ...prev, [key]: file }));
+    }
+  };
 
   useEffect(() => {
     loadWorkshops();
@@ -106,6 +125,17 @@ const ManageHighlightedWorkshop = () => {
         language: workshop.language,
         instructor: workshop.instructor,
       });
+      setFormImg({
+        cover_img: workshop.photos[0]
+          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`
+          : "",
+        sec_img: workshop.photos[1]
+          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[1]?.pathfile}`
+          : "",
+        thr_img: workshop.photos[2]
+          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[2]?.pathfile}`
+          : "",
+      });
       setCurrentWorkshopId(workshop.id);
       setEditMode(true);
     } else {
@@ -118,6 +148,11 @@ const ManageHighlightedWorkshop = () => {
         price: 0,
         language: "",
         instructor: "",
+      });
+      setFormImg({
+        cover_img: "",
+        sec_img: "",
+        thr_img: "",
       });
       setCurrentWorkshopId(null);
       setEditMode(false);
@@ -272,11 +307,81 @@ const ManageHighlightedWorkshop = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-4">
-              {editMode ? "Edit Workshop" : "Add Workshop"}
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[full] ml-[234px] relative max-h-[650px] overflow-y-auto scrollbar-hide">
+            <h2 className="text-[20px] font-bold mb-4">
+              {editMode
+                ? "Edit Highlighted Workshop or Event"
+                : "Add Highlighted Workshop or Event"}
             </h2>
+            <div className="flex flex-row items-center">
+              <p className="text-[18px] mr-2">Upload Image</p>
+              <p className="text-gray-400 mr-2">
+                ** The first uploaded image will be used as the cover. **
+              </p>
+            </div>
             <form>
+              <div className="mb-4">
+                <div className="grid grid-cols-3 gap-2 mt-2">
+                  {(["cover_img", "sec_img", "thr_img"] as const).map((key) => (
+                    <div
+                      key={key}
+                      className="relative border p-2 rounded-lg flex flex-col items-center"
+                    >
+                      <div
+                        className="relative w-[200px] h-[150px] border rounded flex items-center justify-center overflow-hidden cursor-pointer"
+                        onClick={() => document.getElementById(key)?.click()}
+                      >
+                        {formImg[key] && formImg[key] !== "" ? (
+                          <div className="relative w-full h-full group">
+                            {/* รูปภาพ */}
+                            <Image
+                              src={
+                                formImg[key] instanceof File
+                                  ? URL.createObjectURL(formImg[key] as File)
+                                  : formImg[key]
+                              }
+                              alt="Preview"
+                              className="w-full h-full object-cover"
+                              width={300} // ต้องกำหนดขนาด ถ้าใช้ next/image
+                              height={200}
+                              onError={(
+                                e: React.SyntheticEvent<HTMLImageElement, Event>
+                              ) => {
+                                const target =
+                                  e.currentTarget as HTMLImageElement;
+                                target.onerror = null; // ป้องกัน loop error
+                              }}
+                            />
+                            {/* Overlay เมื่อ hover */}
+                            <div className="absolute inset-0 bg-black/25 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                              <span className="text-white">Upload</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            className="bg-gray-200 text-gray-600 p-2 rounded"
+                          >
+                            Upload
+                          </button>
+                        )}
+                      </div>
+                      <input
+                        id={key}
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files.length > 0) {
+                            handleImageChange(e, key);
+                          }
+                        }}
+                        className="hidden"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <input
                 type="text"
                 placeholder="Name"
