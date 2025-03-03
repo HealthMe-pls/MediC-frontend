@@ -20,21 +20,30 @@ const normalizeMarketDates = (dates: MarketOpenDate[]): MarketOpenDate[] => {
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 };
 
-const ShopHoursSummaryPage = () => {
+const ManageMaketHours = () => {
   const [marketOpenDates, setMarketOpenDates] = useState<MarketOpenDate[]>([]);
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth());
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
-  // New state to track which date we are editing or deleting
+  // Track which date we are editing or deleting
   const [editingDate, setEditingDate] = useState<MarketOpenDate | null>(null);
   const [dateToDelete, setDateToDelete] = useState<MarketOpenDate | null>(null);
 
   // Form fields
   const [newDate, setNewDate] = useState<string>("");
-  const [startTime, setStartTime] = useState<string>("");
-  const [endTime, setEndTime] = useState<string>("");
+  const [startHour, setStartHour] = useState<string>("");
+  const [startMinute, setStartMinute] = useState<string>("");
+  const [endHour, setEndHour] = useState<string>("");
+  const [endMinute, setEndMinute] = useState<string>("");
+
+  // Error states สำหรับวันที่, ชั่วโมง และนาที
+  const [newDateError, setNewDateError] = useState<string>("");
+  const [startHourError, setStartHourError] = useState<string>("");
+  const [startMinuteError, setStartMinuteError] = useState<string>("");
+  const [endHourError, setEndHourError] = useState<string>("");
+  const [endMinuteError, setEndMinuteError] = useState<string>("");
 
   useEffect(() => {
     fetchMarketOpenDates()
@@ -61,12 +70,19 @@ const ShopHoursSummaryPage = () => {
     if (selectedMonth === 11) setSelectedYear((prev) => prev + 1);
   };
 
-  // Reset form fields and editing state
+  // Reset form fields and errors
   const resetForm = () => {
     setNewDate("");
-    setStartTime("");
-    setEndTime("");
+    setStartHour("");
+    setStartMinute("");
+    setEndHour("");
+    setEndMinute("");
     setEditingDate(null);
+    setNewDateError("");
+    setStartHourError("");
+    setStartMinuteError("");
+    setEndHourError("");
+    setEndMinuteError("");
   };
 
   const openAddModal = () => {
@@ -74,35 +90,70 @@ const ShopHoursSummaryPage = () => {
     setIsModalOpen(true);
   };
 
-  // When clicking edit, prefill the form and set editing mode
+  // เมื่อกด Edit ให้เติมค่าในฟอร์มตามข้อมูลที่เลือก
   const handleEditClick = (item: MarketOpenDate) => {
     setEditingDate(item);
     setNewDate(item.date.split("T")[0]); // extract YYYY-MM-DD
-    setStartTime(new Date(item.start_time).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }));
-    setEndTime(new Date(item.end_time).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }));
+
+    const startTimeStr = new Date(item.start_time).toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const [sHour, sMinute] = startTimeStr.split(":");
+    setStartHour(sHour);
+    setStartMinute(sMinute);
+
+    const endTimeStr = new Date(item.end_time).toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const [eHour, eMinute] = endTimeStr.split(":");
+    setEndHour(eHour);
+    setEndMinute(eMinute);
+
     setIsModalOpen(true);
   };
 
-  // When clicking delete, show a confirmation modal
+  // เมื่อกด Delete ให้แสดง modal สำหรับยืนยัน
   const handleDeleteClick = (item: MarketOpenDate) => {
     setDateToDelete(item);
     setIsDeleteModalOpen(true);
   };
 
+  const padTime = (value: string) => value.padStart(2, "0");
+
   const handleSubmit = async () => {
+    let valid = true;
+    if (newDate === "") {
+      setNewDateError("Please enter the date");
+      valid = false;
+    }
+    if (startHour === "" || startMinute === "") {
+      setStartHourError("Please fill this box");
+      valid = false;
+    }
+    if (endHour === "" || endMinute === "") {
+      setEndHourError("Please fill this box");
+      valid = false;
+    }
+    if (!valid) return;
+
     try {
+      const startTimeStr = `${padTime(startHour)}:${padTime(startMinute)}`;
+      const endTimeStr = `${padTime(endHour)}:${padTime(endMinute)}`;
+
       const newDateData = {
         date: combineDateTime(newDate, "00:00"),
-        start_time: combineDateTime(newDate, startTime),
-        end_time: combineDateTime(newDate, endTime),
+        start_time: combineDateTime(newDate, startTimeStr),
+        end_time: combineDateTime(newDate, endTimeStr),
       };
 
       if (editingDate) {
-        // Update market open date via PUT
-        await axios.put(`http://127.0.0.1:8080/marketDate/${editingDate.id}`, newDateData);
+        // Update via PUT
+        await axios.put(`/api/marketDate/${editingDate.id}`, newDateData);
       } else {
-        // Create new market open date via POST
-        await axios.post("http://127.0.0.1:8080/marketDate/", newDateData);
+        // Create via POST
+        await axios.post(`/api/marketDate/`, newDateData);
       }
 
       const updatedDates = await fetchMarketOpenDates();
@@ -117,7 +168,7 @@ const ShopHoursSummaryPage = () => {
   const confirmDelete = async () => {
     if (!dateToDelete) return;
     try {
-      await axios.delete(`http://127.0.0.1:8080/marketDate/${dateToDelete.id}`);
+      await axios.delete(`/api/marketDate/${dateToDelete.id}`);
       const updatedDates = await fetchMarketOpenDates();
       setMarketOpenDates(normalizeMarketDates(updatedDates));
       setIsDeleteModalOpen(false);
@@ -151,9 +202,13 @@ const ShopHoursSummaryPage = () => {
           </div>
 
           <div className="flex justify-between items-center mb-6">
-            <button onClick={handlePreviousMonth} className="text-2xl">&lt;</button>
+            <button onClick={handlePreviousMonth} className="text-2xl">
+              &lt;
+            </button>
             <span className="text-lg font-medium">{currentMonthDisplay}</span>
-            <button onClick={handleNextMonth} className="text-2xl">&gt;</button>
+            <button onClick={handleNextMonth} className="text-2xl">
+              &gt;
+            </button>
           </div>
 
           <div className="overflow-x-auto">
@@ -234,27 +289,125 @@ const ShopHoursSummaryPage = () => {
                 <input
                   type="date"
                   value={newDate}
-                  onChange={(e) => setNewDate(e.target.value)}
+                  onChange={(e) => {
+                    setNewDate(e.target.value);
+                    if (e.target.value !== "") setNewDateError("");
+                  }}
                   className="border p-2 w-full"
                 />
+                {newDateError && <p className="text-red-500 text-xs mt-1">{newDateError}</p>}
               </div>
               <div>
                 <label className="block font-medium">Start Time</label>
-                <input
-                  type="time"
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                  className="border p-2 w-full"
-                />
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="number"
+                    min="0"
+                    max="23"
+                    value={startHour}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      if (input === "") {
+                        setStartHour("");
+                      } else {
+                        let value = parseInt(input);
+                        if (isNaN(value)) {
+                          setStartHour("");
+                        } else {
+                          if (value > 23) value = 23;
+                          if (value < 0) value = 0;
+                          setStartHour(value.toString());
+                        }
+                        setStartHourError("");
+                      }
+                    }}
+                    placeholder="HH"
+                    className="border p-2 w-1/2"
+                  />
+                  <span>:</span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="59"
+                    value={startMinute}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      if (input === "") {
+                        setStartMinute("");
+                      } else {
+                        let value = parseInt(input);
+                        if (isNaN(value)) {
+                          setStartMinute("");
+                        } else {
+                          if (value > 59) value = 59;
+                          if (value < 0) value = 0;
+                          setStartMinute(value.toString());
+                        }
+                        setStartMinuteError("");
+                      }
+                    }}
+                    placeholder="MM"
+                    className="border p-2 w-1/2"
+                  />
+                </div>
+                {startHourError && <p className="text-red-500 text-xs mt-1">{startHourError}</p>}
+                {startMinuteError && <p className="text-red-500 text-xs mt-1">{startMinuteError}</p>}
               </div>
               <div>
                 <label className="block font-medium">End Time</label>
-                <input
-                  type="time"
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
-                  className="border p-2 w-full"
-                />
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="number"
+                    min="0"
+                    max="23"
+                    value={endHour}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      if (input === "") {
+                        setEndHour("");
+                      } else {
+                        let value = parseInt(input);
+                        if (isNaN(value)) {
+                          setEndHour("");
+                        } else {
+                          if (value > 23) value = 23;
+                          if (value < 0) value = 0;
+                          setEndHour(value.toString());
+                        }
+                        setEndHourError("");
+                      }
+                    }}
+                    placeholder="HH"
+                    className="border p-2 w-1/2"
+                  />
+                  <span>:</span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="59"
+                    value={endMinute}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      if (input === "") {
+                        setEndMinute("");
+                      } else {
+                        let value = parseInt(input);
+                        if (isNaN(value)) {
+                          setEndMinute("");
+                        } else {
+                          if (value > 59) value = 59;
+                          if (value < 0) value = 0;
+                          setEndMinute(value.toString());
+                        }
+                        setEndMinuteError("");
+                      }
+                    }}
+                    placeholder="MM"
+                    className="border p-2 w-1/2"
+                  />
+                </div>
+                {endHourError && <p className="text-red-500 text-xs mt-1">{endHourError}</p>}
+                {endMinuteError && <p className="text-red-500 text-xs mt-1">{endMinuteError}</p>}
               </div>
             </div>
             <div className="mt-6 flex justify-end space-x-2">
@@ -308,4 +461,4 @@ const ShopHoursSummaryPage = () => {
   );
 };
 
-export default ShopHoursSummaryPage;
+export default ManageMaketHours;
