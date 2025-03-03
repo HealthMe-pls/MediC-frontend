@@ -124,6 +124,7 @@ const ReportedIssuesPage = () => {
 
   return (
     <AdminLayouts currentPage="Reported Issues">
+      <div className="text-[#4C4343]">
       <div className="mb-6 flex items-center gap-4">
         <input
           type="text"
@@ -151,7 +152,7 @@ const ReportedIssuesPage = () => {
                 ref={selectAllRef}
                 type="checkbox"
                 onChange={toggleSelectAll}
-                className="w-5 h-5"
+                className="w-5 h-5 border-2 border-gray-300 rounded-sm bg-white accent-[#4C4343]"
               />
               <p>Select All</p>
             </>
@@ -177,7 +178,7 @@ const ReportedIssuesPage = () => {
                   type="checkbox"
                   checked={selectedNotifications.includes(notification.id)}
                   onChange={() => toggleSelection(notification.id)}
-                  className="w-5 h-5 mt-1 ml-5"
+                  className="w-5 h-5 mt-1 ml-5 border-2 border-gray-300 rounded-sm bg-white accent-[#4C4343]"
                 />
                 <div
                   className={`border border-gray-300 rounded-lg p-4 flex items-start gap-4 w-full transition mr-16 ${
@@ -206,7 +207,7 @@ const ReportedIssuesPage = () => {
                     onClick={() => confirmDelete(notification.id)}
                     className="text-gray-500 hover:text-gray-700"
                   >
-                    x
+                    ✖
                   </button>
                 </div>
               </div>
@@ -224,7 +225,7 @@ const ReportedIssuesPage = () => {
                 : `Remove ${selectedNotifications.length} reported issue?`
               : "Remove this reported issue?"}
           </p>
-          <p className="flex items-center justify-center">Tihis action cannot be undone.</p>
+          <p className="flex items-center justify-center">This action cannot be undone.</p>
             <div className="mt-4 flex justify-end gap-16">
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -242,6 +243,7 @@ const ReportedIssuesPage = () => {
           </div>
         </div>
       )}
+      </div>
     </AdminLayouts>
   );
 };

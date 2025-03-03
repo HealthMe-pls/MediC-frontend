@@ -107,10 +107,10 @@ export default function ManageVendor() {
 
   return (
     <AdminLayouts currentPage="Manage Vendor">
-      <div className="p-4">
+      <div className="p-4 text-[#4C4343]">
         {/*Add Vendor*/}
         <div className="flex justify-end">
-          <button onClick={() => openModal()} className="bg-blue-100 text-black p-2 rounded-xl mb-4">
+          <button onClick={() => openModal()} className="bg-blue-100 text-[#4C4343] py-2 px-4 rounded-xl mb-4">
             + Add Vendor
           </button>
         </div>
@@ -139,10 +139,10 @@ export default function ManageVendor() {
                 </td>
                 <td className="p-4">{shopCounts[ent.id] ?? "Loading..."}</td>
                 <td className="">
-                  <button onClick={() => openModal(ent)} className="bg-gray-300 text-black px-7 py-1 rounded-xl mx-1">
+                  <button onClick={() => openModal(ent)} className="bg-gray-300 text-[#4C4343] px-7 py-1 rounded-xl mx-1">
                     Edit
                   </button>
-                  <button onClick={() => confirmDelete(ent.id, ent.username)} className="bg-red-300 text-black px-7 py-1 rounded-xl">
+                  <button onClick={() => confirmDelete(ent.id, ent.username)} className="bg-red-300 text-[#4C4343] px-7 py-1 rounded-xl">
                     Delete
                   </button>
                 </td>
@@ -161,7 +161,7 @@ export default function ManageVendor() {
                   onClick={closeModal}
                   className="absolute top-0 right-0 text-gray-600 hover:text-gray-800"
                 >
-                  X
+                  ✖
                 </button>
 
                 <h2 className="text-lg font-bold mb-4">
@@ -214,7 +214,7 @@ export default function ManageVendor() {
                     <div className="flex justify-center">
                       <button
                         type="submit"
-                        className="bg-blue-200 text-black px-6 py-1 rounded-full shadow-md "
+                        className="bg-blue-200 text-[#4C4343] px-6 py-1 rounded-full shadow-md "
                       >
                         Save
                       </button>
@@ -255,7 +255,7 @@ export default function ManageVendor() {
         {/* Pagination Controls */}
           <div className="flex justify-center mt-16 space-x-4">
             <button
-              className="px-3 py-1 rounded text-black"
+              className="px-3 py-1 rounded text-[#4C4343]"
               onClick={() => setCurrentPage((prev) => (prev === 1 ? totalPages : prev - 1))}
             >
               {"<"}
@@ -264,7 +264,7 @@ export default function ManageVendor() {
             {[...Array(totalPages)].map((_, i) => (
               <button
                 key={i + 1}
-                className={`px-3 py-1 rounded-full ${currentPage === i + 1 ? "bg-gray-300 text-black" : "text-black"}`}
+                className={`px-3 py-1 rounded-full ${currentPage === i + 1 ? "bg-gray-300 text-[#4C4343]" : "text-[#4C4343]"}`}
                 onClick={() => setCurrentPage(i + 1)}
               >
                 {i + 1}
@@ -272,7 +272,7 @@ export default function ManageVendor() {
             ))}
             
             <button
-              className="px-3 py-1 rounded text-black"
+              className="px-3 py-1 rounded text-[#4C4343]"
               onClick={() => setCurrentPage((prev) => (prev === totalPages ? 1 : prev + 1))}
             >
               {">"}
