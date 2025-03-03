@@ -49,8 +49,6 @@ export interface ShopDetail {
   open_status: boolean;
 }
 
-// const NEXT_API = "http://127.0.0.1:3000";
-
 // ฟังก์ชันดึงข้อมูลร้านค้าทั้งหมด
 export async function fetchShopDetail(): Promise<ShopDetail[]> {
   try {

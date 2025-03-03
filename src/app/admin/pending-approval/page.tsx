@@ -1,14 +1,55 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import { fetchTempShop, TempShop } from "./pendingApproval";
+import PendingCard from "./pending-card";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 import SearchPending from "./search-pending";
-import PendingCard from "./pending-card";
 
 export default function PendingApprovalPage() {
+  const [tempShops, setTempShops] = useState<TempShop[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetchTempShop();
+        setTempShops(response.temp_shops);
+      } catch (error) {
+        setError(`Failed to fetch TempShops: ${(error as Error).message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div></div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
-    <AdminLayouts currentPage="Pending Approval">
-      <div className="flex flex-row  p-6">
-        <SearchPending />
-        <PendingCard />
-      </div>
-    </AdminLayouts>
+    <div>
+      <AdminLayouts currentPage="Pending Approval">
+        <div className=" p-4 flex flex-col gap-2 ">
+          <SearchPending />
+
+          <div className="p-8  grid grid-cols-1 gap-4 max-h-[650px] overflow-y-auto scrollbar-hide">
+            {tempShops.map((shop) => (
+              <PendingCard
+                key={shop.id}
+                name={shop.name}
+                id={shop.id.toString()}
+              />
+            ))}
+          </div>
+        </div>
+      </AdminLayouts>
+    </div>
   );
 }

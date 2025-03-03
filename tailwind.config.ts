@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+// import tailwind
 
 export default {
   content: [
