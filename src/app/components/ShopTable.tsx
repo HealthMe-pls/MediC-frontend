@@ -20,6 +20,7 @@ import {
   deleteMenu,
   updateMenuByAdmin,
 } from "@/utility/menu";
+import { uploadPhotoMenuByAdmin, deletePhoto } from "@/utility/photo";
 
 interface ShopTableProps {
   blocks: Record<
@@ -80,6 +81,8 @@ const ShopTable: React.FC<ShopTableProps> = ({
                 .filter((menu) => menu.is_public) // กรองเฉพาะเมนูที่ isPublic เป็น true
                 .map((menu) => ({
                   id: menu.id,
+                  idPhoto:
+                    menu.photos?.length > 0 ? menu.photos[0].photo_id : 0,
                   img:
                     menu.photos?.length > 0
                       ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0].pathfile}`
@@ -194,7 +197,14 @@ const ShopTable: React.FC<ShopTableProps> = ({
       for (const menu of deletedMenus || []) {
         if (menu.id) {
           console.log("delete menuid : " + menu.id);
-          await deleteMenu(menu.id);
+
+          if (menu.idPhoto) {
+            console.log(menu.idPhoto);
+            const response_photo = await deletePhoto(menu.idPhoto);
+            console.log("response from del photo" + response_photo);
+          }
+          const response_menu = await deleteMenu(menu.id);
+          console.log("response from del menu" + response_menu);
         }
       }
 
@@ -202,7 +212,8 @@ const ShopTable: React.FC<ShopTableProps> = ({
         editMenuData?.some(
           (oldMenu) =>
             oldMenu.id === newMenu.id &&
-            (oldMenu.product_name !== newMenu.product_name ||
+            (newMenu.img instanceof File ||
+              oldMenu.product_name !== newMenu.product_name ||
               oldMenu.product_description !== newMenu.product_description ||
               oldMenu.price !== newMenu.price) // ต้องมีการเปลี่ยนแปลงจริง ๆ
         )
@@ -217,6 +228,12 @@ const ShopTable: React.FC<ShopTableProps> = ({
         };
         console.log("update menuid : " + menu.id);
         await updateMenuByAdmin(menu.id!, upMenu);
+
+        if (menu.img instanceof File && menu.id) {
+          console.log(menu.idPhoto);
+          if (menu.idPhoto) await deletePhoto(menu.idPhoto);
+          await uploadPhotoMenuByAdmin(menu.img, menu.id);
+        }
       }
 
       const newMenus = menuData.filter(
@@ -231,6 +248,13 @@ const ShopTable: React.FC<ShopTableProps> = ({
           shop_id: shopId,
         };
         await createMenuByAdmin(createMenu);
+        const shopDe = await fetchShopById(shopId);
+        const createdmenu = shopDe.menus.find(
+          (m) => menu.product_name === m.product_name
+        );
+        if (createdmenu && menu.img && menu.img instanceof File) {
+          await uploadPhotoMenuByAdmin(menu.img, createdmenu?.id);
+        }
       }
     } catch (error) {
       console.error("Error updating social media:", error);

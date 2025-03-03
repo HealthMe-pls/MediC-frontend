@@ -16,6 +16,7 @@ export interface ShopFormData {
   
   export interface MenuFormData {
     id?: number;
+    idPhoto?:number;
     img: File | string;
     product_name: string;
     product_description: string;

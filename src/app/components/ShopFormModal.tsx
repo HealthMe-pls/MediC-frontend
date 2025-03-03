@@ -174,6 +174,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
         return [
           {
             id: Date.now(),
+            idPhoto: Date.now(),
             img: new File([], ""),
             product_name: "",
             product_description: "",
