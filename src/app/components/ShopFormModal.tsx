@@ -407,19 +407,6 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
                       }
                     >
                       {menu.img ? (
-                        // <img
-                        //   src={
-                        //     menu.img instanceof File
-                        //       ? URL.createObjectURL(menu.img)
-                        //       : menu.img
-                        //   }
-                        //   alt="Preview"
-                        //   className="w-full h-full object-cover"
-                        //   onError={(e) => {
-                        //     e.currentTarget.onerror = null; // ป้องกัน loop error
-                        //     handleMenuChange(index, "img", ""); // รีเซ็ตเป็นค่าว่าง
-                        //   }}
-                        // />
                         <div className="relative w-full h-full group">
                           {/* รูปภาพ */}
                           <Image
