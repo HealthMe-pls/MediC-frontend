@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
 import "../../styles/global.css";
-// import { fetchShopCategory, ShopCategory } from "@/utility/shopcate";
 import { fetchMapDetail, MapDetail } from "@/utility/maps";
 
 export default function Map({
@@ -9,19 +8,21 @@ export default function Map({
   setSelectedBlock,
   matchShopID,
   role,
+  mapUpdate,
 }: {
   selectedCate: number;
   setSelectedBlock: (block: string) => void;
   matchShopID: number;
   role: string;
+  mapUpdate: number;
 }) {
   const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
 
   useEffect(() => {
     fetchMapDetail()
-      .then((data) => setMapDetails(data))
+      .then(setMapDetails)
       .catch((error) => console.error("Error fetching map details:", error));
-  }, []);
+  }, [mapUpdate]);
 
   const points = [
     { name: "A1", top: "81.5%", left: "58%" },

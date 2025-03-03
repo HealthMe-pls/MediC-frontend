@@ -16,7 +16,7 @@ import Map from "@/app/components/ShopMap";
 import ShopTable from "@/app/components/ShopTable";
 import ModalManageShopList from "@/app/components/ModalManageShopList";
 import { createSocialByAdmin } from "@/utility/social";
-import { fetchShopByName} from "@/utility/searchbar";
+import { fetchShopByName } from "@/utility/searchbar";
 import { createMenuByAdmin } from "@/utility/menu";
 
 export default function AdminPageComponent() {
@@ -79,6 +79,13 @@ export default function AdminPageComponent() {
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 10000);
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -149,12 +156,18 @@ export default function AdminPageComponent() {
   //   console.log("isEdit changed:", isEdit);
   // }, [isEdit]);
 
+  // const inputRef = useRef<HTMLInputElement | null>(null);
+  // useEffect(() => {
+  //   if (editingBlock !== null && inputRef.current) {
+  //     inputRef.current.focus();
+  //   }
+  // }, [editingBlock]);
+
   const handleShopSelect = async (
     blockId: number,
     selectedShop: { shop_id: number; shop_name: string }
   ) => {
     try {
-      // อัปเดต UI ทันทีเพื่อให้ dropdown ดู responsive
       setBlocks((prevBlocks) => ({
         ...prevBlocks,
         [blockId]: {
@@ -164,7 +177,6 @@ export default function AdminPageComponent() {
         },
       }));
 
-      // เรียก API เพื่อบันทึกค่าที่เปลี่ยนแปลง
       await ChangeMap([
         {
           block_id: blockId,
@@ -174,6 +186,7 @@ export default function AdminPageComponent() {
       ]);
 
       console.log("Shop updated successfully!");
+      fetchData();
     } catch (error) {
       console.error("Error updating shop:", error);
       alert("Failed to update shop. Please try again.");
@@ -214,6 +227,7 @@ export default function AdminPageComponent() {
             setSelectedBlock={() => {}}
             matchShopID={0}
             role="admin"
+            mapUpdate={Date.now()}
           />
         </div>
 
