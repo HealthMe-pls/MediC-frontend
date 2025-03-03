@@ -181,6 +181,7 @@ export default function Home() {
             <SearchBar
               setSelectedCate={setSelectedCate}
               setMatchShopID={setMatchShopID}
+              onFocus={handleFocus}
             />
           </div>
           <div className="flex-1 ml-2">

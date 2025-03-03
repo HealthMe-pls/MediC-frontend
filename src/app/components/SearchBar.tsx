@@ -4,11 +4,14 @@ import { fetchShopByWord, SearchBarInt } from "@/utility/searchbar";
 interface SearchBarProps {
   setSelectedCate: React.Dispatch<React.SetStateAction<number>>;
   setMatchShopID: React.Dispatch<React.SetStateAction<number>>;
+  onFocus?: (event: React.FocusEvent<HTMLSelectElement>) => void;
 }
 
 export default function SearchBar({
   setSelectedCate,
   setMatchShopID,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onFocus,
 }: SearchBarProps) {
   const [keyword, setKeyword] = useState<string>("");
   const [results, setResults] = useState<SearchBarInt[]>([]);
