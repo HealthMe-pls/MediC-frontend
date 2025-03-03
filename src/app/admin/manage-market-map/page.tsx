@@ -79,6 +79,13 @@ export default function AdminPageComponent() {
   }, []);
 
   useEffect(() => {
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 10000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
     if (!isShopModalOpen && !isCategoryModalOpen && !isShopListModalOpen) {
       fetchData();
     }
@@ -109,7 +116,6 @@ export default function AdminPageComponent() {
     fetchData();
   }, []);
 
-  // Focus input when editing
   const inputRef = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
     if (editingBlock !== null && inputRef.current) {
@@ -117,16 +123,12 @@ export default function AdminPageComponent() {
     }
   }, [editingBlock]);
 
-  // useEffect(() => {
-  //   console.log("isEdit changed:", isEdit);
-  // }, [isEdit]);
 
   const handleShopSelect = async (
     blockId: number,
     selectedShop: { shop_id: number; shop_name: string }
   ) => {
     try {
-      // อัปเดต UI ทันทีเพื่อให้ dropdown ดู responsive
       setBlocks((prevBlocks) => ({
         ...prevBlocks,
         [blockId]: {
@@ -135,8 +137,7 @@ export default function AdminPageComponent() {
           shopId: selectedShop.shop_id,
         },
       }));
-
-      // เรียก API เพื่อบันทึกค่าที่เปลี่ยนแปลง
+  
       await ChangeMap([
         {
           block_id: blockId,
@@ -144,13 +145,15 @@ export default function AdminPageComponent() {
           shop_id: selectedShop.shop_id,
         },
       ]);
-
+  
       console.log("Shop updated successfully!");
+      fetchData();
     } catch (error) {
       console.error("Error updating shop:", error);
       alert("Failed to update shop. Please try again.");
     }
   };
+  
 
   const handleRemoveShop = async (blockId: number) => {
     const confirmRemove = window.confirm(`Remove shop from block ${blockId}?`);
@@ -181,12 +184,13 @@ export default function AdminPageComponent() {
       {/* Map */}
       <div className="flex-1 p-6  flex flex-col items-center">
         <div className="w-[430px]">
-          <Map
-            selectedCate={0}
-            setSelectedBlock={(block: string) => {}}
-            matchShopID={0}
-            role="admin"
-          />
+        <Map
+          selectedCate={0}
+          setSelectedBlock={(block: string) => {}}
+          matchShopID={0}
+          role="admin"
+          mapUpdate={Date.now()} 
+        />
         </div>
 
         {isShopModalOpen && (

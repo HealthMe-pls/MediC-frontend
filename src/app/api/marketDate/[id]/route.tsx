@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 
-const BASE_URL = "http://127.0.0.1:8080/marketDate/";
+const BASE_URL = `${process.env.NEXT_PUBLIC_GO_API_URL}/marketDate/`;
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {

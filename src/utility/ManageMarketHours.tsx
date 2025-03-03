@@ -13,7 +13,7 @@ export interface MarketOpenDatesResponse {
 
 export async function fetchMarketOpenDates(): Promise<MarketOpenDate[]> {
   try {
-    const url = "http://127.0.0.1:8080/marketDate/";
+    const url = `${process.env.NEXT_PUBLIC_GO_API_URL}/marketDate/`;
     console.log("Fetching market-open-dates from URL:", url);
 
     const response = await axios.get<MarketOpenDatesResponse>(url, {
