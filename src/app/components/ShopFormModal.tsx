@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { fetchShopCategory, ShopCategory } from "@/utility/shopcate";
 import { fetchEntrepreneur, Entrepreneur } from "@/utility/entrepreneur";
+import Image from "next/image";
 
 interface ShopFormModalProps {
   isOpen: boolean;
@@ -406,7 +407,20 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
                       }
                     >
                       {menu.img ? (
-                        <img
+                        // <img
+                        //   src={
+                        //     menu.img instanceof File
+                        //       ? URL.createObjectURL(menu.img)
+                        //       : menu.img
+                        //   }
+                        //   alt="Preview"
+                        //   className="w-full h-full object-cover"
+                        //   onError={(e) => {
+                        //     e.currentTarget.onerror = null; // ป้องกัน loop error
+                        //     handleMenuChange(index, "img", ""); // รีเซ็ตเป็นค่าว่าง
+                        //   }}
+                        // />
+                        <Image
                           src={
                             menu.img instanceof File
                               ? URL.createObjectURL(menu.img)
@@ -414,8 +428,11 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
                           }
                           alt="Preview"
                           className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.onerror = null; // ป้องกัน loop error
+                          onError={(
+                            e: React.SyntheticEvent<HTMLImageElement, Event>
+                          ) => {
+                            const target = e.currentTarget as HTMLImageElement;
+                            target.onerror = null; // ป้องกัน loop error
                             handleMenuChange(index, "img", ""); // รีเซ็ตเป็นค่าว่าง
                           }}
                         />
