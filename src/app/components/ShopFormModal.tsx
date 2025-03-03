@@ -483,7 +483,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
                       type="number"
                       value={menu.price}
                       onChange={(e) => {
-                        let value = e.target.value.replace(/^0+/, ""); // ลบ 0 นำหน้า
+                        const value = e.target.value.replace(/^0+/, ""); // ลบ 0 นำหน้า
                         handleMenuChange(
                           index,
                           "price",
