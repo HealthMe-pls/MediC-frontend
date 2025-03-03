@@ -120,7 +120,6 @@ export default function ManageVendor() {
 
   return (
     <AdminLayouts currentPage="Manage Vendor">
-<<<<<<< HEAD
       <div className="flex items-center justify-between ml-12 mt-4 mb-4">
         <input
           type="text"
@@ -141,12 +140,6 @@ export default function ManageVendor() {
             onClick={() => openModal()}
             className="bg-blue-100 text-[#4C4343] py-2 px-4 rounded-2xl"
           >
-=======
-      <div className="p-4 text-[#4C4343]">
-        {/*Add Vendor*/}
-        <div className="flex justify-end">
-          <button onClick={() => openModal()} className="bg-blue-100 text-[#4C4343] py-2 px-4 rounded-xl mb-4">
->>>>>>> 89c42b8 (decorate report-issue + text color)
             + Add Vendor
           </button>
         </div>
@@ -182,7 +175,6 @@ export default function ManageVendor() {
                 </td>
                 <td className="p-4">{shopCounts[ent.id] ?? "Loading..."}</td>
                 <td className="">
-<<<<<<< HEAD
                   <button
                     onClick={() => openModal(ent)}
                     className="bg-gray-300 text-[#4C4343] px-7 py-1 rounded-2xl mx-1"
@@ -193,12 +185,6 @@ export default function ManageVendor() {
                     onClick={() => confirmDelete(ent.id, ent.username)}
                     className="bg-red-300 text-[#4C4343] px-7 py-1 rounded-2xl"
                   >
-=======
-                  <button onClick={() => openModal(ent)} className="bg-gray-300 text-[#4C4343] px-7 py-1 rounded-xl mx-1">
-                    Edit
-                  </button>
-                  <button onClick={() => confirmDelete(ent.id, ent.username)} className="bg-red-300 text-[#4C4343] px-7 py-1 rounded-xl">
->>>>>>> 89c42b8 (decorate report-issue + text color)
                     Delete
                   </button>
                 </td>
@@ -258,14 +244,9 @@ export default function ManageVendor() {
                         required
                       />
                       <button
-<<<<<<< HEAD
                         type="button"
                         onClick={toggleModalPasswordVisibility}
                         className="p-1 text-gray-500"
-=======
-                        type="submit"
-                        className="bg-blue-200 text-[#4C4343] px-6 py-1 rounded-full shadow-md "
->>>>>>> 89c42b8 (decorate report-issue + text color)
                       >
                         {visibleModalPassword ? <EyeOffIcon /> : <EyeIcon />}
                       </button>
@@ -316,7 +297,6 @@ export default function ManageVendor() {
         )}
 
         {/* Pagination Controls */}
-<<<<<<< HEAD
         <div className="flex justify-center mt-16 space-x-4">
           <button
             className="px-3 py-1 rounded text-[#4C4343]"
@@ -326,33 +306,6 @@ export default function ManageVendor() {
           >
             {"<"}
           </button>
-=======
-          <div className="flex justify-center mt-16 space-x-4">
-            <button
-              className="px-3 py-1 rounded text-[#4C4343]"
-              onClick={() => setCurrentPage((prev) => (prev === 1 ? totalPages : prev - 1))}
-            >
-              {"<"}
-            </button>
-            
-            {[...Array(totalPages)].map((_, i) => (
-              <button
-                key={i + 1}
-                className={`px-3 py-1 rounded-full ${currentPage === i + 1 ? "bg-gray-300 text-[#4C4343]" : "text-[#4C4343]"}`}
-                onClick={() => setCurrentPage(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
-            
-            <button
-              className="px-3 py-1 rounded text-[#4C4343]"
-              onClick={() => setCurrentPage((prev) => (prev === totalPages ? 1 : prev + 1))}
-            >
-              {">"}
-            </button>
-          </div>
->>>>>>> 89c42b8 (decorate report-issue + text color)
 
           {[...Array(totalPages)].map((_, i) => (
             <button

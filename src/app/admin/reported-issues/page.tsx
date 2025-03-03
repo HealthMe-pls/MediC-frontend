@@ -126,7 +126,6 @@ const ReportedIssuesPage = () => {
   return (
     <AdminLayouts currentPage="Reported Issues">
       <div className="text-[#4C4343]">
-<<<<<<< HEAD
         <div className="mb-6 flex items-center gap-4">
           <input
             type="text"
@@ -141,52 +140,6 @@ const ReportedIssuesPage = () => {
             }}
             className="py-2 pr-64 ml-8 mt-6 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-=======
-      <div className="mb-6 flex items-center gap-4">
-        <input
-          type="text"
-          placeholder="Search by username..."
-          value={searchTerm}
-          onChange={handleSearch}
-          style={{
-            backgroundImage: 'url(/assets/search-rounded.png)', 
-            backgroundRepeat: 'no-repeat', 
-            backgroundPosition: '10px center',
-            paddingLeft: '30px',
-          }}
-          className="py-2 pr-64 ml-8 mt-6 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      {loading && <p>Loading notifications...</p>}
-      {error && <p className="text-red-600">Error: {error}</p>}
-
-      <div className="space-y-4">
-        <div className="flex items-center ml-9 gap-4">
-          {filteredNotifications.length > 0 && (
-            <>
-              <input
-                ref={selectAllRef}
-                type="checkbox"
-                onChange={toggleSelectAll}
-                className="w-5 h-5 border-2 border-gray-300 rounded-sm bg-white accent-[#4C4343]"
-              />
-              <p>Select All</p>
-            </>
-          )}
-          {selectedNotifications.length > 0 && (
-            <button
-              onClick={confirmDeleteSelected}
-              className="p-2 rounded-lg hover:bg-red-200 transition "
-            >
-              <img 
-                src="/assets/trash.png" 
-                alt="Delete" 
-                className="w-5 h-5 " 
-              />
-            </button>
-          )}
->>>>>>> 89c42b8 (decorate report-issue + text color)
         </div>
 
         {loading && <p>Loading notifications...</p>}
@@ -199,14 +152,8 @@ const ReportedIssuesPage = () => {
                 <input
                   ref={selectAllRef}
                   type="checkbox"
-<<<<<<< HEAD
                   onChange={toggleSelectAll}
                   className="w-5 h-5 border-2 border-gray-300 rounded-sm bg-white accent-[#4C4343]"
-=======
-                  checked={selectedNotifications.includes(notification.id)}
-                  onChange={() => toggleSelection(notification.id)}
-                  className="w-5 h-5 mt-1 ml-5 border-2 border-gray-300 rounded-sm bg-white accent-[#4C4343]"
->>>>>>> 89c42b8 (decorate report-issue + text color)
                 />
                 <p>Select All</p>
               </>
@@ -245,7 +192,6 @@ const ReportedIssuesPage = () => {
                         : "bg-white"
                     }`}
                   >
-<<<<<<< HEAD
                     <div className="flex-1">
                       <h3 className="font-semibold">
                         {notification.from_username}
@@ -305,44 +251,6 @@ const ReportedIssuesPage = () => {
             </div>
           </div>
         )}
-=======
-                    ✖
-                  </button>
-                </div>
-              </div>
-            ))
-          : !loading && <p>No notifications found.</p>}
-      </div>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20">
-          <div className="bg-white py-8 px-16 rounded-xl shadow-lg">
-          <p className="text-lg font-semibold flex items-center justify-center">
-            {deleteMultiple
-              ? selectedNotifications.length === notifications.length
-                ? "Remove all reported issue?"
-                : `Remove ${selectedNotifications.length} reported issue?`
-              : "Remove this reported issue?"}
-          </p>
-          <p className="flex items-center justify-center">This action cannot be undone.</p>
-            <div className="mt-4 flex justify-end gap-16">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-gray-200 rounded-full"
-              >
-                No, Cancel
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-4 py-2 bg-red-200 text-black rounded-full hover:bg-red-600"
-              >
-                Yes, Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
->>>>>>> 89c42b8 (decorate report-issue + text color)
       </div>
     </AdminLayouts>
   );
