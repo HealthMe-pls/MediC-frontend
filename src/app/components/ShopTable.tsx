@@ -16,7 +16,11 @@ import {
   deleteMenu,
   updateMenuByAdmin,
 } from "@/utility/menu";
-import { uploadPhotoMenuByAdmin, deletePhoto } from "@/utility/photo";
+import {
+  uploadPhotoMenuByAdmin,
+  deletePhoto,
+  uploadPhotoShopByAdmin,
+} from "@/utility/photo";
 
 interface ShopTableProps {
   blocks: Record<
@@ -273,10 +277,58 @@ const ShopTable: React.FC<ShopTableProps> = ({
     }
   };
 
+  const handlePhotoUpdate = async (shopId: number, photoData: PhotoForm) => {
+    if (editPhotoData) {
+      if (editPhotoData?.cover_img === "") {
+        if (photoData.cover_img instanceof File)
+          await uploadPhotoShopByAdmin(photoData.cover_img, shopId);
+      } else {
+        if (photoData.cover_img instanceof File) {
+          console.log(editPhotoData.cover_id);
+          await deletePhoto(editPhotoData.cover_id);
+          await uploadPhotoShopByAdmin(photoData.cover_img, shopId);
+        }
+        if (photoData.cover_img === "") {
+          console.log(editPhotoData.cover_id);
+          await deletePhoto(editPhotoData.cover_id);
+        }
+      }
+      if (editPhotoData?.sec_img === "") {
+        if (photoData.sec_img instanceof File)
+          await uploadPhotoShopByAdmin(photoData.sec_img, shopId);
+      } else {
+        if (photoData.sec_img instanceof File) {
+          console.log(editPhotoData.sec_id);
+          await deletePhoto(editPhotoData.sec_id);
+          await uploadPhotoShopByAdmin(photoData.sec_img, shopId);
+        }
+        if (photoData.sec_img === "") {
+          console.log(editPhotoData.sec_id);
+          await deletePhoto(editPhotoData.sec_id);
+        }
+      }
+      if (editPhotoData?.thr_img === "") {
+        if (photoData.thr_img instanceof File)
+          await uploadPhotoShopByAdmin(photoData.thr_img, shopId);
+      } else {
+        if (photoData.thr_img instanceof File) {
+          console.log(editPhotoData.thr_id);
+          await deletePhoto(editPhotoData.thr_id);
+          await uploadPhotoShopByAdmin(photoData.thr_img, shopId);
+        }
+        if (photoData.thr_img === "") {
+          console.log(editPhotoData.thr_id);
+          await deletePhoto(editPhotoData.thr_id);
+        }
+      }
+    }
+  };
+
   const handleSubmit = async (
     formData: ShopFormData,
     socialData: SocialFormData[],
-    menuData: MenuFormData[]
+    menuData: MenuFormData[],
+    photoData: PhotoForm
   ) => {
     if (!editShopData || !editShopData.id) {
       console.error("Shop ID is missing!");
@@ -290,7 +342,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
 
       // จัดการ Social Data
       await handleSocialUpdate(editShopData.id, socialData);
-
+      await handlePhotoUpdate(editShopData.id, photoData);
       await handleMenuUpdate(editShopData.id, menuData);
 
       setIsModalOpen(false);

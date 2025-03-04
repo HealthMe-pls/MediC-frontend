@@ -55,7 +55,7 @@ const WorkshopForm: React.FC<WorkshopFormProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[780px] max-w-[900px] ml-[234px] relative max-h-[650px] overflow-y-auto scrollbar-hide">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[800px] max-w-[900px] ml-[234px] relative max-h-[650px] overflow-y-auto scrollbar-hide">
         <h2 className="text-[20px] font-bold mb-4">
           {editMode
             ? "Edit Highlighted Workshop or Event"
@@ -71,7 +71,7 @@ const WorkshopForm: React.FC<WorkshopFormProps> = ({
 
         <form onSubmit={handleSubmit}>
           {/* Image Upload */}
-          <div className="mb-4">
+          <div className="mb-4 ml-4">
             <ImageUpload
               formImg={formImg}
               handleImageChange={handleImageChange}
