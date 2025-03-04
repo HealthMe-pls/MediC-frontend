@@ -221,7 +221,7 @@ export default function Home() {
                 />
               </div>
             </div>
-            <div className="w-full absolute top-24">
+            <div className="w-full top-24">
               {showGif && !selectedBlock ? (
                 <div className="relative w-full z-index-1">
                   <Image
