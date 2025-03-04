@@ -100,21 +100,42 @@ export default function ManageVendor() {
     setVisibleModalPassword((prev) => !prev);
   };
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const filteredEntrepreneurs = entrepreneurs.filter(
+    (ent) =>
+      ent.username.toLowerCase().includes(searchQuery.toLowerCase()) 
+  );
+
   // ** Pagination Logic **
   const totalPages = Math.ceil(entrepreneurs.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = entrepreneurs.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedData = filteredEntrepreneurs.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <AdminLayouts currentPage="Manage Vendor">
-      <div className="p-4 text-[#4C4343]">
+      <div className="flex items-center justify-between ml-12 mt-4 mb-4">
+        <input
+          type="text"
+          placeholder="Search ..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{
+            backgroundImage: 'url(/assets/search-rounded.png)', 
+            backgroundRepeat: 'no-repeat', 
+            backgroundPosition: '10px center',
+            paddingLeft: '30px',
+          }}
+          className="py-2 pr-64 bg-gray-50 text-[#4C4343] border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4C4343]"
+        />
         {/*Add Vendor*/}
-        <div className="flex justify-end">
-          <button onClick={() => openModal()} className="bg-blue-100 text-[#4C4343] py-2 px-4 rounded-2xl mb-4">
+        <div className="">
+          <button onClick={() => openModal()} className="bg-blue-100 text-[#4C4343] py-2 px-4 rounded-2xl">
             + Add Vendor
           </button>
         </div>
+      </div>
 
+      <div className="p-4 text-[#4C4343]">
         {/*Table*/}
         <table className="w-full border-collapse border-gray-300">
           <thead>
