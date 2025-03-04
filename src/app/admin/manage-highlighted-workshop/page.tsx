@@ -167,30 +167,111 @@ const ManageHighlightedWorkshop = () => {
     }
   };
 
+<<<<<<< Updated upstream
+=======
+  const handlePhotoUpdate = async (id: number, photoData: PhotoForm) => {
+    if (originalFormImg) {
+      if (originalFormImg?.cover_img === "") {
+        if (photoData.cover_img instanceof File)
+          await uploadPhotoWorkshops(photoData.cover_img, id);
+      } else {
+        if (photoData.cover_img instanceof File) {
+          console.log(originalFormImg.cover_id);
+          await deletePhoto(originalFormImg.cover_id);
+          await uploadPhotoWorkshops(photoData.cover_img, id);
+        }
+        if (photoData.cover_img === "") {
+          console.log(originalFormImg.cover_id);
+          await deletePhoto(originalFormImg.cover_id);
+        }
+      }
+      if (originalFormImg?.sec_img === "") {
+        if (photoData.sec_img instanceof File)
+          await uploadPhotoWorkshops(photoData.sec_img, id);
+      } else {
+        if (photoData.sec_img instanceof File) {
+          console.log(originalFormImg.sec_id);
+          await deletePhoto(originalFormImg.sec_id);
+          await uploadPhotoWorkshops(photoData.sec_img, id);
+        }
+        if (photoData.sec_img === "") {
+          console.log(originalFormImg.sec_id);
+          await deletePhoto(originalFormImg.sec_id);
+        }
+      }
+      if (originalFormImg?.thr_img === "") {
+        if (photoData.thr_img instanceof File)
+          await uploadPhotoWorkshops(photoData.thr_img, id);
+      } else {
+        if (photoData.thr_img instanceof File) {
+          console.log(originalFormImg.thr_id);
+          await deletePhoto(originalFormImg.thr_id);
+          await uploadPhotoWorkshops(photoData.thr_img, id);
+        }
+        if (photoData.thr_img === "") {
+          console.log(originalFormImg.thr_id);
+          await deletePhoto(originalFormImg.thr_id);
+        }
+      }
+    }
+    loadWorkshops();
+  };
+
+  //sorting method
+  const [sortMethod, setSortMethod] = useState("");
+  const sortedWorkshops = [...filteredWorkshops].sort((a, b) => {
+    if (sortMethod === "name_desc") {
+      return b.name.localeCompare(a.name); // Descending (Z → A)
+    } else if (sortMethod === "name_asc") {
+      return a.name.localeCompare(b.name); // Ascending (A → Z)
+    } else if (sortMethod === "new_to_old") {
+      return b.id - a.id; // Newest to Oldest
+    } else if (sortMethod === "old_to_new") {
+      return a.id - b.id; // Oldest to Newest
+    }
+    return 0; // Default (no sorting)
+  });
+  
+
+
+>>>>>>> Stashed changes
   return (
     <div className="h-screen flex flex-col">
       <AdminLayouts currentPage="Manage Highlighted Workshop & Event">
         <section className="flex-1 p-8">
           <div className="flex justify-between items-center mb-6">
+            <div className="">
+              Sort by :
+              <select
+                value={sortMethod}
+                onChange={(e) => setSortMethod(e.target.value)}
+                className="border border-gray-300 p-2 rounded-lg ml-2 mr-4"
+              >
+                <option value="">Sort by...</option>
+                <option value="name_asc">Name (A → Z)</option>
+                <option value="name_desc">Name (Z → A)</option>
+                <option value="new_to_old">Newest to Oldest</option>
+                <option value="old_to_new">Oldest to Newest</option>
+              </select>
+              <input
+                type="text"
+                placeholder="Search..."
+                className=" border border-gray-300 rounded-lg px-4 py-2 pr-96"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
             <button
               onClick={() => openModal()}
-              className="bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-lg transition duration-200"
+              className="bg-blue-200 hover:bg-blue-300 text-black py-2 px-4 rounded-3xl transition duration-200"
             >
-              Add
+              + Add New Workshop or Event
             </button>
           </div>
-          <div className="mb-6">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full border border-gray-300 rounded-lg px-4 py-2"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+          
 
           <div className="flex justify-center ml-8 overflow-hidden">
-            <div className="flex flex-wrap gap-4 justify-start p-5">
+            <div className="flex flex-wrap gap-4 justify-center p-5">
               {loading ? (
                 <p className="text-center text-gray-500">
                   Loading workshops...
@@ -205,7 +286,7 @@ const ManageHighlightedWorkshop = () => {
                   </div>
                 </div>
               ) : (
-                filteredWorkshops.map((workshop) => (
+                sortedWorkshops.map((workshop) => (
                   <div
                     key={workshop.id}
                     className="border border-gray-300 rounded-lg p-4 bg-white shadow-md hover:shadow-lg transition w-[250px]"
