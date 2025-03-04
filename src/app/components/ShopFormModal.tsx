@@ -267,7 +267,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
             onSocialChange={handleSocialChange}
             onRemoveSocial={handleRemoveSocial}
           />
-          <div className="my-1">
+          <div className="my-1 ml-4">
             <p className="mb-1">Shop Image :</p>
             <ImageUpload
               formImg={formImg}
