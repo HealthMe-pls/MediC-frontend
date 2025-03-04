@@ -14,6 +14,7 @@ import {
   ShopFormData,
   SocialFormData,
   MenuFormData,
+
   PhotoForm,
   ShopOpenDates,
 } from "@/app/components/types";
@@ -23,7 +24,6 @@ import Map from "@/app/components/ShopMap";
 import ShopTable from "@/app/components/ShopTable";
 import ModalManageShopList from "@/app/components/ModalManageShopList";
 import { createSocialByAdmin } from "@/utility/social";
-import { fetchShopByName } from "@/utility/searchbar";
 import { createMenuByAdmin } from "@/utility/menu";
 import {
   uploadPhotoMenuByAdmin,
