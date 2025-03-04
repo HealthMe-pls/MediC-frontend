@@ -32,3 +32,11 @@ export interface PhotoForm {
   thr_id: number;
   thr_img: File | string;
 }
+
+export interface ShopOpenDates {
+  id: number;
+  start_time: string;
+  end_time: string;
+  shop_id: number;
+  market_open_date_id: number;
+}
