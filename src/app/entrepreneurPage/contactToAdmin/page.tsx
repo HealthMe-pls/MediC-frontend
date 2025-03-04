@@ -3,6 +3,8 @@
 import { useState } from "react";
 // import { createMail } from "../../../utility/contactToAdmin";
 import { Dialog } from "@headlessui/react";
+import Logo from "../../../../../public/assets/logo.png";
+import Image from "next/image";
 
 export default function ManageVendor() {
   const [formData, setFormData] = useState({
@@ -50,7 +52,7 @@ export default function ManageVendor() {
   return (
     <div className="h-screen flex flex-col items-center justify-center p-4 text-[#4C4343]">
       <div className="flex justify-center items-center  mb-10">
-        <img src="/assets/logo.png" alt="Logo" className="w62 h-52" />
+        <Image src={Logo} alt="Logo" className="w62 h-52" />
       </div>
       <h1 className="text-6xl  font-bold mb-4">Contact Form</h1>
       <form
