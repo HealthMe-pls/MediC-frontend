@@ -4,13 +4,18 @@ import { useState, useEffect } from "react";
 import { fetchMapDetail } from "../../../utility/maps";
 import { ShopIdName } from "../../../utility/shop";
 import { ChangeMap } from "../../../utility/maps";
-import { createShopByAdmin, fetchShopDetail } from "@/utility/shopDetail";
+import {
+  createShopByAdmin,
+  fetchShopDetail,
+  fetchShopById,
+} from "@/utility/shopDetail";
+import ShopFormModal from "@/app/components/ShopFormModal";
 import {
   ShopFormData,
   SocialFormData,
   MenuFormData,
+  PhotoForm,
 } from "@/app/components/types";
-import ShopFormModal from "@/app/components/ShopFormModal";
 import CategoryManager from "@/app/components/CategoryManager";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 import Map from "@/app/components/ShopMap";
@@ -19,6 +24,10 @@ import ModalManageShopList from "@/app/components/ModalManageShopList";
 import { createSocialByAdmin } from "@/utility/social";
 import { fetchShopByName } from "@/utility/searchbar";
 import { createMenuByAdmin } from "@/utility/menu";
+import {
+  uploadPhotoMenuByAdmin,
+  uploadPhotoShopByAdmin,
+} from "@/utility/photo";
 
 export default function AdminPageComponent() {
   const [blocks, setBlocks] = useState<
@@ -108,7 +117,8 @@ export default function AdminPageComponent() {
   const handleCreateShop = async (
     formData: ShopFormData,
     socialData: SocialFormData[],
-    menuData: MenuFormData[]
+    menuData: MenuFormData[],
+    PhotoData: PhotoForm
   ) => {
     try {
       await createShopByAdmin(formData); // รอให้ API สร้างร้านค้าเสร็จ
@@ -136,7 +146,22 @@ export default function AdminPageComponent() {
             shop_id: shop.id, // ใช้ id จาก response
           };
           await createMenuByAdmin(newMenu); // เรียก API สำหรับ Social ทีละตัว
+          const shopDe = await fetchShopById(shop.id);
+          const createdmenu = shopDe.menus.find(
+            (m) => menu.product_name === m.product_name
+          );
+          if (createdmenu && menu.img && menu.img instanceof File) {
+            await uploadPhotoMenuByAdmin(menu.img, createdmenu?.id);
+          }
         }
+
+        if (PhotoData.cover_img && PhotoData.cover_img instanceof File)
+          await uploadPhotoShopByAdmin(PhotoData.cover_img, shop.id);
+        if (PhotoData.sec_img && PhotoData.sec_img instanceof File)
+          await uploadPhotoShopByAdmin(PhotoData.sec_img, shop.id);
+        if (PhotoData.thr_img && PhotoData.thr_img instanceof File)
+          await uploadPhotoShopByAdmin(PhotoData.thr_img, shop.id);
+
         console.log("Shop created successfully!");
         setIsShopModalOpen(false);
         fetchData();

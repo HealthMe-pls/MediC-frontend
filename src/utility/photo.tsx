@@ -126,3 +126,14 @@ export const uploadPhotoMenuByAdmin = async (file: File, id: number): Promise<Ph
     throw new Error("Failed to upload image");
   }
 };
+
+export const deletePhoto = async (photoId: number): Promise<void> => {
+  if (!photoId) throw new Error("Photo ID is required to delete an image.");
+
+  try {
+    await axios.delete(`/api/photo/${photoId}`); // Adjust API endpoint as needed
+  } catch (error) {
+    console.error("Error deleting image:", error);
+    throw new Error("Failed to delete image");
+  }
+};

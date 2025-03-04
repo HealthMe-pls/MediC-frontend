@@ -10,17 +10,42 @@ import {
 import React from "react";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 import Image from "next/image";
+import WorkshopForm from "@/app/components/WorkshopForm";
+import { deletePhoto, uploadPhotoWorkshops } from "@/utility/photo";
+import { PhotoForm } from "@/app/components/types";
 
 const ManageHighlightedWorkshop = () => {
   const [formImg, setFormImg] = useState<{
+    cover_id: number;
     cover_img: File | string;
+    sec_id: number;
     sec_img: File | string;
+    thr_id: number;
     thr_img: File | string;
   }>({
+    cover_id: 0,
     cover_img: "",
+    sec_id: 0,
     sec_img: "",
+    thr_id: 0,
     thr_img: "",
   });
+  const [originalFormImg, setOriginalFormImg] = useState<{
+    cover_id: number;
+    cover_img: File | string;
+    sec_id: number;
+    sec_img: File | string;
+    thr_id: number;
+    thr_img: File | string;
+  }>({
+    cover_id: 0,
+    cover_img: "",
+    sec_id: 0,
+    sec_img: "",
+    thr_id: 0,
+    thr_img: "",
+  });
+
   const [formData, setFormData] = useState<{
     name: string;
     description: string;
@@ -75,6 +100,10 @@ const ManageHighlightedWorkshop = () => {
     }
   };
 
+  const handleRemoveImage = (key: "cover_img" | "sec_img" | "thr_img") => {
+    setFormImg((prev) => ({ ...prev, [key]: "" }));
+  };
+
   useEffect(() => {
     loadWorkshops();
   }, []);
@@ -115,6 +144,25 @@ const ManageHighlightedWorkshop = () => {
 
   const openModal = (workshop?: Workshop) => {
     if (workshop) {
+      const photos = Array.isArray(workshop.photos) ? workshop.photos : []; // Ensure it's an array
+
+      const newFormImg = {
+        cover_id: photos[0]?.photo_id || 0,
+        cover_img: photos[0]
+          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${photos[0].pathfile}`
+          : "",
+        sec_id: photos[1]?.photo_id || 0,
+        sec_img: photos[1]
+          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${photos[1].pathfile}`
+          : "",
+        thr_id: photos[2]?.photo_id || 0,
+        thr_img: photos[2]
+          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${photos[2].pathfile}`
+          : "",
+      };
+
+      setFormImg(newFormImg);
+      setOriginalFormImg(newFormImg); // Save original values
       setFormData({
         name: workshop.name,
         description: workshop.description,
@@ -125,17 +173,7 @@ const ManageHighlightedWorkshop = () => {
         language: workshop.language,
         instructor: workshop.instructor,
       });
-      setFormImg({
-        cover_img: workshop.photos[0]
-          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`
-          : "",
-        sec_img: workshop.photos[1]
-          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[1]?.pathfile}`
-          : "",
-        thr_img: workshop.photos[2]
-          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[2]?.pathfile}`
-          : "",
-      });
+
       setCurrentWorkshopId(workshop.id);
       setEditMode(true);
     } else {
@@ -150,8 +188,19 @@ const ManageHighlightedWorkshop = () => {
         instructor: "",
       });
       setFormImg({
+        cover_id: 0,
         cover_img: "",
+        sec_id: 0,
         sec_img: "",
+        thr_id: 0,
+        thr_img: "",
+      });
+      setOriginalFormImg({
+        cover_id: 0,
+        cover_img: "",
+        sec_id: 0,
+        sec_img: "",
+        thr_id: 0,
         thr_img: "",
       });
       setCurrentWorkshopId(null);
@@ -192,14 +241,72 @@ const ManageHighlightedWorkshop = () => {
     try {
       if (editMode && currentWorkshopId !== null) {
         await updateWorkshop(currentWorkshopId, formattedData);
+        handlePhotoUpdate(currentWorkshopId, formImg);
       } else {
-        await createWorkshop(formattedData);
+        const response = await createWorkshop(formattedData);
+        console.log(response);
+        if (response.id) {
+          if (formImg.cover_img instanceof File)
+            await uploadPhotoWorkshops(formImg.cover_img, response.id);
+          if (formImg.sec_img instanceof File)
+            await uploadPhotoWorkshops(formImg.sec_img, response.id);
+          if (formImg.thr_img instanceof File)
+            await uploadPhotoWorkshops(formImg.thr_img, response.id);
+        }
       }
       closeModal();
       loadWorkshops();
     } catch (error) {
       console.error("Error saving workshop:", error);
     }
+  };
+
+  const handlePhotoUpdate = async (id: number, photoData: PhotoForm) => {
+    if (originalFormImg) {
+      if (originalFormImg?.cover_img === "") {
+        if (photoData.cover_img instanceof File)
+          await uploadPhotoWorkshops(photoData.cover_img, id);
+      } else {
+        if (photoData.cover_img instanceof File) {
+          console.log(originalFormImg.cover_id);
+          await deletePhoto(originalFormImg.cover_id);
+          await uploadPhotoWorkshops(photoData.cover_img, id);
+        }
+        if (photoData.cover_img === "") {
+          console.log(originalFormImg.cover_id);
+          await deletePhoto(originalFormImg.cover_id);
+        }
+      }
+      if (originalFormImg?.sec_img === "") {
+        if (photoData.sec_img instanceof File)
+          await uploadPhotoWorkshops(photoData.sec_img, id);
+      } else {
+        if (photoData.sec_img instanceof File) {
+          console.log(originalFormImg.sec_id);
+          await deletePhoto(originalFormImg.sec_id);
+          await uploadPhotoWorkshops(photoData.sec_img, id);
+        }
+        if (photoData.sec_img === "") {
+          console.log(originalFormImg.sec_id);
+          await deletePhoto(originalFormImg.sec_id);
+        }
+      }
+      if (originalFormImg?.thr_img === "") {
+        if (photoData.thr_img instanceof File)
+          await uploadPhotoWorkshops(photoData.thr_img, id);
+      } else {
+        if (photoData.thr_img instanceof File) {
+          console.log(originalFormImg.thr_id);
+          await deletePhoto(originalFormImg.thr_id);
+          await uploadPhotoWorkshops(photoData.thr_img, id);
+        }
+        if (photoData.thr_img === "") {
+          console.log(originalFormImg.thr_id);
+          await deletePhoto(originalFormImg.thr_id);
+        }
+      }
+    }
+    loadWorkshops();
   };
 
   return (
@@ -279,6 +386,17 @@ const ManageHighlightedWorkshop = () => {
               )}
             </div>
           </div>
+          <WorkshopForm
+            isModalOpen={isModalOpen}
+            editMode={editMode}
+            formImg={formImg}
+            formData={formData}
+            setFormData={setFormData}
+            handleImageChange={handleImageChange}
+            handleRemoveImage={handleRemoveImage}
+            handleSubmit={handleSubmit}
+            closeModal={() => setIsModalOpen(false)}
+          />
         </section>
       </AdminLayouts>
 
@@ -301,183 +419,6 @@ const ManageHighlightedWorkshop = () => {
                 Confirm
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[full] ml-[234px] relative max-h-[650px] overflow-y-auto scrollbar-hide">
-            <h2 className="text-[20px] font-bold mb-4">
-              {editMode
-                ? "Edit Highlighted Workshop or Event"
-                : "Add Highlighted Workshop or Event"}
-            </h2>
-            <div className="flex flex-row items-center">
-              <p className="text-[18px] mr-2">Upload Image</p>
-              <p className="text-gray-400 mr-2">
-                ** The first uploaded image will be used as the cover. **
-              </p>
-            </div>
-            <form>
-              <div className="mb-4">
-                <div className="grid grid-cols-3 gap-2 mt-2">
-                  {(["cover_img", "sec_img", "thr_img"] as const).map((key) => (
-                    <div
-                      key={key}
-                      className="relative border p-2 rounded-lg flex flex-col items-center"
-                    >
-                      <div
-                        className="relative w-[200px] h-[150px] border rounded flex items-center justify-center overflow-hidden cursor-pointer"
-                        onClick={() => document.getElementById(key)?.click()}
-                      >
-                        {formImg[key] && formImg[key] !== "" ? (
-                          <div className="relative w-full h-full group">
-                            {/* รูปภาพ */}
-                            <Image
-                              src={
-                                formImg[key] instanceof File
-                                  ? URL.createObjectURL(formImg[key] as File)
-                                  : formImg[key]
-                              }
-                              alt="Preview"
-                              className="w-full h-full object-cover"
-                              width={300} // ต้องกำหนดขนาด ถ้าใช้ next/image
-                              height={200}
-                              onError={(
-                                e: React.SyntheticEvent<HTMLImageElement, Event>
-                              ) => {
-                                const target =
-                                  e.currentTarget as HTMLImageElement;
-                                target.onerror = null; // ป้องกัน loop error
-                              }}
-                            />
-                            {/* Overlay เมื่อ hover */}
-                            <div className="absolute inset-0 bg-black/25 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                              <span className="text-white">Upload</span>
-                            </div>
-                          </div>
-                        ) : (
-                          <button
-                            type="button"
-                            className="bg-gray-200 text-gray-600 p-2 rounded"
-                          >
-                            Upload
-                          </button>
-                        )}
-                      </div>
-                      <input
-                        id={key}
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          if (e.target.files && e.target.files.length > 0) {
-                            handleImageChange(e, key);
-                          }
-                        }}
-                        className="hidden"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <input
-                type="text"
-                placeholder="Name"
-                className="w-full mb-2 border rounded p-2"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-              />
-              <textarea
-                placeholder="Description"
-                className="w-full mb-2 border rounded p-2 resize-y overflow-auto"
-                value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
-                onInput={(e) => {
-                  e.currentTarget.style.height = "auto"; // รีเซ็ตความสูงก่อน
-                  e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`; // ปรับตามเนื้อหา
-                }}
-              />
-
-              <input
-                type="date"
-                className="w-full mb-2 border rounded p-2"
-                value={formData.date}
-                onChange={(e) =>
-                  setFormData({ ...formData, date: e.target.value })
-                }
-              />
-              <div className="flex gap-2">
-                <input
-                  type="time"
-                  className="w-1/2 border rounded p-2"
-                  value={formData.start_time} // ค่านี้จะต้องอยู่ในรูปแบบ 24 ชม.
-                  onChange={(e) =>
-                    setFormData({ ...formData, start_time: e.target.value })
-                  }
-                  lang="en-GB"
-                />
-                <input
-                  type="time"
-                  className="w-1/2 border rounded p-2"
-                  value={formData.end_time}
-                  onChange={(e) =>
-                    setFormData({ ...formData, end_time: e.target.value })
-                  }
-                  lang="en-GB"
-                />
-              </div>
-              <input
-                type="number"
-                placeholder="Price"
-                className="w-full mb-2 border rounded p-2"
-                value={formData.price}
-                onChange={
-                  (e) =>
-                    setFormData({ ...formData, price: Number(e.target.value) }) // แปลงเป็น number
-                }
-              />
-
-              <input
-                type="text"
-                placeholder="Language"
-                className="w-full mb-2 border rounded p-2"
-                value={formData.language}
-                onChange={(e) =>
-                  setFormData({ ...formData, language: e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Instructor"
-                className="w-full mb-2 border rounded p-2"
-                value={formData.instructor}
-                onChange={(e) =>
-                  setFormData({ ...formData, instructor: e.target.value })
-                }
-              />
-              <div className="flex justify-end gap-2 mt-4">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="px-4 py-2 bg-gray-400 text-white rounded"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  onClick={handleSubmit}
-                  className="px-4 py-2 bg-blue-600 text-white rounded"
-                >
-                  {editMode ? "Update" : "Save"}
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}
