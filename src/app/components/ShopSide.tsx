@@ -217,8 +217,11 @@ const Shopside: React.FC<block> = ({ blockName }) => {
               <ul>
                 {Array.isArray(selectedShopDetail.social_media) &&
                   selectedShopDetail.social_media.map((media, index) => (
-                    <li key={index} className="text-[14px] font-light">
-                      {media.platform}: <a href={media.link}>{media.link}</a>
+                    <li key={index} className="text-[14px] font-light ">
+                      {media.platform}:{" "}
+                      <a href={media.link} className="underline">
+                        {media.name}
+                      </a>
                     </li>
                   ))}
               </ul>
