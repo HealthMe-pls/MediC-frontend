@@ -144,23 +144,25 @@ const ManageHighlightedWorkshop = () => {
 
   const openModal = (workshop?: Workshop) => {
     if (workshop) {
+      const photos = Array.isArray(workshop.photos) ? workshop.photos : []; // Ensure it's an array
+
       const newFormImg = {
-        cover_id: workshop.photos[0] ? workshop.photos[0].photo_id : 0,
-        cover_img: workshop.photos[0]
-          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`
+        cover_id: photos[0]?.photo_id || 0,
+        cover_img: photos[0]
+          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${photos[0].pathfile}`
           : "",
-        sec_id: workshop.photos[1] ? workshop.photos[1].photo_id : 0,
-        sec_img: workshop.photos[1]
-          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[1]?.pathfile}`
+        sec_id: photos[1]?.photo_id || 0,
+        sec_img: photos[1]
+          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${photos[1].pathfile}`
           : "",
-        thr_id: workshop.photos[2] ? workshop.photos[2].photo_id : 0,
-        thr_img: workshop.photos[2]
-          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[2]?.pathfile}`
+        thr_id: photos[2]?.photo_id || 0,
+        thr_img: photos[2]
+          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${photos[2].pathfile}`
           : "",
       };
 
       setFormImg(newFormImg);
-      setOriginalFormImg(newFormImg); // บันทึกค่าเดิม
+      setOriginalFormImg(newFormImg); // Save original values
       setFormData({
         name: workshop.name,
         description: workshop.description,
