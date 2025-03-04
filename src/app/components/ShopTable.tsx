@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
 import {
+  ShopFormData,
+  SocialFormData,
+  MenuFormData,
+} from "@/app/components/types";
+import {
   updateShopByAdmin,
   fetchShopDetail,
   fetchShopById,
@@ -9,11 +14,7 @@ import {
   updateSocialByAdmin,
   createSocialByAdmin,
 } from "@/utility/social";
-import ShopFormModal, {
-  ShopFormData,
-  SocialFormData,
-  MenuFormData,
-} from "./ShopFormModal";
+import ShopFormModal from "./ShopFormModal";
 import {
   createMenuByAdmin,
   deleteMenu,
@@ -89,7 +90,6 @@ const ShopTable: React.FC<ShopTableProps> = ({
                   shop_id: shop.shop_id,
                 }))
             : [];
-
 
           // ป้องกันการตั้งค่า state ถ้าข้อมูลไม่เปลี่ยน
           setEditShopData((prev) =>
@@ -291,7 +291,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
     };
 
     loadShops();
-  }, []); 
+  }, []);
 
   const toggleStatus = async (shopId: number) => {
     if (shopId === null) return;
