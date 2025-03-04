@@ -24,7 +24,7 @@ export default function ManageVendor() {
   
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 7;
 
   useEffect(() => {
     loadEntrepreneurs();
