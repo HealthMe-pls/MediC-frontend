@@ -11,6 +11,8 @@ import React from "react";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 import Image from "next/image";
 import WorkshopForm from "@/app/components/WorkshopForm";
+import { deletePhoto, uploadPhotoWorkshops } from "@/utility/photo";
+import { PhotoForm } from "@/app/components/types";
 
 const ManageHighlightedWorkshop = () => {
   const [formImg, setFormImg] = useState<{
@@ -28,6 +30,22 @@ const ManageHighlightedWorkshop = () => {
     thr_id: 0,
     thr_img: "",
   });
+  const [originalFormImg, setOriginalFormImg] = useState<{
+    cover_id: number;
+    cover_img: File | string;
+    sec_id: number;
+    sec_img: File | string;
+    thr_id: number;
+    thr_img: File | string;
+  }>({
+    cover_id: 0,
+    cover_img: "",
+    sec_id: 0,
+    sec_img: "",
+    thr_id: 0,
+    thr_img: "",
+  });
+
   const [formData, setFormData] = useState<{
     name: string;
     description: string;
@@ -126,17 +144,7 @@ const ManageHighlightedWorkshop = () => {
 
   const openModal = (workshop?: Workshop) => {
     if (workshop) {
-      setFormData({
-        name: workshop.name,
-        description: workshop.description,
-        date: formatDate(workshop.date),
-        start_time: formatTime(workshop.start_time),
-        end_time: formatTime(workshop.end_time),
-        price: workshop.price,
-        language: workshop.language,
-        instructor: workshop.instructor,
-      });
-      setFormImg({
+      const newFormImg = {
         cover_id: workshop.photos[0] ? workshop.photos[0].photo_id : 0,
         cover_img: workshop.photos[0]
           ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`
@@ -149,7 +157,21 @@ const ManageHighlightedWorkshop = () => {
         thr_img: workshop.photos[2]
           ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[2]?.pathfile}`
           : "",
+      };
+
+      setFormImg(newFormImg);
+      setOriginalFormImg(newFormImg); // บันทึกค่าเดิม
+      setFormData({
+        name: workshop.name,
+        description: workshop.description,
+        date: formatDate(workshop.date),
+        start_time: formatTime(workshop.start_time),
+        end_time: formatTime(workshop.end_time),
+        price: workshop.price,
+        language: workshop.language,
+        instructor: workshop.instructor,
       });
+
       setCurrentWorkshopId(workshop.id);
       setEditMode(true);
     } else {
@@ -164,6 +186,14 @@ const ManageHighlightedWorkshop = () => {
         instructor: "",
       });
       setFormImg({
+        cover_id: 0,
+        cover_img: "",
+        sec_id: 0,
+        sec_img: "",
+        thr_id: 0,
+        thr_img: "",
+      });
+      setOriginalFormImg({
         cover_id: 0,
         cover_img: "",
         sec_id: 0,
@@ -209,14 +239,72 @@ const ManageHighlightedWorkshop = () => {
     try {
       if (editMode && currentWorkshopId !== null) {
         await updateWorkshop(currentWorkshopId, formattedData);
+        handlePhotoUpdate(currentWorkshopId, formImg);
       } else {
-        await createWorkshop(formattedData);
+        const response = await createWorkshop(formattedData);
+        console.log(response);
+        if (response.id) {
+          if (formImg.cover_img instanceof File)
+            await uploadPhotoWorkshops(formImg.cover_img, response.id);
+          if (formImg.sec_img instanceof File)
+            await uploadPhotoWorkshops(formImg.sec_img, response.id);
+          if (formImg.thr_img instanceof File)
+            await uploadPhotoWorkshops(formImg.thr_img, response.id);
+        }
       }
       closeModal();
       loadWorkshops();
     } catch (error) {
       console.error("Error saving workshop:", error);
     }
+  };
+
+  const handlePhotoUpdate = async (id: number, photoData: PhotoForm) => {
+    if (originalFormImg) {
+      if (originalFormImg?.cover_img === "") {
+        if (photoData.cover_img instanceof File)
+          await uploadPhotoWorkshops(photoData.cover_img, id);
+      } else {
+        if (photoData.cover_img instanceof File) {
+          console.log(originalFormImg.cover_id);
+          await deletePhoto(originalFormImg.cover_id);
+          await uploadPhotoWorkshops(photoData.cover_img, id);
+        }
+        if (photoData.cover_img === "") {
+          console.log(originalFormImg.cover_id);
+          await deletePhoto(originalFormImg.cover_id);
+        }
+      }
+      if (originalFormImg?.sec_img === "") {
+        if (photoData.sec_img instanceof File)
+          await uploadPhotoWorkshops(photoData.sec_img, id);
+      } else {
+        if (photoData.sec_img instanceof File) {
+          console.log(originalFormImg.sec_id);
+          await deletePhoto(originalFormImg.sec_id);
+          await uploadPhotoWorkshops(photoData.sec_img, id);
+        }
+        if (photoData.sec_img === "") {
+          console.log(originalFormImg.sec_id);
+          await deletePhoto(originalFormImg.sec_id);
+        }
+      }
+      if (originalFormImg?.thr_img === "") {
+        if (photoData.thr_img instanceof File)
+          await uploadPhotoWorkshops(photoData.thr_img, id);
+      } else {
+        if (photoData.thr_img instanceof File) {
+          console.log(originalFormImg.thr_id);
+          await deletePhoto(originalFormImg.thr_id);
+          await uploadPhotoWorkshops(photoData.thr_img, id);
+        }
+        if (photoData.thr_img === "") {
+          console.log(originalFormImg.thr_id);
+          await deletePhoto(originalFormImg.thr_id);
+        }
+      }
+    }
+    loadWorkshops();
   };
 
   return (
