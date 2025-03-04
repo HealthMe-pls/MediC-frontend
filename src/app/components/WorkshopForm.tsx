@@ -62,12 +62,7 @@ const WorkshopForm: React.FC<WorkshopFormProps> = ({
             : "Add Highlighted Workshop or Event"}
         </h2>
 
-        <div className="flex flex-row items-center">
-          <p className="text-[18px] mr-2">Upload Image</p>
-          <p className="text-gray-400 mr-2">
-            ** The first uploaded image will be used as the cover. **
-          </p>
-        </div>
+        <p>Upload Image :</p>
 
         <form onSubmit={handleSubmit}>
           {/* Image Upload */}
