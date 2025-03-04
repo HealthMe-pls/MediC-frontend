@@ -5,11 +5,12 @@ import { fetchMapDetail } from "../../../utility/maps";
 import { ShopIdName } from "../../../utility/shop";
 import { ChangeMap } from "../../../utility/maps";
 import { createShopByAdmin, fetchShopDetail } from "@/utility/shopDetail";
-import ShopFormModal, {
+import {
   ShopFormData,
   SocialFormData,
   MenuFormData,
-} from "@/app/components/ShopFormModal";
+} from "@/app/components/types";
+import ShopFormModal from "@/app/components/ShopFormModal";
 import CategoryManager from "@/app/components/CategoryManager";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 import Map from "@/app/components/ShopMap";

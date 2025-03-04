@@ -6,7 +6,7 @@ import ShopDetailsSection from "./ShopDetailsSection";
 import SocialMediaForm from "./SocialMediaForm";
 import MenuForm from "./MenuForm";
 
-interface ShopFormModalProps {
+export interface ShopFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (
