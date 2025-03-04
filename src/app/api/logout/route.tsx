@@ -1,25 +1,38 @@
+import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 
-export async function logout(token: string) {
+export async function POST(req: NextRequest) {
   try {
-    console.log("Logout request with token:", token); // Log the token for debugging
+    // Extract token from headers
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-    // Send the logout request to the Go backend to blacklist the token
+    const token = authHeader.replace("Bearer ", "");
+    console.log("Logout request with token:", token);
+
+    // Send logout request to Go backend
+    const goApiUrl = process.env.NEXT_PUBLIC_GO_API_URL;
+    if (!goApiUrl) {
+      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+    }
+
+    const goLogoutUrl = `${goApiUrl}/logout`;
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_GO_API_URL}/logout`, // Your Go backend URL
-      { token }, // Optionally, you can send the token in the request body
+      goLogoutUrl,
+      {}, // No body needed
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Send token in Authorization header
+          Authorization: `Bearer ${token}`,
         },
       }
     );
 
-    // Handle the successful response
-    return response.data;
-  } catch (error: any) {
+    return NextResponse.json(response.data, { status: response.status });
+  } catch (error) {
     console.error("Logout failed:", error);
-    return { message: "Logout failed", error: error.response?.data || error.message };
+    return NextResponse.json({ error: "Logout failed" }, { status: 500 });
   }
 }
