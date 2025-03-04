@@ -18,8 +18,8 @@ export async function logout(token: string) {
 
     // Handle the successful response
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     console.error("Logout failed:", error);
-    return { message: "Logout failed", error: error.response?.data || error.message };
+    return { message: "Logout failed"};
   }
 }
