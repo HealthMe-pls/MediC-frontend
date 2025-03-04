@@ -1,17 +1,25 @@
 import axios from "axios";
-
-export interface Shop {
-    shop_id: number;
-    name: string;
-    category: string;
-    open_status: string;
-    description: string;
-    photos: string[];
-    shop_open_dates: string[];
-    menus: string[];
-    social_media: string[];
+import { ShopOpenDates } from "@/utility/shopDetail";
+import {Social,DeletePhoto,TempSocial,TempMenu,Photo,Time} from "@/app/admin/pending-approval/pendingApproval"
+export interface TempShopEn {
+  id: number;
+  name: string;
+  shop_id: number;
+  deleteSocials?: Social[];
+  socials: Social[];
+  menus: TempMenu[]; // Include menus in the response
+  photos_shop: Photo[]; // Photos directly related to the shop
+  photos_menu: Photo[]; // Photos linked to menus
+  addTime: Time[]; // Include added times
+  editTime: Time[]; // Include edited times
+  deleteTime: Time[]; // Include deleted times
+  time: ShopOpenDates[]; // Include shop open dates
+  entrepreneur_id: number;
   }
-  export const getShopDetailsByLoggedInEntrepreneur = async (): Promise<Shop[] | { error: string }> => {
+  export interface Response {
+    temp_shops: TempShopEn[];
+  }
+  export const getShopDetailsByLoggedInEntrepreneur = async (): Promise<Response | { error: string }> => {
     const token = localStorage.getItem("authToken");
   
     if (!token) {
@@ -21,14 +29,14 @@ export interface Shop {
     try {
       console.log("try to sent route")
       const url = "/api/entrepreneurLogin";  // Ensure this matches the API route
-      const response = await axios.get<Shop[]>(url, {
+      const response = await axios.get<Response>(url, {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
   
-      return response.data as Shop[];
+      return response.data as Response;
     } catch (error) {
       console.error("API Request Failed:", error);  // Log request failure
       throw error;
