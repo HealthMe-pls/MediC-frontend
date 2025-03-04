@@ -1,14 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getShopDetailsByLoggedInEntrepreneur, Shop } from "@/utility/entrepreneurLogin";
+import {
+  getShopDetailsByLoggedInEntrepreneur,
+  Shop,
+} from "@/utility/entrepreneurLogin";
 import { logoutEntrepreneur } from "@/utility/login"; // Import the logout function
 import { useRouter } from "next/navigation"; // Import the useRouter hook for navigation
 
 const Dashboard = () => {
-  const [shopData, setShopData] = useState<Shop[]>([]);  // Initialize as an empty array
+  const [shopData, setShopData] = useState<Shop[]>([]); // Initialize as an empty array
   const [error, setError] = useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);  // State to track if user is logged in
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true); // State to track if user is logged in
   const router = useRouter(); // Instantiate the router
 
   useEffect(() => {
@@ -16,23 +19,23 @@ const Dashboard = () => {
     const token = localStorage.getItem("authToken");
 
     if (!token) {
-      setIsLoggedIn(false);  // If no token is found, the user is not logged in
-      router.push("/login");  // Redirect to login page
+      setIsLoggedIn(false); // If no token is found, the user is not logged in
+      router.push("/login"); // Redirect to login page
     } else {
       // Fetch shop data if the user is logged in
       const fetchShopData = async () => {
         try {
-          const response = await getShopDetailsByLoggedInEntrepreneur();  // Pass token for authentication
-          
+          const response = await getShopDetailsByLoggedInEntrepreneur(); // Pass token for authentication
+
           if ("error" in response) {
             setError(response.error);
-            setShopData([]);  // Ensure it's an empty array, not null
+            setShopData([]); // Ensure it's an empty array, not null
           } else {
             setShopData(response);
           }
         } catch (err) {
-          setError("Failed to load shop data");
-          setShopData([]);  // Ensure it's an empty array
+          setError(`Failed to load shop data ${err}`);
+          setShopData([]); // Ensure it's an empty array
         }
       };
 
@@ -56,7 +59,7 @@ const Dashboard = () => {
         localStorage.removeItem("authToken");
 
         // Optionally, redirect the user to the login page after logout
-        router.push("/login");  // Navigate to the login page after successful logout
+        router.push("/login"); // Navigate to the login page after successful logout
       } else {
         console.error("No token found, cannot log out.");
         // Optionally redirect to login if the token is not found
@@ -85,7 +88,12 @@ const Dashboard = () => {
                 <ul>
                   <li>Status: {shop.open_status}</li>
                   <li>Description: {shop.description}</li>
-                  <li>Photos: {shop.photos?.length > 0 ? shop.photos.join(", ") : "No photos available"}</li>
+                  <li>
+                    Photos:{" "}
+                    {shop.photos?.length > 0
+                      ? shop.photos.join(", ")
+                      : "No photos available"}
+                  </li>
                   <li>Shop Open Dates: {shop.shop_open_dates?.join(", ")}</li>
                   <li>Menus: {shop.menus?.join(", ")}</li>
                   <li>Social Media: {shop.social_media?.join(", ")}</li>
