@@ -54,28 +54,3 @@ export async function logoutEntrepreneur(token: string): Promise<AuthResponse> {
     throw error;
   }
 }
-
-// Logout an entrepreneur
-export async function logoutEntrepreneur(token: string): Promise<AuthResponse> {
-  try {
-    const response = await axios.post<AuthResponse>(
-      "/api/logout",
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Send the token to be blacklisted
-        },
-      }
-    );
-
-    // Optionally, remove the token from storage (localStorage or cookies)
-    localStorage.removeItem("token"); // If using localStorage
-    document.cookie =
-      "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // If using cookies
-
-    return response.data;
-  } catch (error: any) {
-    return { error: error.response?.data?.error || "Logout failed" };
-  }
-}
