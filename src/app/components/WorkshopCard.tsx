@@ -4,6 +4,8 @@ import React from "react";
 import Image from "next/image";
 // import Link from "next/link";
 import { useRouter } from "next/navigation";
+
+import { Tag, Globe } from "lucide-react";
 // Define Workshop interface for type safety
 interface Workshop {
   id: number;
@@ -58,13 +60,16 @@ const WorkshopCard: React.FC<{ workshop: Workshop }> = ({ workshop }) => {
       </div>
       <p className="text-[28px]">{workshop.name || "No Title"}</p>
 
-      <p className="text-gray-500 mt-1">
-        Language: {workshop.language || "N/A"}
-      </p>
-      <p className="text-blue-600 font-bold mt-2">
+      <p className="text-gray-500 mt-2 flex items-center">
+        <Tag className="w-4 h-4 mr-2" />
         {workshop.price !== null
-          ? `$${workshop.price.toFixed(2)}`
+          ? `${workshop.price.toFixed(2)} Baht`
           : "Price not available"}
+      </p>
+
+      <p className="text-gray-500 mt-1 flex items-center">
+        <Globe className="w-4 h-4 mr-2" />
+        Language: {workshop.language || "N/A"}
       </p>
 
       <div className="mt-4 flex justify-centerx">
