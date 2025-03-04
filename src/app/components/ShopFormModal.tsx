@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { fetchShopCategory, ShopCategory } from "@/utility/shopcate";
 import { fetchEntrepreneur, Entrepreneur } from "@/utility/entrepreneur";
-import { ShopFormData, SocialFormData, MenuFormData } from "./types";
+import { ShopFormData, SocialFormData, MenuFormData, PhotoForm } from "./types";
 import ShopDetailsSection from "./ShopDetailsSection";
 import SocialMediaForm from "./SocialMediaForm";
 import MenuForm from "./MenuForm";
+import ImageUpload from "./ImageUpload";
 
 interface ShopFormModalProps {
   isOpen: boolean;
@@ -12,11 +13,13 @@ interface ShopFormModalProps {
   onSubmit: (
     data: ShopFormData,
     socialData: SocialFormData[],
-    menuData: MenuFormData[]
+    menuData: MenuFormData[],
+    PhotoData: PhotoForm
   ) => void;
   initialData?: ShopFormData;
   initialSocialData?: SocialFormData[];
   initialMenuData?: MenuFormData[];
+  initialPhotoData?: PhotoForm;
 }
 
 const ShopFormModal: React.FC<ShopFormModalProps> = ({
@@ -26,6 +29,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
   initialData,
   initialSocialData = [],
   initialMenuData = [],
+  initialPhotoData,
 }) => {
   const [formData, setFormData] = useState<ShopFormData>({
     name: "",
@@ -41,6 +45,16 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
   );
   const [categories, setCategories] = useState<ShopCategory[]>([]);
   const [entrepreneurs, setEntrepreneurs] = useState<Entrepreneur[]>([]);
+  const [formImg, setFormImg] = useState<PhotoForm>(
+    initialPhotoData || {
+      cover_id: 0,
+      cover_img: "",
+      sec_id: 0,
+      sec_img: "",
+      thr_id: 0,
+      thr_img: "",
+    }
+  );
 
   // Social Media Handlers
   const handleAddSocial = () => {
@@ -48,6 +62,20 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
       ...socialFormData,
       { id: Date.now(), platform: "", name: "", link: "", shop_id: 0 },
     ]);
+  };
+
+  const handleImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    key: "cover_img" | "sec_img" | "thr_img"
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormImg((prev) => ({ ...prev, [key]: file }));
+    }
+  };
+
+  const handleRemoveImage = (key: "cover_img" | "sec_img" | "thr_img") => {
+    setFormImg((prev) => ({ ...prev, [key]: "" }));
   };
 
   const handleSocialChange = (
@@ -109,6 +137,16 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     );
     setMenuFormData(initialMenuData || []);
     setSocialFormData(initialSocialData || []);
+    setFormImg(
+      initialPhotoData || {
+        cover_id: 0,
+        cover_img: "",
+        sec_id: 0,
+        sec_img: "",
+        thr_id: 0,
+        thr_img: "",
+      }
+    );
   };
 
   useEffect(() => {
@@ -200,7 +238,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData, socialFormData, menuFormData);
+    onSubmit(formData, socialFormData, menuFormData, formImg);
     onClose();
   };
 
@@ -212,6 +250,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
         <h2 className="text-xl mb-4">
           {initialData ? "Edit Shop" : "Add Shop"}
         </h2>
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Shop Details Section */}
           <ShopDetailsSection
@@ -228,7 +267,14 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
             onSocialChange={handleSocialChange}
             onRemoveSocial={handleRemoveSocial}
           />
-
+          <div className="my-1">
+            <p className="mb-1">Shop Image :</p>
+            <ImageUpload
+              formImg={formImg}
+              handleImageChange={handleImageChange}
+              handleRemoveImage={handleRemoveImage}
+            />
+          </div>
           {/* Menu Section */}
           <MenuForm
             menuFormData={menuFormData}

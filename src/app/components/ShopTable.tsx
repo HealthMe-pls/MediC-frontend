@@ -10,7 +10,7 @@ import {
   createSocialByAdmin,
 } from "@/utility/social";
 import ShopFormModal from "./ShopFormModal";
-import { ShopFormData, SocialFormData, MenuFormData } from "./types";
+import { ShopFormData, SocialFormData, MenuFormData, PhotoForm } from "./types";
 import {
   createMenuByAdmin,
   deleteMenu,
@@ -44,6 +44,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
     null
   );
   const [editMenuData, setEditMenuData] = useState<MenuFormData[] | null>(null);
+  const [editPhotoData, setEditPhotoData] = useState<PhotoForm | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
@@ -58,6 +59,21 @@ const ShopTable: React.FC<ShopTableProps> = ({
             shop_category_id: shop.category_id,
             description: shop.description || "",
             entrepreneur_id: shop.entrepreneur_id,
+          };
+
+          const newPhotoData: PhotoForm = {
+            cover_id: shop.photos?.[0]?.photo_id || 0,
+            cover_img: shop.photos?.[0]
+              ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[0]?.pathfile}`
+              : "",
+            sec_id: shop.photos?.[1]?.photo_id || 0,
+            sec_img: shop.photos?.[1]
+              ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[1]?.pathfile}`
+              : "",
+            thr_id: shop.photos?.[2]?.photo_id || 0,
+            thr_img: shop.photos?.[2]
+              ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[2]?.pathfile}`
+              : "",
           };
 
           const newSocialData: SocialFormData[] = shop.social_media
@@ -95,6 +111,11 @@ const ShopTable: React.FC<ShopTableProps> = ({
             JSON.stringify(prev) === JSON.stringify(newShopData)
               ? prev
               : newShopData
+          );
+          setEditPhotoData((prev) =>
+            JSON.stringify(prev) === JSON.stringify(newShopData)
+              ? prev
+              : newPhotoData
           );
           setEditSocialData((prev) =>
             JSON.stringify(prev) === JSON.stringify(newSocialData)
@@ -440,6 +461,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
         initialData={editShopData || undefined}
         initialSocialData={editSocialData || []}
         initialMenuData={editMenuData || undefined}
+        initialPhotoData={editPhotoData || undefined}
       />
     </div>
   );
