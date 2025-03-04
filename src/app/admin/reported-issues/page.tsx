@@ -1,5 +1,6 @@
 "use client";
 
+
 import { useEffect, useState, useRef } from "react";
 import {
   fetchNotifications,
@@ -98,6 +99,8 @@ const ReportedIssuesPage = () => {
   const toggleSelectAll = () => {
     if (selectedNotifications.length === filteredNotifications.length) {
       setSelectedNotifications([]);
+    }else if (selectedNotifications.length > 0) {
+      setSelectedNotifications([]);
     } else {
       setSelectedNotifications(filteredNotifications.map((noti) => noti.id));
     }
@@ -121,13 +124,20 @@ const ReportedIssuesPage = () => {
 
   return (
     <AdminLayouts currentPage="Reported Issues">
+      <div className="text-[#4C4343]">
       <div className="mb-6 flex items-center gap-4">
         <input
           type="text"
           placeholder="Search by username..."
           value={searchTerm}
           onChange={handleSearch}
-          className="w-full p-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+          style={{
+            backgroundImage: 'url(/assets/search-rounded.png)', 
+            backgroundRepeat: 'no-repeat', 
+            backgroundPosition: '10px center',
+            paddingLeft: '30px',
+          }}
+          className="py-2 pr-64 ml-8 mt-6 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
@@ -135,14 +145,14 @@ const ReportedIssuesPage = () => {
       {error && <p className="text-red-600">Error: {error}</p>}
 
       <div className="space-y-4">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center ml-9 gap-4">
           {filteredNotifications.length > 0 && (
             <>
               <input
                 ref={selectAllRef}
                 type="checkbox"
                 onChange={toggleSelectAll}
-                className="w-5 h-5"
+                className="w-5 h-5 border-2 border-gray-300 rounded-sm bg-white accent-[#4C4343]"
               />
               <p>Select All</p>
             </>
@@ -150,9 +160,13 @@ const ReportedIssuesPage = () => {
           {selectedNotifications.length > 0 && (
             <button
               onClick={confirmDeleteSelected}
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+              className="p-2 rounded-lg hover:bg-red-200 transition "
             >
-              Delete Selected ({selectedNotifications.length})
+              <img 
+                src="/assets/trash.png" 
+                alt="Delete" 
+                className="w-5 h-5 " 
+              />
             </button>
           )}
         </div>
@@ -164,10 +178,10 @@ const ReportedIssuesPage = () => {
                   type="checkbox"
                   checked={selectedNotifications.includes(notification.id)}
                   onChange={() => toggleSelection(notification.id)}
-                  className="w-5 h-5 mt-1"
+                  className="w-5 h-5 mt-1 ml-5 border-2 border-gray-300 rounded-sm bg-white accent-[#4C4343]"
                 />
                 <div
-                  className={`border border-gray-300 rounded-lg p-4 flex items-start gap-4 w-[100%] transition ${
+                  className={`border border-gray-300 rounded-lg p-4 flex items-start gap-4 w-full transition mr-16 ${
                     selectedNotifications.includes(notification.id)
                       ? "bg-gray-200"
                       : "bg-white"
@@ -193,7 +207,7 @@ const ReportedIssuesPage = () => {
                     onClick={() => confirmDelete(notification.id)}
                     className="text-gray-500 hover:text-gray-700"
                   >
-                    x
+                    ✖
                   </button>
                 </div>
               </div>
@@ -202,26 +216,26 @@ const ReportedIssuesPage = () => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-lg font-semibold">
-              {deleteMultiple
-                ? selectedNotifications.length === notifications.length
-                  ? "Remove all reported issue? This action cannot be undone."
-                  : `Remove ${selectedNotifications.length} reported issue? This action cannot be undone.`
-                : "Remove this reported issue?  This action cannot be undone."}
-            </p>
-
-            <div className="mt-4 flex justify-end gap-4">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20">
+          <div className="bg-white py-8 px-16 rounded-xl shadow-lg">
+          <p className="text-lg font-semibold flex items-center justify-center">
+            {deleteMultiple
+              ? selectedNotifications.length === notifications.length
+                ? "Remove all reported issue?"
+                : `Remove ${selectedNotifications.length} reported issue?`
+              : "Remove this reported issue?"}
+          </p>
+          <p className="flex items-center justify-center">This action cannot be undone.</p>
+            <div className="mt-4 flex justify-end gap-16">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 border rounded-lg"
+                className="px-4 py-2 bg-gray-200 rounded-full"
               >
                 No, Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                className="px-4 py-2 bg-red-200 text-black rounded-full hover:bg-red-600"
               >
                 Yes, Delete
               </button>
@@ -229,6 +243,7 @@ const ReportedIssuesPage = () => {
           </div>
         </div>
       )}
+      </div>
     </AdminLayouts>
   );
 };
