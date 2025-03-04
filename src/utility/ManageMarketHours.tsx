@@ -11,13 +11,6 @@ export interface MarketOpenDatesResponse {
   market_open_dates: MarketOpenDate[];
 }
 
-export interface MarketOpenDate {
-  id: number;
-  date: string;
-  start_time: string;
-  end_time: string;
-}
-
 export async function fetchMarketOpenDates(): Promise<MarketOpenDatesResponse> {
   try {
     const url = `/api/marketDate`;

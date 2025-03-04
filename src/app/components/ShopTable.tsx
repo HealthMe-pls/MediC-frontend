@@ -9,11 +9,8 @@ import {
   updateSocialByAdmin,
   createSocialByAdmin,
 } from "@/utility/social";
-import ShopFormModal, {
-  ShopFormData,
-  SocialFormData,
-  MenuFormData,
-} from "./ShopFormModal";
+import ShopFormModal from "./ShopFormModal";
+import { ShopFormData, SocialFormData, MenuFormData } from "./types";
 import {
   createMenuByAdmin,
   deleteMenu,

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { fetchShopCategory, ShopCategory } from "@/utility/shopcate";
 import { fetchEntrepreneur, Entrepreneur } from "@/utility/entrepreneur";
-import { ShopFormData, SocialFormData, MenuFormData } from "./types";
 import ShopDetailsSection from "./ShopDetailsSection";
 import SocialMediaForm from "./SocialMediaForm";
 import MenuForm from "./MenuForm";
+import ShopDateModal, { ShopScheduleEntry } from "./ShopDateModal";
+import { ShopFormData, SocialFormData, MenuFormData } from "./types";
 
 interface ShopFormModalProps {
   isOpen: boolean;
@@ -12,7 +13,8 @@ interface ShopFormModalProps {
   onSubmit: (
     data: ShopFormData,
     socialData: SocialFormData[],
-    menuData: MenuFormData[]
+    menuData: MenuFormData[],
+    scheduleData?: ShopScheduleEntry[]
   ) => void;
   initialData?: ShopFormData;
   initialSocialData?: SocialFormData[];
@@ -27,12 +29,14 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
   initialSocialData = [],
   initialMenuData = [],
 }) => {
-  const [formData, setFormData] = useState<ShopFormData>({
-    name: "",
-    shop_category_id: 1,
-    description: "",
-    entrepreneur_id: 1,
-  });
+  const [formData, setFormData] = useState<ShopFormData>(
+    initialData || {
+      name: "",
+      shop_category_id: 1,
+      description: "",
+      entrepreneur_id: 1,
+    }
+  );
   const [socialFormData, setSocialFormData] = useState<SocialFormData[]>(
     initialSocialData || []
   );
@@ -41,8 +45,13 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
   );
   const [categories, setCategories] = useState<ShopCategory[]>([]);
   const [entrepreneurs, setEntrepreneurs] = useState<Entrepreneur[]>([]);
+  const [shopSchedule, setShopSchedule] = useState<ShopScheduleEntry[]>([]);
 
-  // Social Media Handlers
+  // ใช้ useCallback เพื่อ memoize ฟังก์ชัน onScheduleChange
+  const handleScheduleChange = useCallback((data: ShopScheduleEntry[]) => {
+    setShopSchedule(data);
+  }, []);
+
   const handleAddSocial = () => {
     setSocialFormData([
       ...socialFormData,
@@ -66,7 +75,6 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     setSocialFormData(socialFormData.filter((_, i) => i !== index));
   };
 
-  // Menu Handlers
   const handleAddMenu = () => {
     setMenuFormData([
       ...menuFormData,
@@ -199,7 +207,8 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData, socialFormData, menuFormData);
+    // ส่งข้อมูล shopSchedule ไปด้วย (เฉพาะโหมด Edit)
+    onSubmit(formData, socialFormData, menuFormData, shopSchedule);
     onClose();
   };
 
@@ -208,9 +217,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-[full] ml-[234px] relative max-h-[650px] overflow-y-auto scrollbar-hide">
-        <h2 className="text-xl mb-4">
-          {initialData ? "Edit Shop" : "Add Shop"}
-        </h2>
+        <h2 className="text-xl mb-4">{initialData ? "Edit Shop" : "Add Shop"}</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Shop Details Section */}
           <ShopDetailsSection
@@ -235,6 +242,11 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
             onMenuChange={handleMenuChange}
             onRemoveMenu={handleRemoveMenu}
           />
+
+          {/* แสดง ShopDateModal เฉพาะในโหมด Edit */}
+          {initialData && (
+            <ShopDateModal onScheduleChange={handleScheduleChange} />
+          )}
 
           <div className="flex justify-end gap-2">
             <button
