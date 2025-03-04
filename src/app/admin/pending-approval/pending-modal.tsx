@@ -21,7 +21,7 @@ export default function PendingModal({ onClose, tempshop }: PendingModalProps) {
         onClick={onClose}
       >
         <div
-          className="bg-white p-6 rounded-lg shadow-lg w-[500px] max-w-2xl relative left-[100px] max-h-[650px] min-w-[860px] overflow-y-auto scrollbar-hide"
+          className="bg-white p-6 rounded-lg shadow-lg w-8/9 max-w-2xl relative left-[100px] max-h-[650px] min-w-[860px] overflow-y-auto scrollbar-hide"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex justify-between items-center">

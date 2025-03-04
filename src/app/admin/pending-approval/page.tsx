@@ -4,7 +4,7 @@ import { fetchTempShop, TempShop } from "./pendingApproval";
 import PendingCard from "./pending-card";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 import SearchPending from "./search-pending";
-import { te } from "date-fns/locale";
+// import { te } from "date-fns/locale";
 
 export default function PendingApprovalPage() {
   const [tempShops, setTempShops] = useState<TempShop[]>([]);
