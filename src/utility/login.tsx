@@ -12,21 +12,6 @@ export interface AuthResponse {
   error?: string;
 }
 
-// Register a new entrepreneur
-export async function registerEntrepreneur(
-  entrepreneur: Omit<Entrepreneur, "id">
-): Promise<AuthResponse> {
-  try {
-    const response = await axios.post<AuthResponse>("/api/register", entrepreneur, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return response.data;
-  } catch (error: any) {
-    return { error: error.response?.data?.error || "Registration failed" };
-  }
-}
 
 // Login an entrepreneur
 export async function loginEntrepreneur(
@@ -39,8 +24,8 @@ export async function loginEntrepreneur(
       },
     });
     return response.data;
-  } catch (error: any) {
-    return { error: error.response?.data?.error || "Login failed" };
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -64,7 +49,7 @@ export async function logoutEntrepreneur(token: string): Promise<AuthResponse> {
       "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // If using cookies
 
     return response.data;
-  } catch (error: any) {
-    return { error: error.response?.data?.error || "Logout failed" };
-  }
+  } catch (error) {
+    throw error;
+   }
 }
