@@ -193,14 +193,9 @@ const ShopTable: React.FC<ShopTableProps> = ({
       for (const menu of deletedMenus || []) {
         if (menu.id) {
           console.log("delete menuid : " + menu.id);
-
-          if (menu.idPhoto) {
-            console.log(menu.idPhoto);
-            const response_photo = await deletePhoto(menu.idPhoto);
-            console.log("response from del photo" + response_photo);
-          }
-          const response_menu = await deleteMenu(menu.id);
-          console.log("response from del menu" + response_menu);
+          await deleteMenu(menu.id);
+          // const response_menu = await deleteMenu(menu.id);
+          // console.log("response from del menu" + response_menu);
         }
       }
 
