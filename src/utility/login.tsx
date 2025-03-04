@@ -29,27 +29,28 @@ export async function loginEntrepreneur(
   }
 }
 
-// Logout an entrepreneur
 export async function logoutEntrepreneur(token: string): Promise<AuthResponse> {
   try {
+    const url = `/api/logout`;
+
     const response = await axios.post<AuthResponse>(
-      "/api/logout",
-      {},
+      url, 
+      {}, // Empty body if not required
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Send the token to be blacklisted
+          Authorization: `Bearer ${token}`, // Send token in the header
         },
       }
     );
 
-    // Optionally, remove the token from storage (localStorage or cookies)
-    localStorage.removeItem("token"); // If using localStorage
-    document.cookie =
-      "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // If using cookies
+    // Remove token from storage
+    localStorage.removeItem("token"); 
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
     return response.data;
   } catch (error) {
+    console.error("Logout failed:", error);
     throw error;
-   }
+  }
 }
