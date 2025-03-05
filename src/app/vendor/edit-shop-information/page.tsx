@@ -17,6 +17,7 @@ import {
   SocialFormData,
 } from "@/app/components/types";
 import { fetchShopById } from "@/utility/shopDetail";
+import { updateTempShop } from "@/utility/temp";
 
 const EditShopInformation = () => {
   const [shopData, setShopData] = useState<TempShopEn[]>([]);
@@ -189,7 +190,15 @@ const EditShopInformation = () => {
     menuData: MenuFormData[],
     PhotoData: PhotoForm,
     shopHours: ShopOpenDates[]
-  ) => {};
+  ) => {
+    const newData = {
+      name: formData.name,
+      description: formData.description,
+      shop_category_id: Number(formData.shop_category_id) || 0,
+    };
+    console.log(newData);
+    if (selectedShop) await updateTempShop(selectedShop.shop_id, newData);
+  };
 
   return (
     <VendorLayouts currentPage="Edit Shop Information">
