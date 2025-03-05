@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
 import { ShopDetail, fetchShopById } from "@/utility/shopDetail";
-import { format, parseISO, addDays } from "date-fns";
+
+import { format, parseISO, addDays, isWithinInterval, subDays  } from "date-fns";
+
 // import Link from "next/link";
 // import { se, th } from "date-fns/locale";
 import CardMenuSL from "./CardMenuSL";
@@ -50,13 +52,43 @@ const Shopside: React.FC<BlockProps> = ({ blockName }) => {
     router.push(`/shop/${selectedShopDetail?.shop_id}`);
   };
 
-  // กรองเฉพาะวันที่อยู่ในช่วงปัจจุบันถึง 30 วันข้างหน้า
-  const filteredDates = selectedShopDetail?.shop_open_dates.filter((date) => {
+
+  const filteredDates = selectedShopDetail?.shop_open_dates
+  .filter((date) => {
     const startTime = parseISO(date.start_time);
     const now = new Date();
     const thirtyDaysFromNow = addDays(now, 30);
-    return startTime >= now && startTime <= thirtyDaysFromNow;
+    const oneDayBeforeNow = subDays(now, 1);
+  
+    return startTime >= oneDayBeforeNow && startTime <= thirtyDaysFromNow;
+  })
+  .sort((a, b) => {
+    const startTimeA = parseISO(a.start_time);
+    const startTimeB = parseISO(b.start_time);
+
+    return startTimeA.getTime() - startTimeB.getTime();
   });
+
+
+  const checkShopOpenStatus = () => {
+    if (!selectedShopDetail?.open_status || !filteredDates || filteredDates.length === 0) {
+      return false;
+    }
+  
+    const now = new Date();
+  
+    const isOpen = filteredDates.some((date) => {
+      const startTime = parseISO(date.start_time);
+      const endTime = parseISO(date.end_time);
+      
+      return isWithinInterval(now, { start: startTime, end: endTime });
+    });
+  
+    return isOpen ? true : false;
+  };
+  
+
+  const shopStatus = checkShopOpenStatus();
 
   return (
     <div className="p-4 font-lexend text-[#4C4343] h-[100%]">
@@ -91,7 +123,7 @@ const Shopside: React.FC<BlockProps> = ({ blockName }) => {
                 </div>
               </div>
               <p className="font-light text-[14px] ">
-                {selectedShopDetail?.open_status ? (
+                {shopStatus ? (
                   <svg
                     width="73"
                     height="23"

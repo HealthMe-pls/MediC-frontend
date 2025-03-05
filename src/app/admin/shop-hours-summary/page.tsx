@@ -62,42 +62,55 @@ const ShopHoursSummaryPage = () => {
   const exportAsPDF = () => {
     const doc = new jsPDF();
 
-    // Title
-    doc.setFontSize(18);
-    doc.text("Shop Hours Summary", 14, 16);
-
-    // กรองข้อมูลเฉพาะเดือนที่เปิดอยู่
-    const filteredShops = shopOpenDate.filter((shop) =>
-      dayjs(shop.start_time).isBetween(startDate, endDate, null, "[]")
-    );
-
-    if (filteredShops.length === 0) {
-      alert("No shop data for the selected period.");
+    // ดึงตารางจาก DOM
+    const table = document.querySelector("table");
+    if (!table) {
+      console.error("Table not found!");
       return;
     }
 
-    // จัดกลุ่มข้อมูลตามเดือน
-    const monthYear = startDate.format("MMM YYYY");
-    doc.setFontSize(14);
-    doc.text(monthYear, 14, 30);
+    // สร้างข้อมูลสำหรับ autoTable
+    const headers = Array.from(table.querySelectorAll("thead th")).map(
+      (th: Element) => (th as HTMLElement).innerText.trim()
+    );
+    const data = Array.from(table.querySelectorAll("tbody tr")).map(
+      (tr: Element) => {
+        return Array.from(tr.querySelectorAll("td")).map((td: Element) =>
+          (td as HTMLElement).innerText.trim()
+        );
+      }
+    );
 
-    const data = filteredShops.map((shop) => [
-      `Shop ${shop.id}`,
-      dayjs(shop.start_time).format("ddd, D MMM YYYY"),
-      dayjs(shop.start_time).format("HH:mm"),
-      dayjs(shop.end_time).format("HH:mm"),
-    ]);
+    // ดึงสไตล์จาก CSS
+    const headerStyles = {
+      fillColor: [240, 240, 240], // สีพื้นหลัง header
+      textColor: 0, // สีข้อความ header
+      fontStyle: "bold" as "bold" | "italic" | "normal", // ปรับ type ให้ตรงกับ FontStyle
+      lineWidth: 0.5,
+      lineColor: [200, 200, 200],
+    };
+    const bodyStyles = {
+      lineWidth: 0.5,
+      lineColor: [200, 200, 200],
+      textColor: 0, // สีข้อความ body
+    };
 
+    // ใช้ autoTable เพื่อแสดงข้อมูลลงใน PDF
     autoTable(doc, {
-      head: [["Shop Name", "Opening Date", "From", "To"]],
+      head: [headers],
       body: data,
-      startY: 40,
-      theme: "grid",
+      startY: 20,
+      styles: { fontSize: 10, cellPadding: 4 },
+      alternateRowStyles: { fillColor: [245, 245, 245] }, // สีสลับแถว
+      headStyles: headerStyles,
+      bodyStyles: bodyStyles,
+      columnStyles: { 0: { halign: "center" } }, // การจัดแนวข้อมูลของคอลัมน์แรก
     });
 
-    // บันทึก PDF
-    doc.save(`shop_hours_${startDate.format("YYYY_MM")}.pdf`);
+    // ดาวน์โหลด PDF
+    doc.save("Shop_Hours_Summary.pdf");
   };
+
   return (
     <>
       <AdminLayouts currentPage="Shop Hours Summary">
@@ -148,14 +161,22 @@ const ShopHoursSummaryPage = () => {
                 <tr className="bg-gray-100">
                   <th className="border px-4 py-2">Shop Name</th>
                   {filteredMarkets.length > 0 ? (
-                    filteredMarkets.map((marketDate) => (
-                      <th key={marketDate.id} className="border px-4 py-2">
-                        <div>{dayjs(marketDate.start_time).format("ddd")}</div>
-                        <div>
-                          {dayjs(marketDate.start_time).format("D MMM ")}
-                        </div>
-                      </th>
-                    ))
+                    [...filteredMarkets] // ✅ สร้างสำเนาของ filteredMarkets
+                      .sort((a, b) =>
+                        dayjs(a.start_time).isBefore(dayjs(b.start_time))
+                          ? -1
+                          : 1
+                      ) // ✅ เรียงตาม start_time
+                      .map((marketDate) => (
+                        <th key={marketDate.id} className="border px-4 py-2">
+                          <div>
+                            {dayjs(marketDate.start_time).format("ddd")}
+                          </div>
+                          <div>
+                            {dayjs(marketDate.start_time).format("D MMM ")}
+                          </div>
+                        </th>
+                      ))
                   ) : (
                     <td
                       colSpan={filteredMarkets.length}
@@ -168,27 +189,60 @@ const ShopHoursSummaryPage = () => {
               </thead>
               <tbody>
                 {filteredShops.length > 0 ? (
-                  filteredShops.map((shop) => (
-                    <tr key={shop.id}>
-                      <td className="border px-4 py-2 text-center">
-                        Shop {shop.id}
-                      </td>
-                      {filteredMarkets.map((marketDate) => {
-                        const isOpen = dayjs(shop.start_time).isSame(
-                          dayjs(marketDate.start_time),
-                          "day"
-                        );
-                        return (
-                          <td
-                            key={marketDate.id}
-                            className={`border px-4 py-2 text-center ${
-                              isOpen ? "bg-gray-200" : ""
-                            }`}
-                          ></td>
-                        );
-                      })}
-                    </tr>
-                  ))
+                  [...filteredShops] // ✅ สร้างสำเนาของ filteredShops
+                    .sort((a, b) => {
+                      if (a.shop.id === b.shop.id) {
+                        // ถ้า shop.id เท่ากัน, ให้เรียงตาม start_time
+                        return dayjs(a.start_time).isBefore(dayjs(b.start_time))
+                          ? -1
+                          : 1;
+                      }
+                      // เรียงตาม shop.id
+                      return a.shop.id - b.shop.id;
+                    })
+                    .map((time, index, arr) => {
+                      const isFirstOccurrence =
+                        index === 0 ||
+                        arr[index - 1].shop.name !== time.shop.name;
+
+                      return (
+                        <tr key={time.id} className="h-[50px]">
+                          {/* กำหนดความสูงของแถว */}
+                          {/* แสดงชื่อร้านเฉพาะเมื่อไม่ตรงกับข้างบน */}
+                          {isFirstOccurrence ? (
+                            <td className="border px-4 py-2 text-center">
+                              {time.shop.name}
+                            </td>
+                          ) : (
+                            <td className="border px-4 py-2 text-center"></td>
+                          )}
+                          {filteredMarkets
+                            .sort((a, b) =>
+                              dayjs(a.start_time).isBefore(dayjs(b.start_time))
+                                ? -1
+                                : 1
+                            ) // ✅ เรียงตาม start_time
+                            .map((marketDate) => {
+                              const isOpen = dayjs(time.start_time).isSame(
+                                dayjs(marketDate.start_time),
+                                "day"
+                              );
+                              return (
+                                <td
+                                  key={marketDate.id}
+                                  className={`border px-4 py-2 text-center text-white ${
+                                    isOpen ? "bg-gray-200" : ""
+                                  }`}
+                                >
+                                  <p className="text-gray-200">
+                                    {isOpen ? "open" : ""}
+                                  </p>
+                                </td>
+                              );
+                            })}
+                        </tr>
+                      );
+                    })
                 ) : (
                   <tr>
                     <td
