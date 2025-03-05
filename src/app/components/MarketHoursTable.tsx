@@ -60,20 +60,14 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
       .then((data) => {
         const normalizedDates = normalizeMarketDates(data.market_open_dates);
         setMarketOpenDates(normalizedDates);
-        if (normalizedDates.length > 0) {
-          const firstDate = new Date(normalizedDates[0].date);
-          setSelectedYear(firstDate.getFullYear());
-          setSelectedMonth(firstDate.getMonth());
-        }
+
+        setSelectedYear(new Date().getFullYear());
+        setSelectedMonth(new Date().getMonth());
       })
       .catch((error) =>
         console.error("Error fetching market open dates:", error)
       );
   }, []);
-
-  // useEffect(() => {
-  //   console.log(shopHours);
-  // });
 
   useEffect(() => {
     if (marketOpenDates.length === 0 || initializedRef.current) return;
@@ -135,25 +129,15 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
   }, [shopHours, onShopHoursChange]);
 
   const handlePreviousMonth = () => {
-    setSelectedMonth((prevMonth) => {
-      if (prevMonth === 0) {
-        setSelectedYear((prevYear) => prevYear - 1);
-        return 11;
-      }
-      return prevMonth - 1;
-    });
+    setSelectedMonth((prev) => (prev === 0 ? 11 : prev - 1));
+    if (selectedMonth === 0) setSelectedYear((prev) => prev - 1);
   };
 
   const handleNextMonth = () => {
-    setSelectedMonth((prevMonth) => {
-      if (prevMonth === 11) {
-        setSelectedYear((prevYear) => prevYear + 1);
-        return 0;
-      }
-      return prevMonth + 1;
-    });
+    setSelectedMonth((prev) => (prev === 11 ? 0 : prev + 1));
+    if (selectedMonth === 11) setSelectedYear((prev) => prev + 1);
   };
-
+  
   const filteredDates = marketOpenDates.filter((item) => {
     const dateObj = new Date(item.date);
     return (
