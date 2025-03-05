@@ -9,7 +9,7 @@ import {
 import axios from "axios";
 
 const combineDateTime = (date: string, time: string): string => {
-  return new Date(`${date}T${time}:00`).toISOString();
+  return new Date(`${date}T${time}:00+07:00`).toISOString();
 };
 
 const normalizeMarketDates = (dates: MarketOpenDate[]): MarketOpenDate[] => {
@@ -34,7 +34,7 @@ const ManageMaketHours = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
-  // Track which date we are editing or deleting
+  // สำหรับติดตามวันที่ที่กำลังแก้ไขหรือจะลบ
   const [editingDate, setEditingDate] = useState<MarketOpenDate | null>(null);
   const [dateToDelete, setDateToDelete] = useState<MarketOpenDate | null>(null);
 
@@ -45,7 +45,7 @@ const ManageMaketHours = () => {
   const [endHour, setEndHour] = useState<string>("");
   const [endMinute, setEndMinute] = useState<string>("");
 
-  // Error states สำหรับวันที่, ชั่วโมง และนาที
+  // Error states สำหรับฟิลด์
   const [newDateError, setNewDateError] = useState<string>("");
   const [startHourError, setStartHourError] = useState<string>("");
   const [startMinuteError, setStartMinuteError] = useState<string>("");
@@ -58,11 +58,8 @@ const ManageMaketHours = () => {
         const normalizedDates = normalizeMarketDates(data.market_open_dates);
         setMarketOpenDates(normalizedDates);
 
-        if (normalizedDates.length > 0) {
-          const firstDate = new Date(normalizedDates[0].date);
-          setSelectedYear(firstDate.getFullYear());
-          setSelectedMonth(firstDate.getMonth());
-        }
+        setSelectedYear(new Date().getFullYear());
+        setSelectedMonth(new Date().getMonth());
       })
       .catch((error) =>
         console.error("Error fetching market open dates:", error)
@@ -82,9 +79,9 @@ const ManageMaketHours = () => {
   const resetForm = () => {
     setNewDate("");
     setStartHour("");
-    setStartMinute("");
+    setStartMinute("00");
     setEndHour("");
-    setEndMinute("");
+    setEndMinute("00");
     setEditingDate(null);
     setNewDateError("");
     setStartHourError("");
@@ -92,7 +89,7 @@ const ManageMaketHours = () => {
     setEndHourError("");
     setEndMinuteError("");
   };
-
+  
   const openAddModal = () => {
     resetForm();
     setIsModalOpen(true);
@@ -105,7 +102,7 @@ const ManageMaketHours = () => {
     const month = String(localDate.getMonth() + 1).padStart(2, "0");
     const day = String(localDate.getDate()).padStart(2, "0");
     setNewDate(`${year}-${month}-${day}`);
-  
+
     const startTimeStr = new Date(item.start_time).toLocaleTimeString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
@@ -113,7 +110,7 @@ const ManageMaketHours = () => {
     const [sHour, sMinute] = startTimeStr.split(":");
     setStartHour(sHour);
     setStartMinute(sMinute);
-  
+
     const endTimeStr = new Date(item.end_time).toLocaleTimeString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
@@ -121,7 +118,7 @@ const ManageMaketHours = () => {
     const [eHour, eMinute] = endTimeStr.split(":");
     setEndHour(eHour);
     setEndMinute(eMinute);
-  
+
     setIsModalOpen(true);
   };
 
@@ -159,10 +156,8 @@ const ManageMaketHours = () => {
       };
 
       if (editingDate) {
-        // Update via PUT
         await axios.put(`/api/marketDate/${editingDate.id}`, newDateData);
       } else {
-        // Create via POST
         await axios.post(`/api/marketDate/`, newDateData);
       }
 
@@ -318,117 +313,87 @@ const ManageMaketHours = () => {
               <div>
                 <label className="block font-medium">Start Time</label>
                 <div className="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    min="0"
-                    max="23"
+                  <select
                     value={startHour}
                     onChange={(e) => {
-                      const input = e.target.value;
-                      if (input === "") {
-                        setStartHour("");
-                      } else {
-                        let value = parseInt(input);
-                        if (isNaN(value)) {
-                          setStartHour("");
-                        } else {
-                          if (value > 23) value = 23;
-                          if (value < 0) value = 0;
-                          setStartHour(value.toString());
-                        }
-                        setStartHourError("");
-                      }
+                      setStartHour(e.target.value);
+                      setStartHourError("");
                     }}
-                    placeholder="HH"
                     className="border p-2 w-1/2"
-                  />
+                  >
+                    {Array.from({ length: 24 }, (_, i) => {
+                      const hr = i.toString().padStart(2, "0");
+                      return (
+                        <option key={i} value={hr}>
+                          {hr}
+                        </option>
+                      );
+                    })}
+                  </select>
                   <span>:</span>
-                  <input
-                    type="number"
-                    min="0"
-                    max="59"
+                  <select
                     value={startMinute}
                     onChange={(e) => {
-                      const input = e.target.value;
-                      if (input === "") {
-                        setStartMinute("");
-                      } else {
-                        let value = parseInt(input);
-                        if (isNaN(value)) {
-                          setStartMinute("");
-                        } else {
-                          if (value > 59) value = 59;
-                          if (value < 0) value = 0;
-                          setStartMinute(value.toString());
-                        }
-                        setStartMinuteError("");
-                      }
+                      setStartMinute(e.target.value);
+                      setStartMinuteError("");
                     }}
-                    placeholder="MM"
                     className="border p-2 w-1/2"
-                  />
+                  >
+                    {Array.from({ length: 60 }, (_, i) => {
+                      const min = i.toString().padStart(2, "0");
+                      return (
+                        <option key={i} value={min}>
+                          {min}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
                 {startHourError && (
                   <p className="text-red-500 text-xs mt-1">{startHourError}</p>
                 )}
                 {startMinuteError && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {startMinuteError}
-                  </p>
+                  <p className="text-red-500 text-xs mt-1">{startMinuteError}</p>
                 )}
               </div>
               <div>
                 <label className="block font-medium">End Time</label>
                 <div className="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    min="0"
-                    max="23"
+                  <select
                     value={endHour}
                     onChange={(e) => {
-                      const input = e.target.value;
-                      if (input === "") {
-                        setEndHour("");
-                      } else {
-                        let value = parseInt(input);
-                        if (isNaN(value)) {
-                          setEndHour("");
-                        } else {
-                          if (value > 23) value = 23;
-                          if (value < 0) value = 0;
-                          setEndHour(value.toString());
-                        }
-                        setEndHourError("");
-                      }
+                      setEndHour(e.target.value);
+                      setEndHourError("");
                     }}
-                    placeholder="HH"
                     className="border p-2 w-1/2"
-                  />
+                  >
+                    {Array.from({ length: 24 }, (_, i) => {
+                      const hr = i.toString().padStart(2, "0");
+                      return (
+                        <option key={i} value={hr}>
+                          {hr}
+                        </option>
+                      );
+                    })}
+                  </select>
                   <span>:</span>
-                  <input
-                    type="number"
-                    min="0"
-                    max="59"
+                  <select
                     value={endMinute}
                     onChange={(e) => {
-                      const input = e.target.value;
-                      if (input === "") {
-                        setEndMinute("");
-                      } else {
-                        let value = parseInt(input);
-                        if (isNaN(value)) {
-                          setEndMinute("");
-                        } else {
-                          if (value > 59) value = 59;
-                          if (value < 0) value = 0;
-                          setEndMinute(value.toString());
-                        }
-                        setEndMinuteError("");
-                      }
+                      setEndMinute(e.target.value);
+                      setEndMinuteError("");
                     }}
-                    placeholder="MM"
                     className="border p-2 w-1/2"
-                  />
+                  >
+                    {Array.from({ length: 60 }, (_, i) => {
+                      const min = i.toString().padStart(2, "0");
+                      return (
+                        <option key={i} value={min}>
+                          {min}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
                 {endHourError && (
                   <p className="text-red-500 text-xs mt-1">{endHourError}</p>

@@ -21,6 +21,7 @@ export interface ShopOpenDates {
   end_time: string;
   id: number;
   start_time: string;
+  market_open_date_id: number;
 }
 
 // Interface สำหรับข้อมูลเมนูร้านค้า (กรณีที่ต้องการรายละเอียดเมนู)
@@ -44,7 +45,7 @@ export interface ShopDetail {
   name: string;
   photos: Photo[];
   shop_id: number;
-  shop_open_dates: ShopOpenDates; // ใช้ interface ของเวลาเปิด-ปิด
+  shop_open_dates: ShopOpenDates[]; // ใช้ interface ของเวลาเปิด-ปิด
   social_media: SocialMedia[]; // ใช้ interface ของ Social Media
   open_status: boolean;
 }
@@ -77,7 +78,7 @@ export async function fetchShopById(shopId: number): Promise<ShopDetail> {
     // console.log("fetchShopByID: ", response);
 
     if (response.status !== 200) {
-      throw new Error("Failed to fetch Shop Category");
+      throw new Error("Failed to fetch Shop Detail");
     }
     // console.log("fetchShopById data: ", response.data);
     return response.data as ShopDetail;
@@ -96,42 +97,42 @@ export const deleteShopByAdmin = async (id: number): Promise<void> => {
       },
     });
   } catch (error) {
-    console.error(`Error deleting workshop with id ${id}:`, error);
+    console.error(`Error deleting shop with id ${id}:`, error);
     throw error;
   }
 };
 
 export const updateShopByAdmin = async (
   id: number,
-  workshopData: Partial<ShopDetail>
+  shopData: Partial<ShopDetail>
 ): Promise<ShopDetail> => {
   try {
     const url = `/api/shop/${id}`;
-    const response = await axios.put<ShopDetail>(url, workshopData, {
+    const response = await axios.put<ShopDetail>(url, shopData, {
       headers: {
         "Content-Type": "application/json",
       },
     });
     return response.data;
   } catch (error) {
-    console.error(`Error updating workshop with id ${id}:`, error);
+    console.error(`Error updating shop with id ${id}:`, error);
     throw error;
   }
 };
 
 export const createShopByAdmin = async (
-  workshopData: Partial<Omit<ShopDetail, "id">>
+  shopData: Partial<Omit<ShopDetail, "id">>
 ): Promise<ShopDetail> => {
   try {
     const url = `/api/shop`;
-    const response = await axios.post<ShopDetail>(url, workshopData, {
+    const response = await axios.post<ShopDetail>(url, shopData, {
       headers: {
         "Content-Type": "application/json",
       },
     });
     return response.data;
   } catch (error) {
-    console.error("Error creating workshop:", error);
+    console.error("Error creating shop:", error);
     throw error;
   }
 };
