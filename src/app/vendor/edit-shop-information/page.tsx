@@ -31,6 +31,15 @@ const EditShopInformation = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   const router = useRouter();
+  const [editShopData, setEditShopData] = useState<ShopFormData | null>(null);
+  const [editSocialData, setEditSocialData] = useState<SocialFormData[] | null>(
+    null
+  );
+  const [editMenuData, setEditMenuData] = useState<MenuFormData[] | null>(null);
+  const [editPhotoData, setEditPhotoData] = useState<PhotoForm | null>(null);
+  const [editTimeData, setEditTimeData] = useState<ShopOpenDates[] | null>(
+    null
+  );
 
   const handleEditInformation = async (temp: TempShopEn | null) => {
     if (temp) {
