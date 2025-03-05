@@ -162,7 +162,7 @@ const HighlightBanner = () => {
                         className="object-cover rounded-md w-full h-full max-w-[180px] max-h-[180px]"
                       />
                     ) : (
-                      <div className="bg-gray-300 flex items-center justify-center rounded-md min-h-[180px] min-w-[180px]">
+                      <div className="bg-gray-300 flex items-center justify-center rounded-md min-h-[135px] min-w-[135px]">
                         No Image Available
                       </div>
                     )}
