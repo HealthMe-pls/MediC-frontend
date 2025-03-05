@@ -272,7 +272,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-[full] ml-[234px] relative max-h-[650px] overflow-y-auto scrollbar-hide">
         <h2 className="text-xl mb-4">
-          {initialData ? "Edit Shop" : "Add Shop"}
+          {initialData?.name ? "Edit Shop" : "Add Shop"}
         </h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">

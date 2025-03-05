@@ -365,8 +365,8 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
                     </td>
                     <td className="px-4 py-2">
                       <div className="flex items-center">
-                        <input
-                          type="number"
+                        {/* Dropdown เลือกชั่วโมง */}
+                        <select
                           value={startHourValue}
                           onChange={(e) =>
                             handleTimeChange(
@@ -375,16 +375,25 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
                               e.target.value
                             )
                           }
-                          min={defaultFromHour}
-                          max={defaultToHour}
                           disabled={!isOpen}
-                          className={`w-10 border p-1 rounded text-center ${
+                          className={`w-14 border p-1 rounded text-center ${
                             !isOpen ? "bg-gray-200" : ""
                           }`}
-                        />
+                        >
+                          {Array.from({ length: 24 }, (_, i) => (
+                            <option
+                              key={i}
+                              value={i.toString().padStart(2, "0")}
+                            >
+                              {i.toString().padStart(2, "0")}
+                            </option>
+                          ))}
+                        </select>
+
                         <span className="px-1">:</span>
-                        <input
-                          type="number"
+
+                        {/* Dropdown เลือกนาที */}
+                        <select
                           value={startMinuteValue}
                           onChange={(e) =>
                             handleTimeChange(
@@ -393,33 +402,49 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
                               e.target.value
                             )
                           }
-                          min="0"
-                          max="59"
                           disabled={!isOpen}
-                          className={`w-10 border p-1 rounded text-center ${
+                          className={`w-14 border p-1 rounded text-center ${
                             !isOpen ? "bg-gray-200" : ""
                           }`}
-                        />
+                        >
+                          {Array.from({ length: 60 }, (_, i) => (
+                            <option
+                              key={i}
+                              value={i.toString().padStart(2, "0")}
+                            >
+                              {i.toString().padStart(2, "0")}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </td>
                     <td className="px-4 py-2">
                       <div className="flex items-center">
-                        <input
-                          type="number"
+                        {/* Dropdown เลือกชั่วโมงสิ้นสุด */}
+                        <select
                           value={endHourValue}
                           onChange={(e) =>
                             handleTimeChange(date.id, "endHour", e.target.value)
                           }
-                          min={defaultFromHour}
-                          max={defaultToHour}
                           disabled={!isOpen}
-                          className={`w-10 border p-1 rounded text-center ${
+                          className={`w-14 border p-1 rounded text-center ${
                             !isOpen ? "bg-gray-200" : ""
                           }`}
-                        />
+                        >
+                          {Array.from({ length: 24 }, (_, i) => (
+                            <option
+                              key={i}
+                              value={i.toString().padStart(2, "0")}
+                            >
+                              {i.toString().padStart(2, "0")}
+                            </option>
+                          ))}
+                        </select>
+
                         <span className="px-1">:</span>
-                        <input
-                          type="number"
+
+                        {/* Dropdown เลือกนาทีสิ้นสุด */}
+                        <select
                           value={endMinuteValue}
                           onChange={(e) =>
                             handleTimeChange(
@@ -428,13 +453,20 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
                               e.target.value
                             )
                           }
-                          min="0"
-                          max="59"
                           disabled={!isOpen}
-                          className={`w-10 border p-1 rounded text-center ${
+                          className={`w-14 border p-1 rounded text-center ${
                             !isOpen ? "bg-gray-200" : ""
                           }`}
-                        />
+                        >
+                          {Array.from({ length: 60 }, (_, i) => (
+                            <option
+                              key={i}
+                              value={i.toString().padStart(2, "0")}
+                            >
+                              {i.toString().padStart(2, "0")}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </td>
                   </tr>
