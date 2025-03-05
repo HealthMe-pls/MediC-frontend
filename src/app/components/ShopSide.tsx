@@ -216,11 +216,13 @@ const Shopside: React.FC<block> = ({ blockName }) => {
               .length > 0 ? (
               <ul>
                 {Array.isArray(selectedShopDetail.social_media) &&
-                  selectedShopDetail.social_media.map((media, index) => (
-                    <li key={index} className="text-[14px] font-light">
-                      {media.platform}: <a href={media.link}>{media.link}</a>
-                    </li>
-                  ))}
+                  selectedShopDetail.social_media
+                    .filter((media) => media.is_public)
+                    .map((media, index) => (
+                      <li key={index} className="text-[14px] font-light">
+                        {media.platform}: <a href={media.link}>{media.link}</a>
+                      </li>
+                    ))}
               </ul>
             ) : (
               <p className="text-[14px] font-light">Not available</p>

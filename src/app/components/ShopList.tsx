@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
-import {
-  fetchShopById,
-  ShopDetail,
-} from "@/utility/shopDetail";
+import { fetchShopById, ShopDetail } from "@/utility/shopDetail";
 import { format } from "date-fns";
 // import Link from "next/link";
 // import { th } from "date-fns/locale";
@@ -407,11 +404,14 @@ const Shoplist: React.FC<CateID> = ({
                 .length > 0 ? (
                 <ul>
                   {Array.isArray(selectedShopDetail.social_media) &&
-                    selectedShopDetail.social_media.map((media, index) => (
-                      <li key={index} className="text-[14px] font-light">
-                        {media.platform}: <a href={media.link}>{media.link}</a>
-                      </li>
-                    ))}
+                    selectedShopDetail.social_media
+                      .filter((media) => media.is_public)
+                      .map((media, index) => (
+                        <li key={index} className="text-[14px] font-light">
+                          {media.platform}:{" "}
+                          <a href={media.link}>{media.link}</a>
+                        </li>
+                      ))}
                 </ul>
               ) : (
                 <p className="text-[14px] font-light">Not available</p>
