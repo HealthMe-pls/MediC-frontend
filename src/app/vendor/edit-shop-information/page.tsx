@@ -17,7 +17,12 @@ import {
   SocialFormData,
 } from "@/app/components/types";
 import { fetchShopById } from "@/utility/shopDetail";
-import { updateTempShop } from "@/utility/temp";
+import {
+  createMenuEnt,
+  deleteMenuEnt,
+  updateTempMenu,
+  updateTempShop,
+} from "@/utility/temp";
 
 const EditShopInformation = () => {
   const [shopData, setShopData] = useState<TempShopEn[]>([]);
@@ -184,6 +189,78 @@ const EditShopInformation = () => {
     }
   };
 
+  const handleMenuUpdate = async (shopId: number, menuData: MenuFormData[]) => {
+    try {
+      const deletedMenus = editMenuData?.filter(
+        (oldMenu) => !menuData.some((newMenu) => newMenu.id === oldMenu.id)
+      );
+
+      for (const menu of deletedMenus || []) {
+        if (menu.id && selectedShop) {
+          console.log("delete menuid : " + menu.id);
+          const deleteMenu = {
+            menu_id: menu.id,
+            temp_id: selectedShop?.id,
+          };
+          await deleteMenuEnt(deleteMenu);
+          // const response_menu = await deleteMenu(menu.id);
+          // console.log("response from del menu" + response_menu);
+        }
+      }
+
+      const updatedMenus = menuData.filter((newMenu) =>
+        editMenuData?.some(
+          (oldMenu) =>
+            oldMenu.id === newMenu.id &&
+            (newMenu.img instanceof File ||
+              oldMenu.product_name !== newMenu.product_name ||
+              oldMenu.product_description !== newMenu.product_description ||
+              oldMenu.price !== newMenu.price) // ต้องมีการเปลี่ยนแปลงจริง ๆ
+        )
+      );
+
+      for (const menu of updatedMenus) {
+        const upMenu = {
+          product_name: menu.product_name,
+          product_description: menu.product_description,
+          price: menu.price,
+          shop_id: shopId,
+        };
+        console.log("update menuid : " + menu.id);
+        await updateTempMenu(menu.id!, upMenu);
+
+        // if (menu.img instanceof File && menu.id) {
+        //   console.log(menu.idPhoto);
+        //   if (menu.idPhoto) await deletePhoto(menu.idPhoto);
+        //   await uploadPhotoMenuByAdmin(menu.img, menu.id);
+        // }
+      }
+
+      const newMenus = menuData.filter(
+        (newMenu) => !editMenuData?.some((oldMenu) => oldMenu.id === newMenu.id)
+      );
+
+      for (const menu of newMenus) {
+        const createMenu = {
+          product_name: menu.product_name,
+          product_description: menu.product_description,
+          price: menu.price,
+          shop_id: shopId,
+        };
+        await createMenuEnt(createMenu);
+        // const shopDe = await fetchShopById(shopId);
+        // const createdmenu = shopDe.menus.find(
+        //   (m) => menu.product_name === m.product_name
+        // );
+        // if (createdmenu && menu.img && menu.img instanceof File) {
+        //   await uploadPhotoMenuByAdmin(menu.img, createdmenu?.id);
+        // }
+      }
+    } catch (error) {
+      console.error("Error updating social media:", error);
+    }
+  };
+
   const handleEditShop = async (
     formData: ShopFormData,
     socialData: SocialFormData[],
@@ -197,7 +274,10 @@ const EditShopInformation = () => {
       shop_category_id: Number(formData.shop_category_id) || 0,
     };
     console.log(newData);
-    if (selectedShop) await updateTempShop(selectedShop.shop_id, newData);
+    if (selectedShop) {
+      await updateTempShop(selectedShop.shop_id, newData);
+      await handleMenuUpdate(selectedShop.shop_id, menuData);
+    }
   };
 
   return (
