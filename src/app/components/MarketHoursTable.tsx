@@ -114,24 +114,10 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
       });
     } else {
       marketOpenDates.forEach((date) => {
-        const fromTimeStr = new Date(date.start_time).toLocaleTimeString(
-          "en-GB",
-          {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-          }
-        );
-        const toTimeStr = new Date(date.end_time).toLocaleTimeString("en-GB", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        });
-
         newShopHours[date.id] = {
           id: Date.now(),
-          start_time: `${fromTimeStr}:00`,
-          end_time: `${toTimeStr}:00`,
+          start_time: "",
+          end_time: "",
           shop_id: shopId,
           market_open_date_id: date.id,
         };
