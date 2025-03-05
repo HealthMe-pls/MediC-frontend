@@ -2,12 +2,15 @@ import { setCorsHeaders } from "@/utility/corsUtils";
 import { NextRequest, NextResponse } from "next/server";
 
 // PUT - Update a shop open date by ID
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
+export async function PUT(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     const headers = new Headers();
     setCorsHeaders(headers);
 
-    const id = context.params.id;
+    const id = (await context.params).id;
     const body = await req.json();
 
     const response = await fetch(
@@ -22,13 +25,15 @@ export async function PUT(req: NextRequest, context: { params: { id: string } })
     );
 
     if (!response.ok) {
-      throw new Error(`Failed to update shop open date - ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to update shop open date - ${response.status} ${response.statusText}`
+      );
     }
 
     const updatedData = await response.json();
     return NextResponse.json(updatedData, { status: 200 });
   } catch (error) {
-    console.error(`PUT /shoptime/${context.params.id} error:`, error);
+    console.error(`PUT /shoptime/${(await context.params).id} error:`, error);
     return NextResponse.json(
       { message: "Failed to update shop open date" },
       { status: 500 }
@@ -37,12 +42,15 @@ export async function PUT(req: NextRequest, context: { params: { id: string } })
 }
 
 // DELETE - Delete a shop open date by ID
-export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
+export async function DELETE(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     const headers = new Headers();
     setCorsHeaders(headers);
 
-    const id = context.params.id;
+    const id = (await context.params).id;
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_GO_API_URL}/shoptime/${id}`,
@@ -55,7 +63,9 @@ export async function DELETE(req: NextRequest, context: { params: { id: string }
     );
 
     if (!response.ok) {
-      throw new Error(`Failed to delete shop open date - ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to delete shop open date - ${response.status} ${response.statusText}`
+      );
     }
 
     return NextResponse.json(
@@ -63,7 +73,10 @@ export async function DELETE(req: NextRequest, context: { params: { id: string }
       { status: 200 }
     );
   } catch (error) {
-    console.error(`DELETE /shoptime/${context.params.id} error:`, error);
+    console.error(
+      `DELETE /shoptime/${(await context.params).id} error:`,
+      error
+    );
     return NextResponse.json(
       { message: "Failed to delete shop open date" },
       { status: 500 }

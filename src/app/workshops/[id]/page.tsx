@@ -4,7 +4,6 @@ import { useParams } from "next/navigation";
 import { fetchWorkshopsById, Workshop } from "@/utility/workshop";
 import { format } from "date-fns";
 import Footer from "@/app/layouts/Footer";
-import BackButton from "@/app/components/BackButton";
 import ImageBanner from "@/app/components/ImageBanner";
 import Header from "@/app/layouts/Header";
 
@@ -25,12 +24,6 @@ const WorkshopDetail = () => {
   const [workshopDetail, setWorkshopDetail] = useState<Workshop | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  const [previousPage, setPreviousPage] = useState<string>("");
-
-  useEffect(() => {
-    setPreviousPage(sessionStorage.getItem("previousPage") || "/");
-  }, []);
 
   useEffect(() => {
     if (id) {
@@ -53,7 +46,7 @@ const WorkshopDetail = () => {
 
   return (
     <div className="font-lexend text-[#4C4343] bg-[#FFF7EB] min-h-screen flex flex-col justify-between">
-      <Header/>
+      <Header />
       <div className="flex flex-row justify-between">
         <div></div>
         <div className="">
@@ -69,7 +62,10 @@ const WorkshopDetail = () => {
                     <div className="flex justify-center">
                       <div className="sm:w-[350px] sm:h-[250px] md:w-[380px] md:h-[300px]">
                         <ImageBanner
-                          photos={workshopDetail.photos}
+                          photos={workshopDetail.photos.map((photo) => ({
+                            ...photo,
+                            is_public: true,
+                          }))}
                           basePath="http://127.0.0.1:3000/"
                         />
                       </div>

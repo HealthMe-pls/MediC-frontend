@@ -137,7 +137,7 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
     setSelectedMonth((prev) => (prev === 11 ? 0 : prev + 1));
     if (selectedMonth === 11) setSelectedYear((prev) => prev + 1);
   };
-  
+
   const filteredDates = marketOpenDates.filter((item) => {
     const dateObj = new Date(item.date);
     return (
@@ -225,12 +225,12 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
         }) + ":00";
       const minAllowed = parseTime(marketFromTimeStr);
       const maxAllowed = parseTime(marketToTimeStr);
-      let currentTimeStr = field.startsWith("start")
+      const currentTimeStr = field.startsWith("start")
         ? current.start_time
         : current.end_time;
       const parts = currentTimeStr.split(":");
-      let currentHour = parseInt(parts[0], 10);
-      let currentMinute = parseInt(parts[1], 10);
+      const currentHour = parseInt(parts[0], 10);
+      const currentMinute = parseInt(parts[1], 10);
       let newHour = currentHour;
       let newMinute = currentMinute;
       if (field === "startHour" || field === "endHour") {
@@ -292,24 +292,6 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
           <tbody>
             {filteredDates.length > 0 ? (
               filteredDates.map((date) => {
-                const defaultFromTimeStr = new Date(
-                  date.start_time
-                ).toLocaleTimeString("en-GB", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false,
-                });
-                const defaultToTimeStr = new Date(
-                  date.end_time
-                ).toLocaleTimeString("en-GB", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false,
-                });
-                const defaultFromHour = defaultFromTimeStr.split(":")[0];
-                const defaultFromMinute = defaultFromTimeStr.split(":")[1];
-                const defaultToHour = defaultToTimeStr.split(":")[0];
-                const defaultToMinute = defaultToTimeStr.split(":")[1];
                 const shopHourForDate = shopHours[date.id] ?? {
                   id: date.id,
                   start_time: "",

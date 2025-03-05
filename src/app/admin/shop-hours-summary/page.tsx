@@ -83,15 +83,15 @@ const ShopHoursSummaryPage = () => {
 
     // ดึงสไตล์จาก CSS
     const headerStyles = {
-      fillColor: [240, 240, 240], // สีพื้นหลัง header
+      fillColor: [240, 240, 240] as [number, number, number], // สีพื้นหลัง header
       textColor: 0, // สีข้อความ header
       fontStyle: "bold" as "bold" | "italic" | "normal", // ปรับ type ให้ตรงกับ FontStyle
       lineWidth: 0.5,
-      lineColor: [200, 200, 200],
+      lineColor: [200, 200, 200] as [number, number, number],
     };
     const bodyStyles = {
       lineWidth: 0.5,
-      lineColor: [200, 200, 200],
+      lineColor: [200, 200, 200] as [number, number, number],
       textColor: 0, // สีข้อความ body
     };
 

@@ -35,12 +35,12 @@ export async function GET() {
 // PUT - Update a shop open date by ID
 export async function PUT(
   req: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const headers = new Headers();
     setCorsHeaders(headers);
-    const id = context.params.id;
+    const id = await (await context.params).id;
     const body = await req.json();
 
     const response = await fetch(
@@ -72,12 +72,12 @@ export async function PUT(
 // DELETE - Delete a shop open date by ID
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const headers = new Headers();
     setCorsHeaders(headers);
-    const id = context.params.id;
+    const id = (await context.params).id;
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_GO_API_URL}/shoptime/${id}`,
