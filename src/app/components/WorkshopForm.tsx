@@ -53,6 +53,9 @@ const WorkshopForm: React.FC<WorkshopFormProps> = ({
 }) => {
   if (!isModalOpen) return null;
 
+  const hoursOptions = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
+  const minutesOptions = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
+
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
@@ -132,23 +135,72 @@ const WorkshopForm: React.FC<WorkshopFormProps> = ({
           <div className="flex items-center mb-2">
             <p>Time : </p>
             <div className="flex gap-2">
-              <input
-                type="time"
-                className="ml-16 border rounded-3xl py-2 px-3"
-                value={formData.start_time}
-                onChange={(e) =>
-                  setFormData({ ...formData, start_time: e.target.value })
-                }
-              />
-              <p className="flex items-center">To </p>
-              <input
-                type="time"
-                className="ml-2 border rounded-3xl py-2 px-3"
-                value={formData.end_time}
-                onChange={(e) =>
-                  setFormData({ ...formData, end_time: e.target.value })
-                }
-              />
+            <select
+              className="ml-16 border rounded-3xl py-2 px-3"
+              value={formData.start_time.slice(0, 2)}
+              onChange={(e) => {
+                const newTime = `${e.target.value}:${formData.start_time.slice(3)}`;
+                setFormData({ ...formData, start_time: newTime });
+              }}
+            >
+              {hoursOptions.map((hour) => (
+                <option key={hour} value={hour}>
+                  {hour}
+                </option>
+              ))}
+            </select>
+            
+            <p className="flex items-center"> :</p>
+            
+            <select
+              className="ml-2 border rounded-3xl py-2 px-3"
+              value={formData.start_time.slice(3)}
+              onChange={(e) => {
+                const newTime = `${formData.start_time.slice(0, 2)}:${e.target.value}`;
+                setFormData({ ...formData, start_time: newTime });
+              }}
+            >
+              {minutesOptions.map((minute) => (
+                <option key={minute} value={minute}>
+                  {minute}
+                </option>
+              ))}
+            </select>
+            
+            <p className="flex items-center">To </p>
+            
+            <select
+              className="ml-2 border rounded-3xl py-2 px-3"
+              value={formData.end_time.slice(0, 2)}
+              onChange={(e) => {
+                const newTime = `${e.target.value}:${formData.end_time.slice(3)}`;
+                setFormData({ ...formData, end_time: newTime });
+              }}
+            >
+              {hoursOptions.map((hour) => (
+                <option key={hour} value={hour}>
+                  {hour}
+                </option>
+              ))}
+            </select>
+            
+            <p className="flex items-center"> :</p>
+            
+            <select
+              className="ml-2 border rounded-3xl py-2 px-3"
+              value={formData.end_time.slice(3)}
+              onChange={(e) => {
+                const newTime = `${formData.end_time.slice(0, 2)}:${e.target.value}`;
+                setFormData({ ...formData, end_time: newTime });
+              }}
+            >
+              {minutesOptions.map((minute) => (
+                <option key={minute} value={minute}>
+                  {minute}
+                </option>
+              ))}
+            </select>
+
             </div>
           </div>
 
