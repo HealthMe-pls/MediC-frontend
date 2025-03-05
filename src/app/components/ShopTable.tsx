@@ -67,7 +67,11 @@ const ShopTable: React.FC<ShopTableProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
+  const [loading, setLoading] = useState(false);
+
   const handleOpenModal = async (shopId: number | null) => {
+    setLoading(true); // เริ่มโหลดข้อมูล
+
     if (shopId) {
       try {
         const shop = await fetchShopById(shopId);
@@ -109,7 +113,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
 
           const newMenuData: MenuFormData[] = shop.menus
             ? shop.menus
-                .filter((menu) => menu.is_public) // กรองเฉพาะเมนูที่ isPublic เป็น true
+                .filter((menu) => menu.is_public)
                 .map((menu) => ({
                   id: menu.id,
                   idPhoto:
@@ -135,41 +139,23 @@ const ShopTable: React.FC<ShopTableProps> = ({
               }))
             : [];
 
-          // ป้องกันการตั้งค่า state ถ้าข้อมูลไม่เปลี่ยน
-          setEditShopData((prev) =>
-            JSON.stringify(prev) === JSON.stringify(newShopData)
-              ? prev
-              : newShopData
-          );
-          setEditPhotoData((prev) =>
-            JSON.stringify(prev) === JSON.stringify(newShopData)
-              ? prev
-              : newPhotoData
-          );
-          setEditSocialData((prev) =>
-            JSON.stringify(prev) === JSON.stringify(newSocialData)
-              ? prev
-              : newSocialData
-          );
-          setEditMenuData((prev) =>
-            JSON.stringify(prev) === JSON.stringify(newMenuData)
-              ? prev
-              : newMenuData
-          );
-          setEditTimeData((prev) =>
-            JSON.stringify(prev) === JSON.stringify(newTimeData)
-              ? prev
-              : newTimeData
-          );
+          // ตั้งค่า state ให้เสร็จก่อน
+          setEditShopData(newShopData);
+          setEditPhotoData(newPhotoData);
+          setEditSocialData(newSocialData);
+          setEditMenuData(newMenuData);
+          setEditTimeData(newTimeData);
         }
       } catch (error) {
         console.error("Error fetching shop details:", error);
       }
     } else {
       setEditShopData(null);
-      setEditSocialData([]); // รีเซ็ต social data เมื่อเป็นการเพิ่มร้านค้าใหม่
+      setEditSocialData([]);
     }
-    setIsModalOpen(true);
+
+    setLoading(false); // โหลดเสร็จแล้ว
+    if (!loading) setIsModalOpen(true); // เปิด modal หลังจากโหลดเสร็จ
   };
 
   // const handleSubmit = async (formData: ShopFormData,socialData: SocialFormData[]) => {
