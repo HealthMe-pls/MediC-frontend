@@ -6,7 +6,7 @@ import { fetchShopById, ShopDetail } from "@/utility/shopDetail";
 import { format } from "date-fns";
 import CardProductDetail from "@/app/components/CardProductDetail";
 // import Link from "next/link";
-import BackButton from "@/app/components/BackButton";
+import Header from "@/app/layouts/Header";
 import ImageBanner from "@/app/components/ImageBanner";
 import Footer from "@/app/layouts/Footer";
 
@@ -54,8 +54,10 @@ const ShopPage = () => {
   if (error) return <p>{error}</p>;
 
   return (
+    
     <div className="font-lexend text-[#4C4343] bg-[#FFF7EB] min-h-screen flex flex-col justify-between">
-      <BackButton previousPage={previousPage} />
+      
+      {/*Mobile*/}
       <div className="sm:hidden ">
         <div>
           {shopDetail ? (
@@ -217,18 +219,21 @@ const ShopPage = () => {
           </div>
         </div>
       </div>
+
+      {/*Desktop*/}
       <div className="hidden md:block">
+        <Header />
         {shopDetail ? (
-          <div className="bg-[#FFF7EB] flex flex-col items-center py-32">
+          <div className="bg-[#FFF7EB] flex flex-col items-center ">
             {" "}
             {/* Adjusted padding to move block lower */}
             {/* Main Block */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg w-11/12 md:w-2/4 flex flex-col md:flex-row mt-10">
+            <div className="bg-white p-6 mt-6 rounded-2xl shadow-lg flex flex-col md:flex-row">
               {" "}
               {/* Increased margin-top */}
               {/* Left Section: Image Banner */}
-              <div className="w-full md:w-1/2">
-                <div className="flex justify-between items-center ">
+              <div className="pl-4 pr-16">
+                <div className="flex justify-between items-center">
                   <div>
                     <p className=" font-regular text-[21px] ">
                       {shopDetail.name}
@@ -282,10 +287,14 @@ const ShopPage = () => {
                 )}
               </div>
               {/* Right Section: Details */}
-              <div className="w-full md:w-1/2 pl-6 flex flex-col justify-between">
+              <div className="pr-4">
+                <div className="mt-4">
+                  <h3 className="text-lg  text-gray-700  ">Details</h3>
+                  <p className="text-[14px] font-light break-words whitespace-pre-wrap w-[500px] ">&nbsp;&nbsp;&nbsp;&nbsp;{shopDetail.description}</p>
+                </div>
                 {/* Business Hours */}
                 <div className="mt-4">
-                  <h3 className="text-lg  text-gray-700  ">Business Hours</h3>
+                  <h3 className="text-lg  text-gray-700  ">🕒 Business Hours</h3>
                   <ul className="text-gray-600 text-sm">
                     {shopDetail?.shop_open_dates ? (
                       <ul>
@@ -305,8 +314,8 @@ const ShopPage = () => {
                 </div>
 
                 {/* Social Media */}
-                <div className="mt-4">
-                  <h3 className="text-lg  text-gray-700">Social Media</h3>
+                <div className="mt-4 mb-6">
+                  <h3 className="text-lg  text-gray-700">💬Social Media</h3>
                   {Array.isArray(shopDetail?.social_media) &&
                   shopDetail.social_media.filter((media) => media.is_public)
                     .length > 0 ? (
@@ -327,7 +336,7 @@ const ShopPage = () => {
               </div>
             </div>
             {/* Bottom Block */}
-            <div className="bg-white p-6 mt-10 rounded-2xl shadow-lg w-11/12 md:w-2/4">
+            <div className="bg-white p-6 mt-10 rounded-2xl shadow-lg">
               {" "}
               {/* Adjusted margin-top */}
               {/* Top Left Icon Menu */}
@@ -348,9 +357,9 @@ const ShopPage = () => {
                 Menu
               </p>
               {/* Menu Items */}
-              <div className="md:grid-cols-3 gap-4">
+              <div className="">
                 {shopDetail?.menus?.length ? (
-                  <div className="hide-scrollbar flex-col">
+                  <div className="grid grid-cols-2 gap-4">
                     {shopDetail.menus
                       .filter((menu) => menu.is_public)
                       .map((menu) => (
