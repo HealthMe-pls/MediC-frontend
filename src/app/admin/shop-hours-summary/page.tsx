@@ -60,46 +60,55 @@ const ShopHoursSummaryPage = () => {
   const handleNext = () => setCurrentDate(currentDate.add(1, filterType));
 
   const exportAsPDF = () => {
-    // const doc = new jsPDF();
-    // // ดึงตารางจาก DOM
-    // const table = document.querySelector("table");
-    // if (!table) {
-    //   console.error("Table not found!");
-    //   return;
-    // }
-    // // สร้างข้อมูลสำหรับ autoTable
-    // const headers = Array.from(table.querySelectorAll("thead th")).map(
-    //   (th: Element) => (th as HTMLElement).innerText.trim()
-    // );
-    // const data = Array.from(table.querySelectorAll("tbody tr")).map(
-    //   (tr: Element) => {
-    //     return Array.from(tr.querySelectorAll("td")).map((td: Element) =>
-    //       (td as HTMLElement).innerText.trim()
-    //     );
-    //   }
-    // );
-    // // ดึงสไตล์จาก CSS
-    // const headerStyles = {
-    //   fillColor: [240, 240, 240], // สีพื้นหลัง header
-    //   textColor: 0, // สีข้อความ header (ต้องเป็น number หรือ string เท่านั้น)
-    //   fontStyle: "bold" as "bold" | "italic" | "normal", // ปรับ type ให้ตรงกับ FontStyle
-    //   lineWidth: 0.5,
-    //   lineColor: [200, 200, 200],
-    // };
-    // const bodyStyles = {
-    //   lineWidth: 0.5,
-    //   lineColor: [200, 200, 200],
-    //   textColor: 0, // สีข้อความ body (ต้องเป็น number หรือ string เท่านั้น)
-    // };
-    // autoTable(doc, {
-    //   head: [headers],
-    //   body: data,
-    //   startY: 20,
-    //   styles: { fontSize: 10, cellPadding: 4 },
-    //   alternateRowStyles: { fillColor: [245, 245, 245] }, // สีสลับแถว
-    // });
-    // // ดาวน์โหลด PDF
-    // doc.save("Shop_Hours_Summary.pdf");
+    const doc = new jsPDF();
+
+    // ดึงตารางจาก DOM
+    const table = document.querySelector("table");
+    if (!table) {
+      console.error("Table not found!");
+      return;
+    }
+
+    // สร้างข้อมูลสำหรับ autoTable
+    const headers = Array.from(table.querySelectorAll("thead th")).map(
+      (th: Element) => (th as HTMLElement).innerText.trim()
+    );
+    const data = Array.from(table.querySelectorAll("tbody tr")).map(
+      (tr: Element) => {
+        return Array.from(tr.querySelectorAll("td")).map((td: Element) =>
+          (td as HTMLElement).innerText.trim()
+        );
+      }
+    );
+
+    // ดึงสไตล์จาก CSS
+    const headerStyles = {
+      fillColor: [240, 240, 240], // สีพื้นหลัง header
+      textColor: 0, // สีข้อความ header
+      fontStyle: "bold" as "bold" | "italic" | "normal", // ปรับ type ให้ตรงกับ FontStyle
+      lineWidth: 0.5,
+      lineColor: [200, 200, 200],
+    };
+    const bodyStyles = {
+      lineWidth: 0.5,
+      lineColor: [200, 200, 200],
+      textColor: 0, // สีข้อความ body
+    };
+
+    // ใช้ autoTable เพื่อแสดงข้อมูลลงใน PDF
+    autoTable(doc, {
+      head: [headers],
+      body: data,
+      startY: 20,
+      styles: { fontSize: 10, cellPadding: 4 },
+      alternateRowStyles: { fillColor: [245, 245, 245] }, // สีสลับแถว
+      headStyles: headerStyles,
+      bodyStyles: bodyStyles,
+      columnStyles: { 0: { halign: "center" } }, // การจัดแนวข้อมูลของคอลัมน์แรก
+    });
+
+    // ดาวน์โหลด PDF
+    doc.save("Shop_Hours_Summary.pdf");
   };
 
   return (
@@ -221,10 +230,14 @@ const ShopHoursSummaryPage = () => {
                               return (
                                 <td
                                   key={marketDate.id}
-                                  className={`border px-4 py-2 text-center ${
+                                  className={`border px-4 py-2 text-center text-white ${
                                     isOpen ? "bg-gray-200" : ""
                                   }`}
-                                ></td>
+                                >
+                                  <p className="text-gray-200">
+                                    {isOpen ? "open" : ""}
+                                  </p>
+                                </td>
                               );
                             })}
                         </tr>
