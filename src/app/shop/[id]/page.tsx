@@ -221,7 +221,7 @@ const ShopPage = () => {
       </div>
 
       {/*Desktop*/}
-      <div className="hidden md:block">
+      <div className="hidden md:block"> 
         <Header />
         {shopDetail ? (
           <div className="bg-[#FFF7EB] flex flex-col items-center ">
@@ -383,12 +383,12 @@ const ShopPage = () => {
         ) : (
           <p>No shop details found</p>
         )}
-        <div className="flex flex-col justify-end mt-8">
-          <div>
-            <Footer />
-          </div>
+        <div >
         </div>
       </div>
+          <div className="flex flex-col justify-end mt-8">
+            <Footer/>
+          </div>
     </div>
   );
 };
