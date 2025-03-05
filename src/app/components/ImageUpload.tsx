@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 
 interface ImageUploadProps {
@@ -26,6 +26,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     "sec_img",
     "thr_img",
   ];
+
+  // useEffect(() => {
+  //   console.log(formImg);
+  // }, []);
 
   return (
     <div className="grid grid-cols-3 gap-4 mt-2">

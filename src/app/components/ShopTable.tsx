@@ -68,22 +68,20 @@ const ShopTable: React.FC<ShopTableProps> = ({
   const rowsPerPage = 5;
 
   const [loading, setLoading] = useState(false);
+  const [shouldOpenModal, setShouldOpenModal] = useState(false); // ใช้เป็นตัวบอกว่าต้องเปิด modal หรือไม่
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
 
   const handleOpenModal = async (shopId: number | null) => {
-    setLoading(true); // เริ่มโหลดข้อมูล
+    setLoading(true);
+    setShouldOpenModal(true); // ตั้งค่าให้ modal เปิดหลังโหลดเสร็จ
 
     if (shopId) {
       try {
         const shop = await fetchShopById(shopId);
         if (shop) {
-          const newShopData: ShopFormData = {
-            id: shop.shop_id,
-            name: shop.name,
-            shop_category_id: shop.category_id,
-            description: shop.description || "",
-            entrepreneur_id: shop.entrepreneur_id,
-          };
-
           const newPhotoData: PhotoForm = {
             cover_id: shop.photos?.[0]?.photo_id || 0,
             cover_img: shop.photos?.[0]
@@ -97,6 +95,16 @@ const ShopTable: React.FC<ShopTableProps> = ({
             thr_img: shop.photos?.[2]
               ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[2]?.pathfile}`
               : "",
+          };
+
+          setEditPhotoData(newPhotoData);
+
+          const newShopData: ShopFormData = {
+            id: shop.shop_id,
+            name: shop.name,
+            shop_category_id: shop.category_id,
+            description: shop.description || "",
+            entrepreneur_id: shop.entrepreneur_id,
           };
 
           const newSocialData: SocialFormData[] = shop.social_media
@@ -141,10 +149,11 @@ const ShopTable: React.FC<ShopTableProps> = ({
 
           // ตั้งค่า state ให้เสร็จก่อน
           setEditShopData(newShopData);
-          setEditPhotoData(newPhotoData);
+
           setEditSocialData(newSocialData);
           setEditMenuData(newMenuData);
           setEditTimeData(newTimeData);
+          setLoading(false);
         }
       } catch (error) {
         console.error("Error fetching shop details:", error);
@@ -152,26 +161,17 @@ const ShopTable: React.FC<ShopTableProps> = ({
     } else {
       setEditShopData(null);
       setEditSocialData([]);
+      setLoading(false);
     }
-
-    setLoading(false); // โหลดเสร็จแล้ว
-    if (!loading) setIsModalOpen(true); // เปิด modal หลังจากโหลดเสร็จ
   };
 
-  // const handleSubmit = async (formData: ShopFormData,socialData: SocialFormData[]) => {
-  //   if (!editShopData || !editShopData.id) {
-  //     console.error("Shop ID is missing!");
-  //     return;
-  //   }
-
-  //   try {
-  //     await updateShopByAdmin(editShopData.id, formData);
-  //     console.log("Shop updated successfully!");
-  //     setIsModalOpen(false);
-  //   } catch (error) {
-  //     console.error("Error updating shop:", error);
-  //   }
-  // };
+  useEffect(() => {
+    if (!loading && shouldOpenModal) {
+      // console.log(editPhotoData);
+      openModal();
+      setShouldOpenModal(false);
+    }
+  }, [loading, shouldOpenModal, editPhotoData]);
 
   const handleSocialUpdate = async (
     shopId: number,

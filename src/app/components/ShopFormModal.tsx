@@ -67,6 +67,14 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     () => initialShopHours || []
   );
 
+  useEffect(() => {
+    if (initialPhotoData) setFormImg(initialPhotoData);
+  }, [initialPhotoData]);
+
+  useEffect(() => {
+    console.log(formImg);
+  }, [formImg]);
+
   const handleAddSocial = () => {
     setSocialFormData([
       ...socialFormData,

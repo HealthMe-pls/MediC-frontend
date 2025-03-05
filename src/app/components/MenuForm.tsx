@@ -53,7 +53,10 @@ const MenuForm: React.FC<MenuFormProps> = ({
                   className={`relative w-24 h-24 border rounded flex items-center justify-center overflow-hidden cursor-pointer mx-auto group ${
                     disabled ? "" : "group-hover:opacity-100"
                   }`}
-                  onClick={() => !disabled && document.getElementById(`fileInput-${index}`)?.click()}
+                  onClick={() =>
+                    !disabled &&
+                    document.getElementById(`fileInput-${index}`)?.click()
+                  }
                 >
                   {/* ถ้ามีรูป */}
                   {menu.img ? (
@@ -69,7 +72,9 @@ const MenuForm: React.FC<MenuFormProps> = ({
                       }`}
                       width={200}
                       height={200}
-                      onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                      onError={(
+                        e: React.SyntheticEvent<HTMLImageElement, Event>
+                      ) => {
                         const target = e.currentTarget as HTMLImageElement;
                         target.onerror = null;
                         onMenuChange(index, "img", "");
@@ -87,7 +92,7 @@ const MenuForm: React.FC<MenuFormProps> = ({
                     </div>
                   )}
                 </div>
-                
+
                 <input
                   id={`fileInput-${index}`}
                   type="file"
@@ -101,8 +106,17 @@ const MenuForm: React.FC<MenuFormProps> = ({
                   disabled={disabled}
                 />
               </td>
-
-
+              <td className="p-2 border h-24">
+                <input
+                  type="text"
+                  value={menu.product_name}
+                  onChange={(e) =>
+                    onMenuChange(index, "product_name", e.target.value)
+                  }
+                  className="border p-1 w-full h-full"
+                  placeholder="Product Name"
+                />
+              </td>
 
               <td className="p-2 border relative">
                 <div className="relative">
