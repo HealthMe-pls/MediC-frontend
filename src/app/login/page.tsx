@@ -3,7 +3,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginEntrepreneur, AuthResponse } from "@/utility/login";
 import styles from "./login.module.css";
-const imgLogo = "/assets/logo.png"; // Assuming logo is in public/assets
+const Logo = "./public/assets/logo.png";
+import Image from "next/image";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -27,8 +28,7 @@ const Login = () => {
       setToken(response.token || "");
       if (response.token) {
         localStorage.setItem("authToken", response.token);
-        console.log("Token stored:", localStorage.getItem("authToken"));
-        router.push("/entrepreneurLogin");
+        router.push("/vendor");
       }
     }
   };
@@ -99,7 +99,13 @@ const Login = () => {
         <div className={styles.container}>
           {/* Left Block */}
           <div className={styles.leftBlock}>
-            <img src={imgLogo} alt="Logo" className={styles.logo} />
+            <Image
+              src={Logo}
+              alt="Logo"
+              className={styles.logo}
+              width={100}
+              height={100}
+            />
           </div>
 
           {/* Login Container */}
@@ -146,9 +152,7 @@ const Login = () => {
 
             {error && <div className={styles.errorMessage}>{error}</div>}
             {token && (
-              <div className={styles.successMessage}>
-                Login successful! Token: {token}
-              </div>
+              <div className={styles.successMessage}>Login successful!</div>
             )}
           </div>
         </div>
