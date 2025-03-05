@@ -187,7 +187,7 @@ export default function Home() {
           </div>
 
           <div className="relative w-[570px] min-w-[500px] flex justify-center flex-wrap flex-col overflow-visible">
-            <div className="absolute top-8 left-6 flex flex-wrap desktop-view mx-auto">
+            <div className="absolute z-50 top-8 left-6 flex flex-wrap desktop-view mx-auto">
               <div className="flex-1 mr-2">
                 <SearchBar
                   setSelectedCate={setSelectedCate}

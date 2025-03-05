@@ -151,7 +151,7 @@ export default function ManageVendor() {
           <thead>
             <tr className="border-b">
               <th className="p-4">Username</th>
-              <th className="p-4">Password</th>
+              <th className="p-4">Access Code</th>
               <th className="p-4"># Shops Owned</th>
               <th className="p-4"></th>
             </tr>
@@ -229,7 +229,7 @@ export default function ManageVendor() {
                     />
                   </div>
                   <div className="m-2 flex items-center">
-                    <label className="">Password : </label>
+                    <label className="">Access Code : </label>
                     <div className="m-2 flex items-center border border-gray-300 rounded-xl">
                       <input
                         type={visibleModalPassword ? "text" : "password"}
