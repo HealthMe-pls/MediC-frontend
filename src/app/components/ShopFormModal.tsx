@@ -291,6 +291,12 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
             onSocialChange={handleSocialChange}
             onRemoveSocial={handleRemoveSocial}
           />
+          {/* Market Hours Section */}
+          <MarketHoursTable
+            shopId={initialData?.id || 0}
+            initialShopHours={initialShopHours}
+            onShopHoursChange={handleShopHoursChange}
+          />
           <div className="my-1 ml-4">
             <p className="mb-1">Shop Image :</p>
             <ImageUpload
@@ -305,13 +311,6 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
             onAddMenu={handleAddMenu}
             onMenuChange={handleMenuChange}
             onRemoveMenu={handleRemoveMenu}
-          />
-
-          {/* Market Hours Section */}
-          <MarketHoursTable
-            shopId={initialData?.id || 0}
-            initialShopHours={initialShopHours}
-            onShopHoursChange={handleShopHoursChange}
           />
 
           <div className="flex justify-end gap-2">

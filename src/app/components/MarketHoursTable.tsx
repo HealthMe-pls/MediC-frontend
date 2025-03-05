@@ -281,7 +281,7 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
 
   return (
     <div className="mt-6">
-      <h3 className="text-lg font-bold mb-4">Open Schedule</h3>
+      <h3 className="text-lg mb-4">Open Schedule</h3>
       <div className="flex items-center justify-between mb-4">
         <button
           type="button"
