@@ -136,7 +136,7 @@ const HighlightBanner = () => {
           {workshops.map((workshop, index) => (
             <div
             key={workshop.id}
-            className={`relative flex-shrink-0 bg-white shadow-lg rounded-lg aspect-[21/30] max-w-[210px] max-h-[300px] hover:border hover:border-gray-300 ${
+            className={`relative flex-shrink-0 bg-white shadow-lg rounded-lg  w-[200px] h-[270px] hover:border hover:border-gray-300 ${
               workshops.length < workshopsPerView ? "mx-3" : "mx-auto"
             }`}
             style={{
@@ -151,7 +151,7 @@ const HighlightBanner = () => {
                 onClick={() => handleNavigation(workshop.id)}
                 className="mt-2 px-4 py-2 rounded-md"
               >
-                <div className="relative w-full max-w-[180px] mx-auto mt-[15px] flex items-center justify-center">
+                <div className="relative w-full w-[160px] h-[160px] mx-auto mt-[15px] flex items-center justify-center">
                   <div className="w-full aspect-[10/10] flex items-center justify-center">
                     {workshop.photos?.length ? (
                       <Image
@@ -159,10 +159,10 @@ const HighlightBanner = () => {
                         alt={workshop.name}
                         width={180}
                         height={180}
-                        className="object-cover rounded-md w-full h-full max-w-[180px] max-h-[180px]"
+                        className="object-cover rounded-md w-full h-full w-[160px] h-[160px]"
                       />
                     ) : (
-                      <div className="bg-gray-300 flex items-center justify-center rounded-md min-h-[180px] min-w-[180px]">
+                      <div className="bg-gray-300 flex items-center justify-center rounded-md h-[160px] w-[160px]">
                         No Image Available
                       </div>
                     )}
