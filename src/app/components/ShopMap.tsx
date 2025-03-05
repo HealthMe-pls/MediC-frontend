@@ -139,7 +139,13 @@ export default function Map({
           style = { ...style, backgroundColor: "#CAE5F3" };
         }
       } else {
-        style = { ...style, opacity: 0, pointerEvents: "none" };
+        if (pointLetter === "A") {
+          style = { ...style, backgroundColor: "#FFEF9E" };
+        } else if (pointLetter === "B") {
+          style = { ...style, backgroundColor: "#D5EBD6" };
+        } else if (pointLetter === "C") {
+          style = { ...style, backgroundColor: "#CAE5F3" };
+        }
       }
     }
 
