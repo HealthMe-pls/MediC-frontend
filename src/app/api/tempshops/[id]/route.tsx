@@ -1,58 +1,79 @@
+import { NextRequest, NextResponse } from "next/server";
 import { setCorsHeaders } from "@/utility/corsUtils";
-import { NextResponse } from "next/server";
-import axios from "axios";
 
-export async function PUT(
-  req: Request,
-  context: { params: Promise<{ id: string }> }
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
 ) {
-  const temp_id = (await context.params).id;
-
-  const headers = new Headers();
-  setCorsHeaders(headers);
-
+  const { id } = params;
   try {
-    const response = await axios.put(
-      `${process.env.NEXT_PUBLIC_GO_API_URL}/notApprove/${temp_id}`,
-      {},
-      {
-        headers: Object.fromEntries(headers.entries()),
-      }
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/tempshops/${id}`
     );
+    if (!response.ok) throw new Error("Failed to fetch temp shop");
 
-    if (response.status !== 200) {
-      throw new Error("Failed to non-approve tempshop");
-    }
-
-    return NextResponse.json(response.data, { status: 200 });
+    const data = await response.json();
+    const headers = new Headers();
+    setCorsHeaders(headers);
+    return NextResponse.json(data, { status: 200, headers });
   } catch (error) {
-    return NextResponse.json(error, { status: 500 });
+    return NextResponse.json(
+      { message: "Failed to fetch temp shop" },
+      { status: 500 }
+    );
   }
 }
 
-export async function GET(
-  req: Request,
-  context: { params: Promise<{ id: string }> }
+// PUT - Update TempShop
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
 ) {
-  const temp_id = (await context.params).id;
-
-  const headers = new Headers();
-  setCorsHeaders(headers);
-
+  const { id } = params;
+  const body = await req.json();
   try {
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_GO_API_URL}/approve/${temp_id}`,
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/shop/${id}`,
       {
-        headers: Object.fromEntries(headers.entries()),
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
       }
     );
 
-    if (response.status !== 200) {
-      throw new Error("Failed to approve tempshop");
-    }
+    if (!response.ok) throw new Error("Failed to update temp shop");
 
-    return NextResponse.json(response.data, { status: 200 });
+    const data = await response.json();
+    const headers = new Headers();
+    setCorsHeaders(headers);
+    return NextResponse.json(data, { status: 200, headers });
   } catch (error) {
-    return NextResponse.json(error, { status: 500 });
+    return NextResponse.json(
+      { message: "Failed to update temp shop" },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/tempshops/${id}`,
+      { method: "DELETE" }
+    );
+
+    if (!response.ok) throw new Error("Failed to delete temp shop");
+
+    return NextResponse.json({ message: "Temp shop deleted" }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Failed to delete temp shop" },
+      { status: 500 }
+    );
   }
 }

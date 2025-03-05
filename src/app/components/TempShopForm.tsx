@@ -10,6 +10,7 @@ import MenuForm from "./MenuForm";
 import ImageUpload from "./ImageUpload";
 import MarketHoursTable from "./MarketHoursTable";
 import { ShopOpenDates } from "./types";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 export interface TempShopFormProps {
   onSubmit: (
@@ -62,6 +63,7 @@ const TempShopForm: React.FC<TempShopFormProps> = ({
   const [savedShopHours, setSavedShopHours] = useState<ShopOpenDates[]>(
     () => initialShopHours || []
   );
+  const [showDetail, setShowDetail] = useState(false);
 
   const handleAddSocial = () => {
     setSocialFormData([
@@ -248,6 +250,39 @@ const TempShopForm: React.FC<TempShopFormProps> = ({
     );
   };
 
+  const formatDate = (isoString: string) => {
+    const date = new Date(isoString);
+    return date.toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const formatTime = (isoString: string) => {
+    const date = new Date(isoString);
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true, // Show AM/PM format
+    });
+  };
+
+  const displayData = (data: any[]) => {
+    const sortedData = data.sort(
+      (a, b) =>
+        new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
+    );
+    return sortedData.map((item, index) => {
+      return (
+        <div key={index} className="ml-20 my-2">
+          <div>{`${formatDate(item.start_time)}: ${formatTime(
+            item.start_time
+          )} - ${formatTime(item.end_time)}`}</div>
+        </div>
+      );
+    });
+  };
   return (
     <div>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-5">
@@ -260,35 +295,65 @@ const TempShopForm: React.FC<TempShopFormProps> = ({
           disabled={!isEditing}
           isTemp={true}
         />
-        <SocialMediaForm
-          socialFormData={socialFormData}
-          onAddSocial={handleAddSocial}
-          onSocialChange={handleSocialChange}
-          onRemoveSocial={handleRemoveSocial}
-          disabled={!isEditing}
-        />
-        {isEditing && (
-          <MarketHoursTable
-            shopId={initialData?.id || 0}
-            initialShopHours={initialShopHours}
-            onShopHoursChange={handleShopHoursChange}
-          />
-        )}
-        <p className="mb-1">Shop Image :</p>
-        <ImageUpload
-          formImg={formImg}
-          handleImageChange={handleImageChange}
-          handleRemoveImage={handleRemoveImage}
-          disabled={!isEditing}
-        />
 
-        <MenuForm
-          menuFormData={menuFormData}
-          onAddMenu={handleAddMenu}
-          onMenuChange={handleMenuChange}
-          onRemoveMenu={handleRemoveMenu}
-          disabled={!isEditing}
-        />
+        <div
+          className={`overflow-hidden transition-all duration-500 ease-in-out ${
+            showDetail ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="overflow-hidden transition-all duration-500">
+            <SocialMediaForm
+              socialFormData={socialFormData}
+              onAddSocial={handleAddSocial}
+              onSocialChange={handleSocialChange}
+              onRemoveSocial={handleRemoveSocial}
+              disabled={!isEditing}
+            />
+
+            {!isEditing && initialShopHours && (
+              <div className="mt-5">
+                <p>Open Schedule:</p>
+                {displayData(initialShopHours)}
+              </div>
+            )}
+
+            {isEditing && (
+              <MarketHoursTable
+                shopId={initialData?.id || 0}
+                initialShopHours={initialShopHours}
+                onShopHoursChange={handleShopHoursChange}
+              />
+            )}
+
+            <p className="mb-1">Shop Image :</p>
+            <ImageUpload
+              formImg={formImg}
+              handleImageChange={handleImageChange}
+              handleRemoveImage={handleRemoveImage}
+              disabled={!isEditing}
+            />
+
+            <MenuForm
+              menuFormData={menuFormData}
+              onAddMenu={handleAddMenu}
+              onMenuChange={handleMenuChange}
+              onRemoveMenu={handleRemoveMenu}
+              disabled={!isEditing}
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          <button
+            type="button"
+            className="flex justify-center items-center gap-2 p-2 rounded-lg transition w-[200px] text-[18px]"
+            onClick={() => setShowDetail(!showDetail)}
+          >
+            {!showDetail ? "Show more" : "Hide"}{" "}
+            {showDetail ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+          </button>
+        </div>
+
         <div className="flex justify-center gap-2">
           <button
             type="submit"
