@@ -35,92 +35,90 @@ const EditShopInformation = () => {
   );
 
   const handleEditInformation = async (temp: TempShopEn | null) => {
-    // if (temp) {
-    //   const newShopData: ShopFormData = {
-    //     id: temp.shop_id,
-    //     name: temp.name,
-    //     shop_category_id: temp.category_id,
-    //     description: temp.description || "",
-    //     entrepreneur_id: temp.entrepreneur_id,
-    //   };
-    //   const newPhotoData: PhotoForm = {
-    //     cover_id: temp.photos_shop?.[0]?.photo_id || 0,
-    //     cover_img: shop.photos?.[0]
-    //       ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[0]?.pathfile}`
-    //       : "",
-    //     sec_id: shop.photos?.[1]?.photo_id || 0,
-    //     sec_img: shop.photos?.[1]
-    //       ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[1]?.pathfile}`
-    //       : "",
-    //     thr_id: shop.photos?.[2]?.photo_id || 0,
-    //     thr_img: shop.photos?.[2]
-    //       ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[2]?.pathfile}`
-    //       : "",
-    //   };
-    //   const newSocialData: SocialFormData[] = shop.social_media
-    //     ? shop.social_media
-    //         .filter((social) => social.is_public)
-    //         .map((social) => ({
-    //           id: social.id,
-    //           name: social.name,
-    //           platform: social.platform,
-    //           link: social.link,
-    //           shop_id: shop.shop_id,
-    //         }))
-    //     : [];
-    //   const newMenuData: MenuFormData[] = shop.menus
-    //     ? shop.menus
-    //         .filter((menu) => menu.is_public) // กรองเฉพาะเมนูที่ isPublic เป็น true
-    //         .map((menu) => ({
-    //           id: menu.id,
-    //           idPhoto:
-    //             menu.photos?.length > 0 ? menu.photos[0].photo_id : 0,
-    //           img:
-    //             menu.photos?.length > 0
-    //               ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0].pathfile}`
-    //               : "",
-    //           product_name: menu.product_name,
-    //           product_description: menu.product_description,
-    //           price: menu.price,
-    //           shop_id: shop.shop_id,
-    //         }))
-    //     : [];
-    //   const newTimeData: ShopOpenDates[] = shop.shop_open_dates
-    //     ? shop.shop_open_dates.map((time) => ({
-    //         id: time.id,
-    //         start_time: time.start_time,
-    //         end_time: time.end_time,
-    //         shop_id: shop.shop_id,
-    //         market_open_date_id: time.market_open_date_id,
-    //       }))
-    //     : [];
-    //   // ป้องกันการตั้งค่า state ถ้าข้อมูลไม่เปลี่ยน
-    //   setEditShopData((prev) =>
-    //     JSON.stringify(prev) === JSON.stringify(newShopData)
-    //       ? prev
-    //       : newShopData
-    //   );
-    //   setEditPhotoData((prev) =>
-    //     JSON.stringify(prev) === JSON.stringify(newShopData)
-    //       ? prev
-    //       : newPhotoData
-    //   );
-    //   setEditSocialData((prev) =>
-    //     JSON.stringify(prev) === JSON.stringify(newSocialData)
-    //       ? prev
-    //       : newSocialData
-    //   );
-    //   setEditMenuData((prev) =>
-    //     JSON.stringify(prev) === JSON.stringify(newMenuData)
-    //       ? prev
-    //       : newMenuData
-    //   );
-    //   setEditTimeData((prev) =>
-    //     JSON.stringify(prev) === JSON.stringify(newTimeData)
-    //       ? prev
-    //       : newTimeData
-    //   );
-    // }
+    if (temp) {
+      const newShopData: ShopFormData = {
+        id: temp.shop_id,
+        name: temp.name,
+        shop_category_id: temp.category_id,
+        description: temp.description || "",
+        entrepreneur_id: temp.entrepreneur_id,
+      };
+      const newPhotoData: PhotoForm = {
+        cover_id: temp.photos_shop?.[0]?.id || 0,
+        cover_img: temp.photos_shop?.[0]
+          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${temp.photos_shop[0]?.path_file}`
+          : "",
+        sec_id: temp.photos_shop?.[1]?.id || 0,
+        sec_img: temp.photos_shop?.[1]
+          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${temp.photos_shop[1]?.path_file}`
+          : "",
+        thr_id: temp.photos_shop?.[2]?.id || 0,
+        thr_img: temp.photos_shop?.[2]
+          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${temp.photos_shop[2]?.path_file}`
+          : "",
+      };
+      const newSocialData: SocialFormData[] = temp.socials
+        ? temp.socials.map((social) => ({
+            id: social.id,
+            name: social.name,
+            platform: social.platform,
+            link: social.link,
+            shop_id: temp.shop_id,
+          }))
+        : [];
+      const newMenuData: MenuFormData[] = temp.menus
+        ? temp.menus.map((menu) => ({
+            id: menu.id,
+            idPhoto: menu.photos?.length > 0 ? menu.photos[0].id : 0,
+            img:
+              menu.photos?.length > 0
+                ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0].path_file}`
+                : "",
+            product_name: menu.product_name,
+            product_description: menu.product_description,
+            price: menu.price,
+            shop_id: temp.shop_id,
+          }))
+        : [];
+
+      const combinedArray = [...temp.editTime, ...temp.addTime, ...temp.time];
+
+      const newTimeData: ShopOpenDates[] = combinedArray
+        ? combinedArray.map((time) => ({
+            id: time.id,
+            start_time: time.start_time,
+            end_time: time.end_time,
+            shop_id: temp.shop_id,
+            market_open_date_id: time.market_open_date_id,
+          }))
+        : [];
+      // ป้องกันการตั้งค่า state ถ้าข้อมูลไม่เปลี่ยน
+      setEditShopData((prev) =>
+        JSON.stringify(prev) === JSON.stringify(newShopData)
+          ? prev
+          : newShopData
+      );
+      setEditPhotoData((prev) =>
+        JSON.stringify(prev) === JSON.stringify(newShopData)
+          ? prev
+          : newPhotoData
+      );
+      setEditSocialData((prev) =>
+        JSON.stringify(prev) === JSON.stringify(newSocialData)
+          ? prev
+          : newSocialData
+      );
+      setEditMenuData((prev) =>
+        JSON.stringify(prev) === JSON.stringify(newMenuData)
+          ? prev
+          : newMenuData
+      );
+      setEditTimeData((prev) =>
+        JSON.stringify(prev) === JSON.stringify(newTimeData)
+          ? prev
+          : newTimeData
+      );
+    }
   };
 
   useEffect(() => {
@@ -234,103 +232,6 @@ const EditShopInformation = () => {
               initialPhotoData={editPhotoData || undefined}
               initialShopHours={editTimeData || undefined}
             />
-
-            {/* Display selected shop details */}
-            {selectedShop ? (
-              <div>
-                <h3>{selectedShop.name}</h3>
-                <ul>
-                  <li>
-                    <strong>Entrepreneur ID:</strong>{" "}
-                    {selectedShop.entrepreneur_id}
-                  </li>
-
-                  {/* Socials */}
-                  <li>
-                    <strong>Socials:</strong>
-                    {selectedShop.socials.length > 0
-                      ? selectedShop.socials.map((s, index) => (
-                          <span key={index}>
-                            {s.platform} ({s.link}) |{" "}
-                          </span>
-                        ))
-                      : "No socials available"}
-                  </li>
-
-                  {/* Menus */}
-                  <li>
-                    <strong>Menus:</strong>
-                    {selectedShop.menus.length > 0
-                      ? selectedShop.menus.map((menu) => (
-                          <span key={menu.id}>{menu.product_name} | </span>
-                        ))
-                      : "No menus available"}
-                  </li>
-
-                  {/* Photos */}
-                  <li>
-                    <strong>Shop Photos:</strong>
-                    {selectedShop.photos_shop.length > 0
-                      ? selectedShop.photos_shop.map((photo, index) => (
-                          <span key={index}>{photo.path_file} | </span>
-                        ))
-                      : "No photos available"}
-                  </li>
-                  <li>
-                    <strong>Menu Photos:</strong>
-                    {selectedShop.photos_menu.length > 0
-                      ? selectedShop.photos_menu.map((photo, index) => (
-                          <span key={index}>{photo.path_file} | </span>
-                        ))
-                      : "No menu photos available"}
-                  </li>
-
-                  {/* Time Details */}
-                  <li>
-                    <strong>Shop Open Dates:</strong>
-                    {selectedShop.time.length > 0
-                      ? selectedShop.time.map((date, index) => (
-                          <span key={index}>
-                            {date.start_time} - {date.end_time} |{" "}
-                          </span>
-                        ))
-                      : "No open dates available"}
-                  </li>
-                  <li>
-                    <strong>Added Time:</strong>
-                    {selectedShop.addTime.length > 0
-                      ? selectedShop.addTime.map((date, index) => (
-                          <span key={index}>
-                            {date.start_time} - {date.end_time} |{" "}
-                          </span>
-                        ))
-                      : "No added times available"}
-                  </li>
-                  <li>
-                    <strong>Edited Time:</strong>
-                    {selectedShop.editTime.length > 0
-                      ? selectedShop.editTime.map((date, index) => (
-                          <span key={index}>
-                            {date.start_time} - {date.end_time} |{" "}
-                          </span>
-                        ))
-                      : "No edited times available"}
-                  </li>
-                  <li>
-                    <strong>Deleted Time:</strong>
-                    {selectedShop.deleteTime.length > 0
-                      ? selectedShop.deleteTime.map((date, index) => (
-                          <span key={index}>
-                            {date.start_time} - {date.end_time} |{" "}
-                          </span>
-                        ))
-                      : "No deleted times available"}
-                  </li>
-                </ul>
-              </div>
-            ) : (
-              <p>Please select a shop to view details.</p>
-            )}
           </div>
         ) : (
           <p>{error ? "No shops found." : "Loading your shop data..."}</p>

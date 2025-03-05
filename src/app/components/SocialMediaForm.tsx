@@ -35,7 +35,7 @@ const SocialMediaForm: React.FC<SocialMediaFormProps> = ({
           </button>
         )}
       </div>
-      <table className="w-full border">
+      <table className="w-full border bg-white">
         <thead>
           <tr className="bg-gray-200">
             <th className="p-2 border">Platform</th>

@@ -35,7 +35,7 @@ const MenuForm: React.FC<MenuFormProps> = ({
           </button>
         )}
       </div>
-      <table className="w-full border">
+      <table className="w-full border bg-white">
         <thead>
           <tr className="bg-gray-200">
             <th className="p-2 border">Image</th>
@@ -115,6 +115,7 @@ const MenuForm: React.FC<MenuFormProps> = ({
                   }
                   className="border p-1 w-full h-full"
                   placeholder="Product Name"
+                  disabled={disabled}
                 />
               </td>
 
