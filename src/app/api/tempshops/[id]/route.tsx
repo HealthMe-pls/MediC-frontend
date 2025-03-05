@@ -2,8 +2,11 @@ import { setCorsHeaders } from "@/utility/corsUtils";
 import { NextResponse } from "next/server";
 import axios from "axios";
 
-export async function PUT(req: Request, context: { params: { id: string } }) {
-  const { id: temp_id } = context.params;
+export async function PUT(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const temp_id = (await context.params).id;
 
   const headers = new Headers();
   setCorsHeaders(headers);
@@ -27,8 +30,11 @@ export async function PUT(req: Request, context: { params: { id: string } }) {
   }
 }
 
-export async function GET(req: Request, context: { params: { id: string } }) {
-  const { id: temp_id } = context.params;
+export async function GET(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const temp_id = (await context.params).id;
 
   const headers = new Headers();
   setCorsHeaders(headers);

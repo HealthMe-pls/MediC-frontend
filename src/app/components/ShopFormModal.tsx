@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import React, { useState, useEffect, useCallback } from "react";
 import { fetchShopCategory, ShopCategory } from "@/utility/shopcate";
 import { fetchEntrepreneur, Entrepreneur } from "@/utility/entrepreneur";
-import { ShopFormData, SocialFormData, MenuFormData } from "./types";
+import { ShopFormData, SocialFormData, MenuFormData, PhotoForm } from "./types";
 import ShopDetailsSection from "./ShopDetailsSection";
 import SocialMediaForm from "./SocialMediaForm";
 import MenuForm from "./MenuForm";
+import ImageUpload from "./ImageUpload";
+import MarketHoursTable from "./MarketHoursTable";
+import { ShopOpenDates } from "./types";
+import { it } from "date-fns/locale";
 
 export interface ShopFormModalProps {
   isOpen: boolean;
@@ -12,11 +18,15 @@ export interface ShopFormModalProps {
   onSubmit: (
     data: ShopFormData,
     socialData: SocialFormData[],
-    menuData: MenuFormData[]
+    menuData: MenuFormData[],
+    PhotoData: PhotoForm,
+    shopHours: ShopOpenDates[]
   ) => void;
   initialData?: ShopFormData;
   initialSocialData?: SocialFormData[];
   initialMenuData?: MenuFormData[];
+  initialPhotoData?: PhotoForm;
+  initialShopHours?: ShopOpenDates[];
 }
 
 const ShopFormModal: React.FC<ShopFormModalProps> = ({
@@ -26,6 +36,8 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
   initialData,
   initialSocialData = [],
   initialMenuData = [],
+  initialPhotoData,
+  initialShopHours,
 }) => {
   const [formData, setFormData] = useState<ShopFormData>({
     name: "",
@@ -41,14 +53,44 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
   );
   const [categories, setCategories] = useState<ShopCategory[]>([]);
   const [entrepreneurs, setEntrepreneurs] = useState<Entrepreneur[]>([]);
+  const [formImg, setFormImg] = useState<PhotoForm>(
+    initialPhotoData || {
+      cover_id: 0,
+      cover_img: "",
+      sec_id: 0,
+      sec_img: "",
+      thr_id: 0,
+      thr_img: "",
+    }
+  );
+  const [savedShopHours, setSavedShopHours] = useState<ShopOpenDates[]>(
+    () => initialShopHours || []
+  );
 
-  // Social Media Handlers
   const handleAddSocial = () => {
     setSocialFormData([
       ...socialFormData,
       { id: Date.now(), platform: "", name: "", link: "", shop_id: 0 },
     ]);
   };
+
+  const handleImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    key: "cover_img" | "sec_img" | "thr_img"
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormImg((prev) => ({ ...prev, [key]: file }));
+    }
+  };
+
+  const handleRemoveImage = (key: "cover_img" | "sec_img" | "thr_img") => {
+    setFormImg((prev) => ({ ...prev, [key]: "" }));
+  };
+
+  const handleShopHoursChange = useCallback((hours: ShopOpenDates[]) => {
+    setSavedShopHours(hours);
+  }, []);
 
   const handleSocialChange = (
     index: number,
@@ -66,7 +108,6 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     setSocialFormData(socialFormData.filter((_, i) => i !== index));
   };
 
-  // Menu Handlers
   const handleAddMenu = () => {
     setMenuFormData([
       ...menuFormData,
@@ -97,7 +138,6 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     setMenuFormData(menuFormData.filter((_, i) => i !== index));
   };
 
-  // General Form Handlers
   const resetForm = () => {
     setFormData(
       initialData || {
@@ -109,13 +149,25 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     );
     setMenuFormData(initialMenuData || []);
     setSocialFormData(initialSocialData || []);
+    setFormImg(
+      initialPhotoData || {
+        cover_id: 0,
+        cover_img: "",
+        sec_id: 0,
+        sec_img: "",
+        thr_id: 0,
+        thr_img: "",
+      }
+    );
+    // ไม่รีเซ็ต savedShopHours เพื่อให้ค่าที่แก้ไขไว้คงอยู่
+    // setSavedShopHours(initialShopHours || []);
   };
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !(initialData ?? null)) {
       resetForm();
     }
-  }, [isOpen]);
+  }, [isOpen, initialData ?? null]);
 
   useEffect(() => {
     if (isOpen) {
@@ -135,7 +187,6 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     }
   }, [isOpen]);
 
-  // Disable scroll when modal open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -174,6 +225,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
         return [
           {
             id: Date.now(),
+            idPhoto: Date.now(),
             img: new File([], ""),
             product_name: "",
             product_description: "",
@@ -199,7 +251,18 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData, socialFormData, menuFormData);
+
+    const filteredShopHours = savedShopHours.filter(
+      (shopHour) => shopHour.start_time !== ""
+    );
+
+    onSubmit(
+      formData,
+      socialFormData,
+      menuFormData,
+      formImg,
+      filteredShopHours
+    );
     onClose();
   };
 
@@ -209,8 +272,9 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-[full] ml-[234px] relative max-h-[650px] overflow-y-auto scrollbar-hide">
         <h2 className="text-xl mb-4">
-          {initialData ? "Edit Shop" : "Add Shop"}
+          {initialData?.name ? "Edit Shop" : "Add Shop"}
         </h2>
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Shop Details Section */}
           <ShopDetailsSection
@@ -227,7 +291,20 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
             onSocialChange={handleSocialChange}
             onRemoveSocial={handleRemoveSocial}
           />
-
+          {/* Market Hours Section */}
+          <MarketHoursTable
+            shopId={initialData?.id || 0}
+            initialShopHours={initialShopHours}
+            onShopHoursChange={handleShopHoursChange}
+          />
+          <div className="my-1 ml-4">
+            <p className="mb-1">Shop Image :</p>
+            <ImageUpload
+              formImg={formImg}
+              handleImageChange={handleImageChange}
+              handleRemoveImage={handleRemoveImage}
+            />
+          </div>
           {/* Menu Section */}
           <MenuForm
             menuFormData={menuFormData}

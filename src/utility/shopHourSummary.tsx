@@ -26,7 +26,7 @@ export interface ShopOpenDates {
   start_time: string;
   end_time: string;
   shop: ShopDetail;
-  margetOpenDate: string;
+  marketOpenDate: string;
 }
 
 // Interface สำหรับข้อมูลเมนูร้านค้า (กรณีที่ต้องการรายละเอียดเมนู)
@@ -49,7 +49,7 @@ export interface ShopDetail {
   menus: Menu[]; // เปลี่ยนเป็น array ของเมนู
   name: string;
   photos: Photo[];
-  shop_id: number;
+  id: number;
   shop_open_dates: ShopOpenDates; // ใช้ interface ของเวลาเปิด-ปิด
   social_media: SocialMedia; // ใช้ interface ของ Social Media
   open_status: boolean;

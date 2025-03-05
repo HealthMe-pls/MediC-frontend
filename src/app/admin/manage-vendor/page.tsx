@@ -14,14 +14,19 @@ import AdminLayouts from "@/app/layouts/AdminLayouts";
 
 export default function ManageVendor() {
   const [entrepreneurs, setEntrepreneurs] = useState<Entrepreneur[]>([]);
-  const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
+  const [visiblePasswords, setVisiblePasswords] = useState<
+    Record<string, boolean>
+  >({});
   const [shopCounts, setShopCounts] = useState<Record<string, number>>({});
   const [editingUser, setEditingUser] = useState<Entrepreneur | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<{ id: number; username: string } | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<{
+    id: number;
+    username: string;
+  } | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [visibleModalPassword, setVisibleModalPassword] = useState(false);
-  
+
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -101,15 +106,17 @@ export default function ManageVendor() {
   };
 
   const [searchQuery, setSearchQuery] = useState("");
-  const filteredEntrepreneurs = entrepreneurs.filter(
-    (ent) =>
-      ent.username.toLowerCase().includes(searchQuery.toLowerCase()) 
+  const filteredEntrepreneurs = entrepreneurs.filter((ent) =>
+    ent.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // ** Pagination Logic **
   const totalPages = Math.ceil(entrepreneurs.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = filteredEntrepreneurs.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedData = filteredEntrepreneurs.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   return (
     <AdminLayouts currentPage="Manage Vendor">
@@ -120,16 +127,19 @@ export default function ManageVendor() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{
-            backgroundImage: 'url(/assets/search-rounded.png)', 
-            backgroundRepeat: 'no-repeat', 
-            backgroundPosition: '10px center',
-            paddingLeft: '30px',
+            backgroundImage: "url(/assets/search-rounded.png)",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "10px center",
+            paddingLeft: "30px",
           }}
           className="py-2 pr-64 bg-gray-50 text-[#4C4343] border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4C4343]"
         />
         {/*Add Vendor*/}
         <div className="">
-          <button onClick={() => openModal()} className="bg-blue-100 text-[#4C4343] py-2 px-4 rounded-2xl">
+          <button
+            onClick={() => openModal()}
+            className="bg-blue-100 text-[#4C4343] py-2 px-4 rounded-2xl"
+          >
             + Add Vendor
           </button>
         </div>
@@ -140,9 +150,8 @@ export default function ManageVendor() {
         <table className="w-full border-collapse border-gray-300">
           <thead>
             <tr className="border-b">
-              <th className="p-4">Vendor Name</th>
               <th className="p-4">Username</th>
-              <th className="p-4">Password</th>
+              <th className="p-4">Access Code</th>
               <th className="p-4"># Shops Owned</th>
               <th className="p-4"></th>
             </tr>
@@ -151,19 +160,31 @@ export default function ManageVendor() {
             {paginatedData.map((ent) => (
               <tr key={ent.id} className="text-center">
                 <td className="p-4">{ent.username}</td>
-                <td className="p-4">{ent.username}</td>
                 <td className="p-4 flex items-center justify-center">
                   {visiblePasswords[ent.username] ? ent.password : "••••••"}
-                  <button onClick={() => togglePasswordVisibility(ent.username)} className="ml-2">
-                    {visiblePasswords[ent.username] ? <EyeOffIcon /> : <EyeIcon />}
+                  <button
+                    onClick={() => togglePasswordVisibility(ent.username)}
+                    className="ml-2"
+                  >
+                    {visiblePasswords[ent.username] ? (
+                      <EyeOffIcon />
+                    ) : (
+                      <EyeIcon />
+                    )}
                   </button>
                 </td>
                 <td className="p-4">{shopCounts[ent.id] ?? "Loading..."}</td>
                 <td className="">
-                  <button onClick={() => openModal(ent)} className="bg-gray-300 text-[#4C4343] px-7 py-1 rounded-2xl mx-1">
+                  <button
+                    onClick={() => openModal(ent)}
+                    className="bg-gray-300 text-[#4C4343] px-7 py-1 rounded-2xl mx-1"
+                  >
                     Edit
                   </button>
-                  <button onClick={() => confirmDelete(ent.id, ent.username)} className="bg-red-300 text-[#4C4343] px-7 py-1 rounded-2xl">
+                  <button
+                    onClick={() => confirmDelete(ent.id, ent.username)}
+                    className="bg-red-300 text-[#4C4343] px-7 py-1 rounded-2xl"
+                  >
                     Delete
                   </button>
                 </td>
@@ -174,8 +195,8 @@ export default function ManageVendor() {
 
         {/* Modal */}
         {showModal && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 ">
-              <div className="bg-white p-10 rounded-xl shadow-md ">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 ">
+            <div className="bg-white p-10 rounded-xl shadow-md ">
               <div className="relative">
                 <button
                   type="button"
@@ -189,117 +210,126 @@ export default function ManageVendor() {
                   {isCreating ? "Add Vendor Information" : "Edit User"}
                 </h2>
               </div>
-                {editingUser && (
-                  <form onSubmit={handleSave}>
-                    <div>Login Credential</div>
-                    <div className="m-2 flex items-center">
-                      <label className="">Username : </label>
+              {editingUser && (
+                <form onSubmit={handleSave}>
+                  <div>Login Credential</div>
+                  <div className="m-2 flex items-center">
+                    <label className="">Username : </label>
+                    <input
+                      type="text"
+                      value={editingUser.username}
+                      onChange={(e) =>
+                        setEditingUser({
+                          ...editingUser,
+                          username: e.target.value,
+                        })
+                      }
+                      className="border border-gray-300 p-1 w-80 ml-2 rounded-xl"
+                      required
+                    />
+                  </div>
+                  <div className="m-2 flex items-center">
+                    <label className="">Access Code : </label>
+                    <div className="m-2 flex items-center border border-gray-300 rounded-xl">
                       <input
-                        type="text"
-                        value={editingUser.username}
+                        type={visibleModalPassword ? "text" : "password"}
+                        value={editingUser.password}
                         onChange={(e) =>
                           setEditingUser({
                             ...editingUser,
-                            username: e.target.value,
+                            password: e.target.value,
                           })
                         }
-                        className="border border-gray-300 p-1 w-80 ml-2 rounded-xl"
+                        className="flex-1 p-1 w-72 ml-2 outline-none"
                         required
                       />
-                    </div>
-                    <div className="m-2 flex items-center">
-                      <label className="">Password : </label>
-                      <div className="m-2 flex items-center border border-gray-300 rounded-xl">
-                        <input
-                          type={visibleModalPassword ? "text" : "password"}
-                          value={editingUser.password}
-                          onChange={(e) =>
-                            setEditingUser({
-                              ...editingUser,
-                              password: e.target.value,
-                            })
-                          }
-                          className="flex-1 p-1 w-72 ml-2 outline-none"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={toggleModalPasswordVisibility}
-                          className="p-1 text-gray-500"
-                        >
-                          {visibleModalPassword ? <EyeOffIcon /> : <EyeIcon />}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-center">
                       <button
-                        type="submit"
-                        className="bg-blue-200 text-[#4C4343] px-6 py-1 rounded-full shadow-md "
+                        type="button"
+                        onClick={toggleModalPasswordVisibility}
+                        className="p-1 text-gray-500"
                       >
-                        Save
+                        {visibleModalPassword ? <EyeOffIcon /> : <EyeIcon />}
                       </button>
                     </div>
-                  </form>
-                )}
-              </div>
-            </div>
-          )}
+                  </div>
 
-          {/* Delete Confirmation Modal */}
-          {showDeleteConfirm && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20">
-              <div className="bg-white py-7 px-20 rounded-xl shadow-md">
-                <h2 className="flex justify-center mb-2 text-lg font-bold">Remove this vendor?</h2>
-                <p className="flex justify-center">
-                  This action cannot be undone.
-                  {/*<strong>{showDeleteConfirm.username}</strong>?*/}
-                </p>
-                <div className="flex justify-center m-4">
-                  <button
-                    onClick={() => setShowDeleteConfirm(null)}
-                    className="bg-gray-200 py-2 px-4 mr-20 text-gray-600 rounded-full"
-                  >
-                    No, Cancel
-                  </button>
-                  <button
-                    onClick={handleDelete}
-                    className="bg-red-500 text-white py-2 px-4 rounded-full"
-                  >
-                    Yes, Confirm
-                  </button>
-                </div>
+                  <div className="flex justify-center">
+                    <button
+                      type="submit"
+                      className="bg-blue-200 text-[#4C4343] px-6 py-1 rounded-full shadow-md "
+                    >
+                      Save
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20">
+            <div className="bg-white py-7 px-20 rounded-xl shadow-md">
+              <h2 className="flex justify-center mb-2 text-lg font-bold">
+                Remove this vendor?
+              </h2>
+              <p className="flex justify-center">
+                This action cannot be undone.
+                {/*<strong>{showDeleteConfirm.username}</strong>?*/}
+              </p>
+              <div className="flex justify-center m-4">
+                <button
+                  onClick={() => setShowDeleteConfirm(null)}
+                  className="bg-gray-200 py-2 px-4 mr-20 text-gray-600 rounded-full"
+                >
+                  No, Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="bg-red-500 text-white py-2 px-4 rounded-full"
+                >
+                  Yes, Confirm
+                </button>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
         {/* Pagination Controls */}
-          <div className="flex justify-center mt-16 space-x-4">
-            <button
-              className="px-3 py-1 rounded text-[#4C4343]"
-              onClick={() => setCurrentPage((prev) => (prev === 1 ? totalPages : prev - 1))}
-            >
-              {"<"}
-            </button>
-            
-            {[...Array(totalPages)].map((_, i) => (
-              <button
-                key={i + 1}
-                className={`px-3 py-1 rounded-full ${currentPage === i + 1 ? "bg-gray-300 text-[#4C4343]" : "text-[#4C4343]"}`}
-                onClick={() => setCurrentPage(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
-            
-            <button
-              className="px-3 py-1 rounded text-[#4C4343]"
-              onClick={() => setCurrentPage((prev) => (prev === totalPages ? 1 : prev + 1))}
-            >
-              {">"}
-            </button>
-          </div>
+        <div className="flex justify-center mt-16 space-x-4">
+          <button
+            className="px-3 py-1 rounded text-[#4C4343]"
+            onClick={() =>
+              setCurrentPage((prev) => (prev === 1 ? totalPages : prev - 1))
+            }
+          >
+            {"<"}
+          </button>
 
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i + 1}
+              className={`px-3 py-1 rounded-full ${
+                currentPage === i + 1
+                  ? "bg-gray-300 text-[#4C4343]"
+                  : "text-[#4C4343]"
+              }`}
+              onClick={() => setCurrentPage(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          <button
+            className="px-3 py-1 rounded text-[#4C4343]"
+            onClick={() =>
+              setCurrentPage((prev) => (prev === totalPages ? 1 : prev + 1))
+            }
+          >
+            {">"}
+          </button>
+        </div>
       </div>
     </AdminLayouts>
   );

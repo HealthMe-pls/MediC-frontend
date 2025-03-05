@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  ShopFormData,
-  SocialFormData,
-  MenuFormData,
-} from "@/app/components/types";
-import {
   updateShopByAdmin,
   fetchShopDetail,
   fetchShopById,
@@ -16,10 +11,28 @@ import {
 } from "@/utility/social";
 import ShopFormModal from "./ShopFormModal";
 import {
+  ShopFormData,
+  SocialFormData,
+  MenuFormData,
+  PhotoForm,
+  ShopOpenDates,
+} from "./types";
+import {
   createMenuByAdmin,
   deleteMenu,
   updateMenuByAdmin,
 } from "@/utility/menu";
+import {
+  uploadPhotoMenuByAdmin,
+  deletePhoto,
+  uploadPhotoShopByAdmin,
+} from "@/utility/photo";
+import { fetcMarketOpenDatesById } from "@/utility/ManageMarketHours";
+import {
+  createShopTime,
+  deleteShopTime,
+  updateShopTime,
+} from "@/utility/manageshophour";
 
 interface ShopTableProps {
   blocks: Record<
@@ -47,6 +60,10 @@ const ShopTable: React.FC<ShopTableProps> = ({
     null
   );
   const [editMenuData, setEditMenuData] = useState<MenuFormData[] | null>(null);
+  const [editPhotoData, setEditPhotoData] = useState<PhotoForm | null>(null);
+  const [editTimeData, setEditTimeData] = useState<ShopOpenDates[] | null>(
+    null
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
@@ -61,6 +78,21 @@ const ShopTable: React.FC<ShopTableProps> = ({
             shop_category_id: shop.category_id,
             description: shop.description || "",
             entrepreneur_id: shop.entrepreneur_id,
+          };
+
+          const newPhotoData: PhotoForm = {
+            cover_id: shop.photos?.[0]?.photo_id || 0,
+            cover_img: shop.photos?.[0]
+              ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[0]?.pathfile}`
+              : "",
+            sec_id: shop.photos?.[1]?.photo_id || 0,
+            sec_img: shop.photos?.[1]
+              ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[1]?.pathfile}`
+              : "",
+            thr_id: shop.photos?.[2]?.photo_id || 0,
+            thr_img: shop.photos?.[2]
+              ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[2]?.pathfile}`
+              : "",
           };
 
           const newSocialData: SocialFormData[] = shop.social_media
@@ -80,6 +112,8 @@ const ShopTable: React.FC<ShopTableProps> = ({
                 .filter((menu) => menu.is_public) // กรองเฉพาะเมนูที่ isPublic เป็น true
                 .map((menu) => ({
                   id: menu.id,
+                  idPhoto:
+                    menu.photos?.length > 0 ? menu.photos[0].photo_id : 0,
                   img:
                     menu.photos?.length > 0
                       ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0].pathfile}`
@@ -91,11 +125,26 @@ const ShopTable: React.FC<ShopTableProps> = ({
                 }))
             : [];
 
+          const newTimeData: ShopOpenDates[] = shop.shop_open_dates
+            ? shop.shop_open_dates.map((time) => ({
+                id: time.id,
+                start_time: time.start_time,
+                end_time: time.end_time,
+                shop_id: shop.shop_id,
+                market_open_date_id: time.market_open_date_id,
+              }))
+            : [];
+
           // ป้องกันการตั้งค่า state ถ้าข้อมูลไม่เปลี่ยน
           setEditShopData((prev) =>
             JSON.stringify(prev) === JSON.stringify(newShopData)
               ? prev
               : newShopData
+          );
+          setEditPhotoData((prev) =>
+            JSON.stringify(prev) === JSON.stringify(newShopData)
+              ? prev
+              : newPhotoData
           );
           setEditSocialData((prev) =>
             JSON.stringify(prev) === JSON.stringify(newSocialData)
@@ -106,6 +155,11 @@ const ShopTable: React.FC<ShopTableProps> = ({
             JSON.stringify(prev) === JSON.stringify(newMenuData)
               ? prev
               : newMenuData
+          );
+          setEditTimeData((prev) =>
+            JSON.stringify(prev) === JSON.stringify(newTimeData)
+              ? prev
+              : newTimeData
           );
         }
       } catch (error) {
@@ -195,6 +249,8 @@ const ShopTable: React.FC<ShopTableProps> = ({
         if (menu.id) {
           console.log("delete menuid : " + menu.id);
           await deleteMenu(menu.id);
+          // const response_menu = await deleteMenu(menu.id);
+          // console.log("response from del menu" + response_menu);
         }
       }
 
@@ -202,7 +258,8 @@ const ShopTable: React.FC<ShopTableProps> = ({
         editMenuData?.some(
           (oldMenu) =>
             oldMenu.id === newMenu.id &&
-            (oldMenu.product_name !== newMenu.product_name ||
+            (newMenu.img instanceof File ||
+              oldMenu.product_name !== newMenu.product_name ||
               oldMenu.product_description !== newMenu.product_description ||
               oldMenu.price !== newMenu.price) // ต้องมีการเปลี่ยนแปลงจริง ๆ
         )
@@ -217,6 +274,12 @@ const ShopTable: React.FC<ShopTableProps> = ({
         };
         console.log("update menuid : " + menu.id);
         await updateMenuByAdmin(menu.id!, upMenu);
+
+        if (menu.img instanceof File && menu.id) {
+          console.log(menu.idPhoto);
+          if (menu.idPhoto) await deletePhoto(menu.idPhoto);
+          await uploadPhotoMenuByAdmin(menu.img, menu.id);
+        }
       }
 
       const newMenus = menuData.filter(
@@ -231,6 +294,110 @@ const ShopTable: React.FC<ShopTableProps> = ({
           shop_id: shopId,
         };
         await createMenuByAdmin(createMenu);
+        const shopDe = await fetchShopById(shopId);
+        const createdmenu = shopDe.menus.find(
+          (m) => menu.product_name === m.product_name
+        );
+        if (createdmenu && menu.img && menu.img instanceof File) {
+          await uploadPhotoMenuByAdmin(menu.img, createdmenu?.id);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating social media:", error);
+    }
+  };
+
+  const handlePhotoUpdate = async (shopId: number, photoData: PhotoForm) => {
+    if (editPhotoData) {
+      if (editPhotoData?.cover_img === "") {
+        if (photoData.cover_img instanceof File)
+          await uploadPhotoShopByAdmin(photoData.cover_img, shopId);
+      } else {
+        if (photoData.cover_img instanceof File) {
+          console.log(editPhotoData.cover_id);
+          await deletePhoto(editPhotoData.cover_id);
+          await uploadPhotoShopByAdmin(photoData.cover_img, shopId);
+        }
+        if (photoData.cover_img === "") {
+          console.log(editPhotoData.cover_id);
+          await deletePhoto(editPhotoData.cover_id);
+        }
+      }
+      if (editPhotoData?.sec_img === "") {
+        if (photoData.sec_img instanceof File)
+          await uploadPhotoShopByAdmin(photoData.sec_img, shopId);
+      } else {
+        if (photoData.sec_img instanceof File) {
+          console.log(editPhotoData.sec_id);
+          await deletePhoto(editPhotoData.sec_id);
+          await uploadPhotoShopByAdmin(photoData.sec_img, shopId);
+        }
+        if (photoData.sec_img === "") {
+          console.log(editPhotoData.sec_id);
+          await deletePhoto(editPhotoData.sec_id);
+        }
+      }
+      if (editPhotoData?.thr_img === "") {
+        if (photoData.thr_img instanceof File)
+          await uploadPhotoShopByAdmin(photoData.thr_img, shopId);
+      } else {
+        if (photoData.thr_img instanceof File) {
+          console.log(editPhotoData.thr_id);
+          await deletePhoto(editPhotoData.thr_id);
+          await uploadPhotoShopByAdmin(photoData.thr_img, shopId);
+        }
+        if (photoData.thr_img === "") {
+          console.log(editPhotoData.thr_id);
+          await deletePhoto(editPhotoData.thr_id);
+        }
+      }
+    }
+  };
+
+  const handleTimeUpdate = async (
+    shopId: number,
+    shopHours: ShopOpenDates[]
+  ) => {
+    try {
+      const deletedTimes = editTimeData?.filter(
+        (oldTime) => !shopHours.some((newTime) => newTime.id === oldTime.id)
+      );
+
+      for (const time of deletedTimes || []) {
+        if (time.id) {
+          console.log("delete shop time id : " + time.id);
+          await deleteShopTime(time.id);
+        }
+      }
+
+      const updatedTime = shopHours.filter((newTime) =>
+        editTimeData?.some(
+          (oldTime) =>
+            oldTime.id === newTime.id &&
+            (oldTime.start_time !== newTime.start_time ||
+              oldTime.end_time !== newTime.end_time ||
+              oldTime.market_open_date_id !== newTime.market_open_date_id) // ต้องมีการเปลี่ยนแปลงจริง ๆ
+        )
+      );
+
+      for (const time of updatedTime) {
+        console.log("update shop time id : " + time.id);
+        await updateShopTime(time.id!, time);
+      }
+
+      const newTime = shopHours.filter(
+        (newTime) => !editTimeData?.some((oldTime) => oldTime.id === newTime.id)
+      );
+
+      for (const time of newTime) {
+        const createTime = {
+          start_time: time.start_time,
+          end_time: time.end_time,
+          market_open_date_id: time.market_open_date_id,
+          shop_id: shopId,
+        };
+        console.log(createTime);
+        await createShopTime(createTime);
       }
     } catch (error) {
       console.error("Error updating social media:", error);
@@ -240,7 +407,9 @@ const ShopTable: React.FC<ShopTableProps> = ({
   const handleSubmit = async (
     formData: ShopFormData,
     socialData: SocialFormData[],
-    menuData: MenuFormData[]
+    menuData: MenuFormData[],
+    photoData: PhotoForm,
+    shopHours: ShopOpenDates[]
   ) => {
     if (!editShopData || !editShopData.id) {
       console.error("Shop ID is missing!");
@@ -254,8 +423,27 @@ const ShopTable: React.FC<ShopTableProps> = ({
 
       // จัดการ Social Data
       await handleSocialUpdate(editShopData.id, socialData);
-
+      await handlePhotoUpdate(editShopData.id, photoData);
       await handleMenuUpdate(editShopData.id, menuData);
+
+      const formattedShopHours = await Promise.all(
+        shopHours.map(async (item) => {
+          const date = await fetcMarketOpenDatesById(item.market_open_date_id);
+          const newDate = new Date(date.date);
+          newDate.setDate(newDate.getDate() + 1);
+
+          const dateformatted = newDate.toISOString().split("T")[0];
+          return {
+            ...item,
+            start_time: `${dateformatted}T${item.start_time}+07:00`,
+            end_time: `${dateformatted}T${item.end_time}+07:00`,
+          };
+        })
+      );
+
+      console.log(formattedShopHours);
+
+      await handleTimeUpdate(editShopData.id, formattedShopHours);
 
       setIsModalOpen(false);
     } catch (error) {
@@ -425,6 +613,8 @@ const ShopTable: React.FC<ShopTableProps> = ({
         initialData={editShopData || undefined}
         initialSocialData={editSocialData || []}
         initialMenuData={editMenuData || undefined}
+        initialPhotoData={editPhotoData || undefined}
+        initialShopHours={editTimeData || undefined}
       />
     </div>
   );

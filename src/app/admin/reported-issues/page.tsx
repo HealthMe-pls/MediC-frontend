@@ -1,6 +1,6 @@
 "use client";
 
-
+import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import {
   fetchNotifications,
@@ -9,6 +9,7 @@ import {
 } from "@/utility/notifications";
 import React from "react";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
+import Trash from "../../../../public/assets/Trash.png";
 
 const ReportedIssuesPage = () => {
   const [notifications, setNotifications] = useState<Noti[]>([]);
@@ -99,7 +100,7 @@ const ReportedIssuesPage = () => {
   const toggleSelectAll = () => {
     if (selectedNotifications.length === filteredNotifications.length) {
       setSelectedNotifications([]);
-    }else if (selectedNotifications.length > 0) {
+    } else if (selectedNotifications.length > 0) {
       setSelectedNotifications([]);
     } else {
       setSelectedNotifications(filteredNotifications.map((noti) => noti.id));
@@ -125,124 +126,131 @@ const ReportedIssuesPage = () => {
   return (
     <AdminLayouts currentPage="Reported Issues">
       <div className="text-[#4C4343]">
-      <div className="mb-6 flex items-center gap-4">
-        <input
-          type="text"
-          placeholder="Search by username..."
-          value={searchTerm}
-          onChange={handleSearch}
-          style={{
-            backgroundImage: 'url(/assets/search-rounded.png)', 
-            backgroundRepeat: 'no-repeat', 
-            backgroundPosition: '10px center',
-            paddingLeft: '30px',
-          }}
-          className="py-2 pr-64 ml-8 mt-6 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      {loading && <p>Loading notifications...</p>}
-      {error && <p className="text-red-600">Error: {error}</p>}
-
-      <div className="space-y-4">
-        <div className="flex items-center ml-9 gap-4">
-          {filteredNotifications.length > 0 && (
-            <>
-              <input
-                ref={selectAllRef}
-                type="checkbox"
-                onChange={toggleSelectAll}
-                className="w-5 h-5 border-2 border-gray-300 rounded-sm bg-white accent-[#4C4343]"
-              />
-              <p>Select All</p>
-            </>
-          )}
-          {selectedNotifications.length > 0 && (
-            <button
-              onClick={confirmDeleteSelected}
-              className="p-2 rounded-lg hover:bg-red-200 transition "
-            >
-              <img 
-                src="/assets/trash.png" 
-                alt="Delete" 
-                className="w-5 h-5 " 
-              />
-            </button>
-          )}
+        <div className="mb-6 flex items-center gap-4">
+          <input
+            type="text"
+            placeholder="Search by username..."
+            value={searchTerm}
+            onChange={handleSearch}
+            style={{
+              backgroundImage: "url(/assets/search-rounded.png)",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "10px center",
+              paddingLeft: "30px",
+            }}
+            className="py-2 pr-64 ml-8 mt-6 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
 
-        {filteredNotifications.length > 0
-          ? filteredNotifications.map((notification) => (
-              <div key={notification.id} className="p-4 flex items-start gap-4">
+        {loading && <p>Loading notifications...</p>}
+        {error && <p className="text-red-600">Error: {error}</p>}
+
+        <div className="space-y-4">
+          <div className="flex items-center ml-9 gap-4">
+            {filteredNotifications.length > 0 && (
+              <>
                 <input
+                  ref={selectAllRef}
                   type="checkbox"
-                  checked={selectedNotifications.includes(notification.id)}
-                  onChange={() => toggleSelection(notification.id)}
-                  className="w-5 h-5 mt-1 ml-5 border-2 border-gray-300 rounded-sm bg-white accent-[#4C4343]"
+                  onChange={toggleSelectAll}
+                  className="w-5 h-5 border-2 border-gray-300 rounded-sm bg-white accent-[#4C4343]"
                 />
+                <p>Select All</p>
+              </>
+            )}
+            {selectedNotifications.length > 0 && (
+              <button
+                onClick={confirmDeleteSelected}
+                className="p-2 rounded-lg hover:bg-red-200 transition "
+              >
+                <Image src={Trash} alt="Delete" width={20} height={20} />
+                {/* <img
+                  src="/assets/Trash.png"
+                  alt="Delete"
+                  className="w-5 h-5 "
+                /> */}
+              </button>
+            )}
+          </div>
+
+          {filteredNotifications.length > 0
+            ? filteredNotifications.map((notification) => (
                 <div
-                  className={`border border-gray-300 rounded-lg p-4 flex items-start gap-4 w-full transition mr-16 ${
-                    selectedNotifications.includes(notification.id)
-                      ? "bg-gray-200"
-                      : "bg-white"
-                  }`}
+                  key={notification.id}
+                  className="p-4 flex items-start gap-4"
                 >
-                  <div className="flex-1">
-                    <h3 className="font-semibold">
-                      {notification.from_username}
-                    </h3>
-                    <p className="mt-1">
-                      <strong>Subject:</strong> {notification.problem || "N/A"}
-                    </p>
-                    <p className="mt-1">
-                      <strong>Detail:</strong> {notification.detail || "N/A"}
-                    </p>
-                    <p className="mt-1">
-                      <strong>Contacted at :</strong>{" "}
-                      {notification.contact_to_en || "N/A"}
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => confirmDelete(notification.id)}
-                    className="text-gray-500 hover:text-gray-700"
+                  <input
+                    type="checkbox"
+                    checked={selectedNotifications.includes(notification.id)}
+                    onChange={() => toggleSelection(notification.id)}
+                    className="w-5 h-5 mt-1 ml-5 border-2 border-gray-300 rounded-sm bg-white accent-[#4C4343]"
+                  />
+                  <div
+                    className={`border border-gray-300 rounded-lg p-4 flex items-start gap-4 w-full transition mr-16 ${
+                      selectedNotifications.includes(notification.id)
+                        ? "bg-gray-200"
+                        : "bg-white"
+                    }`}
                   >
-                    ✖
-                  </button>
-                </div>
-              </div>
-            ))
-          : !loading && <p>No notifications found.</p>}
-      </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold">
+                        {notification.from_username}
+                      </h3>
+                      <p className="mt-1">
+                        <strong>Subject:</strong>{" "}
+                        {notification.problem || "N/A"}
+                      </p>
+                      <p className="mt-1">
+                        <strong>Detail:</strong> {notification.detail || "N/A"}
+                      </p>
+                      <p className="mt-1">
+                        <strong>Contacted at :</strong>{" "}
+                        {notification.contact_to_en || "N/A"}
+                      </p>
+                    </div>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20">
-          <div className="bg-white py-8 px-16 rounded-xl shadow-lg">
-          <p className="text-lg font-semibold flex items-center justify-center">
-            {deleteMultiple
-              ? selectedNotifications.length === notifications.length
-                ? "Remove all reported issue?"
-                : `Remove ${selectedNotifications.length} reported issue?`
-              : "Remove this reported issue?"}
-          </p>
-          <p className="flex items-center justify-center">This action cannot be undone.</p>
-            <div className="mt-4 flex justify-end gap-16">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-gray-200 rounded-full"
-              >
-                No, Cancel
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-4 py-2 bg-red-200 text-black rounded-full hover:bg-red-600"
-              >
-                Yes, Delete
-              </button>
+                    <button
+                      onClick={() => confirmDelete(notification.id)}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      ✖
+                    </button>
+                  </div>
+                </div>
+              ))
+            : !loading && <p>No notifications found.</p>}
+        </div>
+
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20">
+            <div className="bg-white py-8 px-16 rounded-xl shadow-lg">
+              <p className="text-lg font-semibold flex items-center justify-center">
+                {deleteMultiple
+                  ? selectedNotifications.length === notifications.length
+                    ? "Remove all reported issue?"
+                    : `Remove ${selectedNotifications.length} reported issue?`
+                  : "Remove this reported issue?"}
+              </p>
+              <p className="flex items-center justify-center">
+                This action cannot be undone.
+              </p>
+              <div className="mt-4 flex justify-end gap-16">
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 bg-gray-200 rounded-full"
+                >
+                  No, Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="px-4 py-2 bg-red-200 text-black rounded-full hover:bg-red-600"
+                >
+                  Yes, Delete
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
     </AdminLayouts>
   );

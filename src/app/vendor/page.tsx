@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { getShopDetailsByLoggedInEntrepreneur, TempShopEn } from "@/utility/entrepreneurLogin";
 import { logoutEntrepreneur } from "@/utility/login"; 
 import { useRouter } from "next/navigation"; 
@@ -11,26 +12,33 @@ const Dashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);  
   const router = useRouter(); 
 
+
   useEffect(() => {
     const token = localStorage.getItem("authToken");
 
     if (!token) {
+
       setIsLoggedIn(false);  
       router.push("/login");  
+
     } else {
       const fetchShopData = async () => {
         try {
-          const response = await getShopDetailsByLoggedInEntrepreneur();  
-          
+
+          const response = await getShopDetailsByLoggedInEntrepreneur(); // Pass token for authentication
+
           if ("error" in response) {
             setError(response.error);
-            setShopData([]);  
+            setShopData([]); // Ensure it's an empty array, not null
+
           } else {
             setShopData(response.temp_shops);
           }
         } catch (err) {
-          setError("Failed to load shop data");
-          setShopData([]);  
+
+          setError(`Failed to load shop data ${err}`);
+          setShopData([]); // Ensure it's an empty array
+
         }
       };
 
@@ -46,7 +54,11 @@ const Dashboard = () => {
         await logoutEntrepreneur(token);
         setIsLoggedIn(false);
         localStorage.removeItem("authToken");
-        router.push("/login");  
+
+
+        // Optionally, redirect the user to the login page after logout
+        router.push("/login"); // Navigate to the login page after successful logout
+
       } else {
         console.error("No token found, cannot log out.");
         router.push("/login");
@@ -119,6 +131,7 @@ const Dashboard = () => {
                       ? shop.time.map((date, index) => <span key={index}>{date.start_time} - {date.end_time} | </span>)
                       : "No deleted times available"}
                   </li>
+
                 </ul>
               </li>
             ))}
