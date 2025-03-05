@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
 import { ShopDetail, fetchShopById } from "@/utility/shopDetail";
-import { format, parseISO, addDays, isWithinInterval, subDays  } from "date-fns";
+import { format, addDays, subDays  } from "date-fns";
 // import Link from "next/link";
 // import { se, th } from "date-fns/locale";
 import CardMenuSL from "./CardMenuSL";
 import { useRouter } from "next/navigation";
+import { isAfter, isBefore } from "date-fns";
 // import { set } from "date-fns";
 
 interface BlockProps {
@@ -13,12 +14,11 @@ interface BlockProps {
 }
 
 const formatDate = (isoString: string): string => {
-  const date = parseISO(isoString);
+  const date = new Date(isoString); // ใช้ new Date() แทน parseISO
   return format(date, "dd/MM/yyyy EEEE");
 };
-
 const formatTime = (isoString: string): string => {
-  const date = parseISO(isoString);
+  const date = new Date(isoString); // ใช้ new Date() แทน parseISO
   return format(date, "HH:mm");
 };
 
@@ -52,7 +52,7 @@ const Shopside: React.FC<BlockProps> = ({ blockName }) => {
 
   const filteredDates = selectedShopDetail?.shop_open_dates
   .filter((date) => {
-    const startTime = parseISO(date.start_time);
+    const startTime = new Date(date.start_time); 
     const now = new Date();
     const thirtyDaysFromNow = addDays(now, 30);
     const oneDayBeforeNow = subDays(now, 1);
@@ -60,8 +60,8 @@ const Shopside: React.FC<BlockProps> = ({ blockName }) => {
     return startTime >= oneDayBeforeNow && startTime <= thirtyDaysFromNow;
   })
   .sort((a, b) => {
-    const startTimeA = parseISO(a.start_time);
-    const startTimeB = parseISO(b.start_time);
+    const startTimeA = new Date(a.start_time); // ใช้ new Date() แทน parseISO
+    const startTimeB = new Date(b.start_time); // ใช้ new Date() แทน parseISO
 
     return startTimeA.getTime() - startTimeB.getTime();
   });
@@ -75,10 +75,10 @@ const Shopside: React.FC<BlockProps> = ({ blockName }) => {
     const now = new Date();
   
     const isOpen = filteredDates.some((date) => {
-      const startTime = parseISO(date.start_time);
-      const endTime = parseISO(date.end_time);
+      const startTime = new Date(date.start_time);
+      const endTime = new Date(date.end_time);
       
-      return isWithinInterval(now, { start: startTime, end: endTime });
+      return isAfter(now, startTime) && isBefore(now, endTime);
     });
   
     return isOpen ? true : false;

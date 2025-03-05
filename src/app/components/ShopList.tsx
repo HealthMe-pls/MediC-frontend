@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
 import { fetchShopById, ShopDetail } from "@/utility/shopDetail";
-import { format } from "date-fns";
+import { format, addDays, subDays  } from "date-fns";
 // import Link from "next/link";
 // import { th } from "date-fns/locale";
 import CardMenuSL from "./CardMenuSL";
 import { useRouter } from "next/navigation";
+import { isAfter, isBefore } from "date-fns";
 
 interface CateID {
   label: string;
@@ -147,6 +148,42 @@ const Shoplist: React.FC<CateID> = ({
     }
   };
 
+  const filteredDates = selectedShopDetail?.shop_open_dates
+  .filter((date) => {
+    const startTime = new Date(date.start_time); // ใช้ new Date() แทน parseISO
+    const now = new Date();
+    const thirtyDaysFromNow = addDays(now, 30);
+    const oneDayBeforeNow = subDays(now, 1);
+
+    return startTime >= oneDayBeforeNow && startTime <= thirtyDaysFromNow;
+  })
+  .sort((a, b) => {
+    const startTimeA = new Date(a.start_time); // ใช้ new Date() แทน parseISO
+    const startTimeB = new Date(b.start_time); // ใช้ new Date() แทน parseISO
+
+    return startTimeA.getTime() - startTimeB.getTime();
+  });
+
+const checkShopOpenStatus = () => {
+  if (!selectedShopDetail?.open_status || !filteredDates || filteredDates.length === 0) {
+    return false;
+  }
+
+  const now = new Date();
+
+  const isOpen = filteredDates.some((date) => {
+    const startTime = new Date(date.start_time); // ใช้ new Date() แทน parseISO
+    const endTime = new Date(date.end_time); // ใช้ new Date() แทน parseISO
+
+    return isAfter(now, startTime) && isBefore(now, endTime);
+  });
+
+  return isOpen ? true : false;
+};
+
+  const shopStatus = checkShopOpenStatus();
+
+
   return (
     <div className="p-4 font-lexend text-[#4C4343]">
       {/* Dropdown Block */}
@@ -267,7 +304,7 @@ const Shoplist: React.FC<CateID> = ({
                 {selectedShopDetail?.name ? selectedShopDetail.name : "No shop"}
               </h3>
               <p className="text-green-500 font-light text-[14px]">
-                {selectedShopDetail?.open_status ? (
+                {shopStatus ? (
                   <svg
                     width="73"
                     height="23"
@@ -366,20 +403,19 @@ const Shoplist: React.FC<CateID> = ({
                 </svg>
                 Business Hours
               </p>
-              {selectedShopDetail?.shop_open_dates ? (
-                <ul>
-                  {Array.isArray(selectedShopDetail.shop_open_dates) &&
-                    selectedShopDetail.shop_open_dates.map((date, index) => (
-                      <li key={index} className="text-[14px] font-light">
-                        {`${formatDate(date.start_time)} ${formatTime(
-                          date.start_time
-                        )} - ${formatTime(date.end_time)}`}
-                      </li>
-                    ))}
-                </ul>
-              ) : (
-                <p className="text-[14px] font-light">Not available</p>
-              )}
+              {filteredDates && filteredDates.length > 0 ? (
+              <ul>
+                {filteredDates.map((date, index) => (
+                  <li key={index} className="text-[14px] font-light">
+                    {`${formatDate(date.start_time)} ${formatTime(
+                      date.start_time
+                    )} - ${formatTime(date.end_time)}`}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-[14px] font-light">Not available</p>
+            )}
             </div>
 
             <div className="mt-4">
