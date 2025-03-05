@@ -4,6 +4,7 @@ import { fetchTempShop, TempShop } from "./pendingApproval";
 import PendingCard from "./pending-card";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 import SearchPending from "./search-pending";
+// import { te } from "date-fns/locale";
 
 export default function PendingApprovalPage() {
   const [tempShops, setTempShops] = useState<TempShop[]>([]);
@@ -38,14 +39,9 @@ export default function PendingApprovalPage() {
       <AdminLayouts currentPage="Pending Approval">
         <div className=" p-4 flex flex-col gap-2 ">
           <SearchPending />
-
           <div className="p-8  grid grid-cols-1 gap-4 max-h-[650px] overflow-y-auto scrollbar-hide">
             {tempShops.map((shop) => (
-              <PendingCard
-                key={shop.id}
-                name={shop.name}
-                id={shop.id.toString()}
-              />
+              <PendingCard key={shop.id} tempshop={shop} />
             ))}
           </div>
         </div>

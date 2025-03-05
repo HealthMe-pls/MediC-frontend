@@ -12,7 +12,7 @@ import MarketHoursTable from "./MarketHoursTable";
 import { ShopOpenDates } from "./types";
 import { it } from "date-fns/locale";
 
-interface ShopFormModalProps {
+export interface ShopFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (

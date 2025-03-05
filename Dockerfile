@@ -64,7 +64,8 @@ ENV NODE_ENV=production
 # USER node
 
 USER root
-RUN mkdir -p /usr/src/app/.next && chmod -R 755 /usr/src/app/.next
+
+RUN mkdir -p /usr/src/app/.next && chmod -R 755 /usr/src/app/.next && chmod -R 777 /usr/src/app/.next
 USER node
 
 # Copy package.json so that package manager commands can be used.
