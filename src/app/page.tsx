@@ -221,9 +221,9 @@ export default function Home() {
                 />
               </div>
             </div>
-            <div className="w-full top-24">
+            <div className="w-full pt-16">
               {showGif && !selectedBlock ? (
-                <div className="relative w-full z-index-1">
+                <div className="relative  w-full z-index-1">
                   <Image
                     src={Mapguide}
                     alt="GIF"
