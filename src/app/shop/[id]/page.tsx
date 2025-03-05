@@ -238,7 +238,7 @@ const ShopPage = () => {
                     <p className=" font-regular text-[21px] ">
                       {shopDetail.name}
                     </p>
-                    <p className="font-light">{shopDetail.category}</p>
+                    <p className="font-light mb-2">{shopDetail.category}</p>
                   </div>
                   <p className="text-green-500 font-light text-[14px]">
                     {shopDetail?.open_status ? (
