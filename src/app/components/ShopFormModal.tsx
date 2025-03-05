@@ -10,7 +10,6 @@ import MenuForm from "./MenuForm";
 import ImageUpload from "./ImageUpload";
 import MarketHoursTable from "./MarketHoursTable";
 import { ShopOpenDates } from "./types";
-import { it } from "date-fns/locale";
 
 export interface ShopFormModalProps {
   isOpen: boolean;
@@ -71,9 +70,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     if (initialPhotoData) setFormImg(initialPhotoData);
   }, [initialPhotoData]);
 
-  useEffect(() => {
-    console.log(formImg);
-  }, [formImg]);
+
 
   const handleAddSocial = () => {
     setSocialFormData([

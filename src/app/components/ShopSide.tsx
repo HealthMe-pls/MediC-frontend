@@ -8,7 +8,7 @@ import CardMenuSL from "./CardMenuSL";
 import { useRouter } from "next/navigation";
 // import { set } from "date-fns";
 
-interface block {
+interface BlockProps {
   blockName: string;
 }
 

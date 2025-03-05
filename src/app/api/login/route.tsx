@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
     // You can handle specific error codes or just return a general error message
     return NextResponse.json(
-      { message: "Login failed" },
+      { message: "Login failed"},
       { status: 500 }
     );
   }

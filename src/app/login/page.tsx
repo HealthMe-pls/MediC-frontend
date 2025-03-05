@@ -34,7 +34,7 @@ const Login = () => {
   };
 
   const handleForgotPassword = () => {
-    alert("Forgot password feature is not implemented yet.");
+    router.push("/vendor/contactToAdmin");
   };
 
   return (

@@ -389,6 +389,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
       console.error("Error updating social media:", error);
     }
   };
+  
 
   const handleSubmit = async (
     formData: ShopFormData,

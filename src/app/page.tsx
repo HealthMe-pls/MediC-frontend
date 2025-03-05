@@ -59,16 +59,18 @@ export default function Home() {
   useEffect(() => {
     if (matchShopID !== 0) {
       setTimeout(() => {
+        // เลื่อนแค่ shopListRef เมื่อ matchShopID เปลี่ยน
         shopListRef.current?.scrollIntoView({
           behavior: "smooth",
           block: "start",
           inline: "nearest",
         });
 
-        window.scrollTo({
-          top: 850,
-          behavior: "smooth",
-        });
+        // ลบ window.scrollTo ออกเพื่อไม่ให้หน้าจอเลื่อน
+        // window.scrollTo({
+        //   top: 850,
+        //   behavior: "smooth",
+        // });
       }, 300);
     }
   }, [matchShopID]);
@@ -105,6 +107,9 @@ export default function Home() {
   }, [selectedCate, matchShopID]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    // ป้องกันการรีเฟรชหน้าและการเลื่อน
+    event.preventDefault();
+    event.stopPropagation();
     const newSelectedCate = Number(event.target.value);
     setSelectedCate(newSelectedCate);
     setMatchShopID(0);
@@ -114,6 +119,19 @@ export default function Home() {
     setSelectedCate(categoryId);
     setMatchShopID(0);
   };
+
+  // ป้องกันไม่ให้เกิดการเลื่อนหน้าจอโดยอัตโนมัติ
+  const handleFocus = (event: React.FocusEvent<HTMLSelectElement>) => {
+    // ตั้งค่า event.preventDefault() เพื่อหยุดการเลื่อนหน้าเมื่อเลือก
+    event.preventDefault();
+  };
+
+  useEffect(() => {
+    // เมื่อเลือก category แล้ว จะทำให้หน้าจอไม่เลื่อน
+    if (selectedCate !== 0) {
+      window.scrollTo(0, 0); // รีเซ็ตตำแหน่งของหน้าจอไปที่ด้านบน
+    }
+  }, [selectedCate]); // ฟังก์ชันนี้จะทำงานเมื่อ selectedCate เปลี่ยนแปลง
 
   useEffect(() => {
     if (matchShopID !== 0) {
@@ -142,7 +160,7 @@ export default function Home() {
           Market Map
         </h2>
         <div className="mobile-view">
-          <div className="mb-6 mt-2 ">
+          <div className="mb-6 mt-2 z-[9999]">
             <div>
               <SearchBar
                 setSelectedCate={setSelectedCate}
@@ -158,7 +176,7 @@ export default function Home() {
             />
           </div>
         </div>
-        <div className="flex flex-wrap ipad-view w-[575px] justify-center mx-auto">
+        <div className="absolute flex flex-wrap ipad-view w-[575px] justify-center mx-auto z-[9999]">
           <div className="flex-1 mr-2">
             <SearchBar
               setSelectedCate={setSelectedCate}
@@ -203,9 +221,9 @@ export default function Home() {
                 />
               </div>
             </div>
-            <div className="w-full absolute top-24">
+            <div className="w-full pt-16">
               {showGif && !selectedBlock ? (
-                <div className="relative w-full z-index-1">
+                <div className="relative  w-full z-index-1">
                   <Image
                     src={Mapguide}
                     alt="GIF"

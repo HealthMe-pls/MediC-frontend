@@ -5,15 +5,16 @@ import { fetchWorkshops, Workshop } from "../../utility/workshop";
 import Header from "../layouts/Header";
 import WorkshopCard from "../components/WorkshopCard";
 import Footer from "../layouts/Footer";
+
 export default function WorkshopsPage() {
-  const [workshops, setWorkshops] = useState<Workshop[]>([]); // Ensure workshops is always an array
+  const [workshops, setWorkshops] = useState<Workshop[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetchWorkshops()
       .then((data) => {
-        setWorkshops(data || []); // Fallback to an empty array if data is null
+        setWorkshops(data || []);
         setLoading(false);
       })
       .catch((err) => {
@@ -23,9 +24,9 @@ export default function WorkshopsPage() {
   }, []);
 
   return (
-    <div className="font-lexend ">
+    <div className="font-lexend">
       <Header />
-      <main className="flex-grow p-8 bg-[#FFF7EB] font-lexend ">
+      <main className="flex flex-col items-center p-8 bg-[#FFF7EB] min-h-screen">
         <h1 className="text-3xl mb-6 text-center">Highlighted Workshops</h1>
 
         {loading ? (
@@ -33,24 +34,19 @@ export default function WorkshopsPage() {
         ) : error ? (
           <p className="text-center text-red-500">{error}</p>
         ) : workshops.length === 0 ? (
-          <div className="flex justify-center h-screen bg-[#FFF7EB]">
-            <div className="mt-7 text-center text-gray-500">
+          <div className="flex items-center justify-center h-screen bg-[#FFF7EB]">
+            <div className="text-center text-gray-500">
               <p>No workshops available at the moment.</p>
               <p>Please check back later!</p>
             </div>
           </div>
         ) : (
-          <div className="flex justify-center ml-8 overflow-hidden">
-            <div className="flex flex-wrap p-5 justify-start mx-2 w-fit h-fit">
-              {workshops.map((workshop) => (
-                <div
-                  key={workshop.id}
-                  className="justify-between p-5 flex-shrink-0"
-                >
-                  <WorkshopCard workshop={workshop} />
-                </div>
-              ))}
-            </div>
+          <div className="flex flex-wrap justify-center gap-8 px-6 w-full">
+            {workshops.map((workshop) => (
+              <div key={workshop.id} className="flex justify-center">
+                <WorkshopCard workshop={workshop} />
+              </div>
+            ))}
           </div>
         )}
       </main>
