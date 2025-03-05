@@ -28,6 +28,11 @@ import {
   uploadPhotoShopByAdmin,
 } from "@/utility/photo";
 import { fetcMarketOpenDatesById } from "@/utility/ManageMarketHours";
+import {
+  createShopTime,
+  deleteShopTime,
+  updateShopTime,
+} from "@/utility/manageshophour";
 
 interface ShopTableProps {
   blocks: Record<
@@ -360,42 +365,40 @@ const ShopTable: React.FC<ShopTableProps> = ({
 
       for (const time of deletedTimes || []) {
         if (time.id) {
-          // console.log("delete menuid : " + menu.id);
-          // await deleteMenu(menu.id);
+          console.log("delete shop time id : " + time.id);
+          await deleteShopTime(time.id);
         }
       }
 
-      // const updatedTime = shopHours.filter((newTime) =>
-      //   editTimeData?.some(
-      //     (oldTime) =>
-      //       oldTime.id === newMenu.id &&
-      //       (newMenu.img instanceof File ||
-      //         oldMenu.product_name !== newMenu.product_name ||
-      //         oldMenu.product_description !== newMenu.product_description ||
-      //         oldMenu.price !== newMenu.price) // ต้องมีการเปลี่ยนแปลงจริง ๆ
-      //   )
-      // );
+      const updatedTime = shopHours.filter((newTime) =>
+        editTimeData?.some(
+          (oldTime) =>
+            oldTime.id === newTime.id &&
+            (oldTime.start_time !== newTime.start_time ||
+              oldTime.end_time !== newTime.end_time ||
+              oldTime.market_open_date_id !== newTime.market_open_date_id) // ต้องมีการเปลี่ยนแปลงจริง ๆ
+        )
+      );
 
-      // for (const menu of updatedMenus) {
-      //   const upMenu = {
-      //     product_name: menu.product_name,
-      //     product_description: menu.product_description,
-      //     price: menu.price,
-      //     shop_id: shopId,
-      //   };
-      //   console.log("update menuid : " + menu.id);
-      //   await updateMenuByAdmin(menu.id!, upMenu);
+      for (const time of updatedTime) {
+        console.log("update shop time id : " + time.id);
+        await updateShopTime(time.id!, time);
+      }
 
-      //   if (menu.img instanceof File && menu.id) {
-      //     console.log(menu.idPhoto);
-      //     if (menu.idPhoto) await deletePhoto(menu.idPhoto);
-      //     await uploadPhotoMenuByAdmin(menu.img, menu.id);
-      //   }
-      // }
+      const newTime = shopHours.filter(
+        (newTime) => !editTimeData?.some((oldTime) => oldTime.id === newTime.id)
+      );
 
-      // const newMenus = menuData.filter(
-      //   (newMenu) => !editMenuData?.some((oldMenu) => oldMenu.id === newMenu.id)
-      // );
+      for (const time of newTime) {
+        const createTime = {
+          start_time: time.start_time,
+          end_time: time.end_time,
+          market_open_date_id: time.market_open_date_id,
+          shop_id: shopId,
+        };
+        console.log(createTime);
+        await createShopTime(createTime);
+      }
     } catch (error) {
       console.error("Error updating social media:", error);
     }

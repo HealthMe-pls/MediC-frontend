@@ -78,7 +78,7 @@ export async function fetchShopById(shopId: number): Promise<ShopDetail> {
     // console.log("fetchShopByID: ", response);
 
     if (response.status !== 200) {
-      throw new Error("Failed to fetch Shop Category");
+      throw new Error("Failed to fetch Shop Detail");
     }
     // console.log("fetchShopById data: ", response.data);
     return response.data as ShopDetail;
@@ -97,42 +97,42 @@ export const deleteShopByAdmin = async (id: number): Promise<void> => {
       },
     });
   } catch (error) {
-    console.error(`Error deleting workshop with id ${id}:`, error);
+    console.error(`Error deleting shop with id ${id}:`, error);
     throw error;
   }
 };
 
 export const updateShopByAdmin = async (
   id: number,
-  workshopData: Partial<ShopDetail>
+  shopData: Partial<ShopDetail>
 ): Promise<ShopDetail> => {
   try {
     const url = `/api/shop/${id}`;
-    const response = await axios.put<ShopDetail>(url, workshopData, {
+    const response = await axios.put<ShopDetail>(url, shopData, {
       headers: {
         "Content-Type": "application/json",
       },
     });
     return response.data;
   } catch (error) {
-    console.error(`Error updating workshop with id ${id}:`, error);
+    console.error(`Error updating shop with id ${id}:`, error);
     throw error;
   }
 };
 
 export const createShopByAdmin = async (
-  workshopData: Partial<Omit<ShopDetail, "id">>
+  shopData: Partial<Omit<ShopDetail, "id">>
 ): Promise<ShopDetail> => {
   try {
     const url = `/api/shop`;
-    const response = await axios.post<ShopDetail>(url, workshopData, {
+    const response = await axios.post<ShopDetail>(url, shopData, {
       headers: {
         "Content-Type": "application/json",
       },
     });
     return response.data;
   } catch (error) {
-    console.error("Error creating workshop:", error);
+    console.error("Error creating shop:", error);
     throw error;
   }
 };
