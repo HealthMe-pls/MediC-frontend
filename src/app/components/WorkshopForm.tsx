@@ -81,6 +81,7 @@ const WorkshopForm: React.FC<WorkshopFormProps> = ({
               formImg={formImg}
               handleImageChange={handleImageChange}
               handleRemoveImage={handleRemoveImage}
+              disabled={false}
             />
           </div>
 
