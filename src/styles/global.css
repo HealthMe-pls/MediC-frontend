@@ -10,20 +10,26 @@
   align-items: center;
 }
 
-.shoplistformmap{
+.shoplistformmap {
   top: 400px;
   left: 750px;
 }
 
-  @media (max-width: 1024px) {
-    .mapguide-hidden {
-      display: none;
-    }
+@media (max-width: 1024px) {
+  .mapguide-hidden {
+    display: none;
   }
+}
 
-.ellipse.a { background-color: #FFEF9E; }
-.ellipse.b { background-color: #D5EBD6; }
-.ellipse.c { background-color: #CAE5F3; }
+.ellipse.a {
+  background-color: #ffef9e;
+}
+.ellipse.b {
+  background-color: #d5ebd6;
+}
+.ellipse.c {
+  background-color: #cae5f3;
+}
 
 .ellipse {
   position: absolute;
@@ -33,7 +39,7 @@
   min-height: 12px;
   max-width: 27px;
   max-height: 27px;
-  background-color: #FFEF9E;
+  background-color: #ffef9e;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -42,12 +48,12 @@
 }
 
 .ellipse-text {
-  font-family: 'Lexend', sans-serif;
+  font-family: "Lexend", sans-serif;
   font-style: normal;
   font-weight: 300;
   font-size: 13px;
   line-height: 16px;
-  color: #4C4343;
+  color: #4c4343;
   white-space: nowrap;
 }
 img {
@@ -66,7 +72,6 @@ img {
   }
 }
 
-
 /* @media (max-width: 768px) {
   .ellipse {
     width: 27px;
@@ -81,7 +86,6 @@ img {
   .ellipse {
     width: 16px;
     height: 16px;
-
   }
   .forks {
     width: 51vw;
@@ -92,20 +96,38 @@ img {
   }
 }
 
-@media (min-width: 1024px) {
+/* @media (min-width: 1024px) {
   .ipad-view, .mobile-view {
     display: none;
   }
+} */
+
+/* @media (max-width: 1024px) and (min-width: 640px) {
+  .desktop-view, .mobile-view {
+    display: none;
+  }
+} */
+
+/* @media (max-width: 640px) {
+  .desktop-view, .ipad-view {
+    display: none;
+  }
+} */
+
+.ipad-view {
+  display: none;
 }
 
-@media (max-width: 1024px) and (min-width: 640px) {
-  .desktop-view, .mobile-view {
+/* Desktop view for screens 1025px and up */
+@media (min-width: 1024px) {
+  .mobile-view {
     display: none;
   }
 }
 
-@media (max-width: 640px) {
-  .desktop-view, .ipad-view {
+/* Mobile view for screens 1024px and down */
+@media (max-width: 1025px) {
+  .desktop-view {
     display: none;
   }
 }

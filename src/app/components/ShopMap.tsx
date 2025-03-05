@@ -17,12 +17,24 @@ export default function Map({
   mapUpdate: number;
 }) {
   const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   useEffect(() => {
     fetchMapDetail()
       .then(setMapDetails)
       .catch((error) => console.error("Error fetching map details:", error));
   }, [mapUpdate]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const points = [
     { name: "A1", top: "81.5%", left: "58%" },
@@ -105,7 +117,6 @@ export default function Map({
         };
       }
     } else {
-        
     }
 
     let style: React.CSSProperties = {};
@@ -154,7 +165,10 @@ export default function Map({
 
   return (
     // console.log("MapDetails", mapDetails),
-    <div className="relative flex justify-center items-center">
+    <div
+      className="relative flex justify-center items-center"
+      style={{ pointerEvents: isMobile ? "none" : "auto" }}
+    >
       <img
         src="/assets/MarketMap.png"
         alt="Map"
@@ -170,7 +184,7 @@ export default function Map({
         return (
           <button
             key={point.name}
-            className={`ellipse ${point.name[0].toLowerCase()} sm:cursor-pointer sm:pointer-events-auto pointer-events-none transition-transform`}
+            className={`ellipse ${point.name[0].toLowerCase()} sm:cursor-pointer sm:pointer-events-auto transition-transform`}
             style={{
               top: point.top,
               left: point.left,

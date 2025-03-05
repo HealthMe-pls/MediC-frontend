@@ -2,8 +2,6 @@ import axios from "axios";
 import { ShopOpenDates } from "@/utility/shopDetail";
 import {
   Social,
-  DeletePhoto,
-  TempSocial,
   TempMenu,
   Photo,
   Time,

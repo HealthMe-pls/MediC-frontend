@@ -10,7 +10,6 @@ import MenuForm from "./MenuForm";
 import ImageUpload from "./ImageUpload";
 import MarketHoursTable from "./MarketHoursTable";
 import { ShopOpenDates } from "./types";
-import { it } from "date-fns/locale";
 
 export interface TempShopFormProps {
   onSubmit: (

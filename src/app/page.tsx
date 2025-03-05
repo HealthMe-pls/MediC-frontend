@@ -54,7 +54,7 @@ export default function Home() {
     return width;
   }
 
-  const windowWidth = useWindowWidth();
+  const windowWidth = useWindowWidth() || 0;
 
   useEffect(() => {
     if (matchShopID !== 0) {
@@ -176,25 +176,65 @@ export default function Home() {
             />
           </div>
         </div>
-        <div className="absolute flex flex-wrap ipad-view w-[575px] justify-center mx-auto z-[9999]">
-          <div className="flex-1 mr-2">
-            <SearchBar
-              setSelectedCate={setSelectedCate}
-              setMatchShopID={setMatchShopID}
-            />
-          </div>
-          <div className="flex-1 ml-2">
-            <Filter
-              shopCategory={shopCategory}
-              selectedCate={selectedCate}
-              onSelectCategory={handleCategorySelect}
-              setMatchShopID={setMatchShopID}
-            />
-          </div>
-        </div>
 
-        <div className="sm:flex hidden w-full gap-8 flex-wrap lg:flex-nowrap justify-center mb-[32px]">
-          <div className="w-[600px] min-w-[600px] flex justify-center z-index-10">
+        {windowWidth >= 1025 ? (
+          <div className="sm:flex hidden w-full gap-8 flex-wrap lg:flex-nowrap justify-center mb-[32px]">
+            <div className="w-[600px] min-w-[600px] flex justify-center z-index-10">
+              <Map
+                selectedCate={selectedCate}
+                setSelectedBlock={setSelectedBlock}
+                matchShopID={matchShopID}
+                role=""
+                mapUpdate={Date.now()}
+              />
+            </div>
+
+            <div className="relative w-[570px] min-w-[500px] flex justify-center flex-wrap flex-col overflow-visible">
+              <div className="absolute z-50 top-8 left-6 flex flex-wrap desktop-view mx-auto">
+                <div className="flex-1 mr-2">
+                  <SearchBar
+                    setSelectedCate={setSelectedCate}
+                    setMatchShopID={setMatchShopID}
+                  />
+                </div>
+                <div className="flex-1 ml-2">
+                  <Filter
+                    shopCategory={shopCategory}
+                    selectedCate={selectedCate}
+                    onSelectCategory={handleCategorySelect}
+                    setMatchShopID={setMatchShopID}
+                  />
+                </div>
+              </div>
+              <div className="w-full pt-16">
+                {showGif && !selectedBlock ? (
+                  <div className="relative  w-full z-index-1">
+                    <Image
+                      src={Mapguide}
+                      alt="GIF"
+                      width={800}
+                      height={600}
+                      unoptimized
+                      className="w-full h-auto max-h-[570px] object-contain mapguide-hidden"
+                    />
+                    <button
+                      onClick={handleCloseGif}
+                      className="absolute top-2 right-16 p-1 rounded-full mr-2 mt-2"
+                      aria-label="Close"
+                    >
+                      <span className="text-opacity-50 text-black text-[50px] mapguide-hidden">
+                        ×
+                      </span>
+                    </button>
+                  </div>
+                ) : (
+                  <Shopside blockName={selectedBlock} />
+                )}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="mobile-view block">
             <Map
               selectedCate={selectedCate}
               setSelectedBlock={setSelectedBlock}
@@ -203,63 +243,9 @@ export default function Home() {
               mapUpdate={Date.now()}
             />
           </div>
+        )}
 
-          <div className="relative w-[570px] min-w-[500px] flex justify-center flex-wrap flex-col overflow-visible">
-            <div className="absolute z-50 top-8 left-6 flex flex-wrap desktop-view mx-auto">
-              <div className="flex-1 mr-2">
-                <SearchBar
-                  setSelectedCate={setSelectedCate}
-                  setMatchShopID={setMatchShopID}
-                />
-              </div>
-              <div className="flex-1 ml-2">
-                <Filter
-                  shopCategory={shopCategory}
-                  selectedCate={selectedCate}
-                  onSelectCategory={handleCategorySelect}
-                  setMatchShopID={setMatchShopID}
-                />
-              </div>
-            </div>
-            <div className="w-full pt-16">
-              {showGif && !selectedBlock ? (
-                <div className="relative  w-full z-index-1">
-                  <Image
-                    src={Mapguide}
-                    alt="GIF"
-                    width={800}
-                    height={600}
-                    unoptimized
-                    className="w-full h-auto max-h-[570px] object-contain mapguide-hidden"
-                  />
-                  <button
-                    onClick={handleCloseGif}
-                    className="absolute top-2 right-16 p-1 rounded-full mr-2 mt-2"
-                    aria-label="Close"
-                  >
-                    <span className="text-opacity-50 text-black text-[50px] mapguide-hidden">
-                      ×
-                    </span>
-                  </button>
-                </div>
-              ) : (
-                <Shopside blockName={selectedBlock} />
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="mobile-view block">
-          <Map
-            selectedCate={selectedCate}
-            setSelectedBlock={setSelectedBlock}
-            matchShopID={matchShopID}
-            role=""
-            mapUpdate={Date.now()}
-          />
-        </div>
-
-        <div className="mt-6 mobile-view ref={shopListRef}">
+        <div className="mt-6 mobile-view" ref={shopListRef}>
           <Shoplist
             label=""
             onCateChange={handleSearchChange}
