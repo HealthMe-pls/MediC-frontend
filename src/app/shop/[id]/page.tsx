@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { fetchShopById, ShopDetail } from "@/utility/shopDetail";
-import { format } from "date-fns";
 import CardProductDetail from "@/app/components/CardProductDetail";
 // import Link from "next/link";
 import Header from "@/app/layouts/Header";
 import ImageBanner from "@/app/components/ImageBanner";
 import Footer from "@/app/layouts/Footer";
+import { format, addDays, subDays  } from "date-fns";
+import { isAfter, isBefore } from "date-fns";
 
 const formatDate = (isoString: string): string => {
   const date = new Date(isoString); // ใช้ new Date() แทน parseISO
@@ -24,6 +25,41 @@ const ShopPage = () => {
   const [shopDetail, setShopDetail] = useState<ShopDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const filteredDates = shopDetail?.shop_open_dates
+  .filter((date) => {
+    const startTime = new Date(date.start_time); // ใช้ new Date() แทน parseISO
+    const now = new Date();
+    const thirtyDaysFromNow = addDays(now, 30);
+    const oneDayBeforeNow = subDays(now, 1);
+
+    return startTime >= oneDayBeforeNow && startTime <= thirtyDaysFromNow;
+  })
+  .sort((a, b) => {
+    const startTimeA = new Date(a.start_time); // ใช้ new Date() แทน parseISO
+    const startTimeB = new Date(b.start_time); // ใช้ new Date() แทน parseISO
+
+    return startTimeA.getTime() - startTimeB.getTime();
+  });
+
+const checkShopOpenStatus = () => {
+  if (!shopDetail?.open_status || !filteredDates || filteredDates.length === 0) {
+    return false;
+  }
+
+  const now = new Date();
+
+  const isOpen = filteredDates.some((date) => {
+    const startTime = new Date(date.start_time); // ใช้ new Date() แทน parseISO
+    const endTime = new Date(date.end_time); // ใช้ new Date() แทน parseISO
+
+    return isAfter(now, startTime) && isBefore(now, endTime);
+  });
+
+  return isOpen ? true : false;
+};
+
+  const shopStatus = checkShopOpenStatus();
 
   useEffect(() => {
     if (id) {
@@ -232,7 +268,7 @@ const ShopPage = () => {
                     <p className="font-light mb-2">{shopDetail.category}</p>
                   </div>
                   <p className="text-green-500 font-light text-[14px]">
-                    {shopDetail?.open_status ? (
+                    {shopStatus ? (
                       <svg
                         width="73"
                         height="23"
@@ -288,20 +324,19 @@ const ShopPage = () => {
                     🕒 Business Hours
                   </h3>
                   <ul className="text-gray-600 text-sm">
-                    {shopDetail?.shop_open_dates ? (
-                      <ul>
-                        {Array.isArray(shopDetail.shop_open_dates) &&
-                          shopDetail.shop_open_dates.map((date, index) => (
-                            <li key={index} className="text-[14px] font-light">
-                              {`${formatDate(date.start_time)} ${formatTime(
-                                date.start_time
-                              )} - ${formatTime(date.end_time)}`}
-                            </li>
-                          ))}
-                      </ul>
-                    ) : (
-                      <p className="text-[14px] font-light">Not available</p>
-                    )}
+                  {filteredDates && filteredDates.length > 0 ? (
+                  <ul>
+                    {filteredDates.map((date, index) => (
+                      <li key={index} className="text-[14px] font-light">
+                        {`${formatDate(date.start_time)} ${formatTime(
+                          date.start_time
+                        )} - ${formatTime(date.end_time)}`}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-[14px] font-light">Not available</p>
+                )}
                   </ul>
                 </div>
 
