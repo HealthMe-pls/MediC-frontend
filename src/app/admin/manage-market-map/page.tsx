@@ -126,6 +126,7 @@ export default function AdminPageComponent() {
   ) => {
     try {
       const shop = await createShopByAdmin(formData); // รอให้ API สร้างร้านค้าเสร็จ
+      console.log(shop);
 
       if (shop && shop.shop_id) {
         // ตรวจสอบว่ามี id กลับมาหรือไม่
@@ -299,6 +300,7 @@ export default function AdminPageComponent() {
             initialData={shopFormData || undefined}
             initialSocialData={undefined}
             initialMenuData={undefined}
+            initialShopHours={undefined}
           />
         )}
 
