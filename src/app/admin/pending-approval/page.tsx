@@ -39,7 +39,6 @@ export default function PendingApprovalPage() {
       <AdminLayouts currentPage="Pending Approval">
         <div className=" p-4 flex flex-col gap-2 ">
           <SearchPending />
-
           <div className="p-8  grid grid-cols-1 gap-4 max-h-[650px] overflow-y-auto scrollbar-hide">
             {tempShops.map((shop) => (
               <PendingCard key={shop.id} tempshop={shop} />
