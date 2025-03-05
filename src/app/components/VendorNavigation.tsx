@@ -25,7 +25,7 @@ export default function VendorNavigation({
   return (
     <>
       <aside
-        className={`fixed lg:relative top-0 left-0 w-[250px] h-dvh bg-white p-4 shadow-md rounded-r-[40px] border-gray-200 transition-transform duration-300 z-20 ${
+        className={`fixed lg:fixed top-0 left-0 w-[250px] h-dvh bg-white p-4 shadow-md rounded-r-[40px] border-gray-200 transition-transform duration-300 z-20 ${
           isNavOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
         onClick={(e) => e.stopPropagation()}

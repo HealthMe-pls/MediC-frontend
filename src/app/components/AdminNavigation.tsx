@@ -31,7 +31,7 @@ export default function AdminNavigation({
   return (
     <>
       <aside
-        className={`fixed lg:relative top-0 left-0 w-[250px] h-dvh bg-white p-4 shadow-md rounded-r-[40px] border-gray-200 transition-transform duration-300 z-20 ${
+        className={`fixed lg:fixed top-0 left-0 w-[250px] min-h-dvh bg-white p-4 shadow-md rounded-r-[40px] border-gray-200 transition-transform duration-300 z-30 ${
           isNavOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
         onClick={(e) => e.stopPropagation()}
@@ -56,7 +56,7 @@ export default function AdminNavigation({
       </aside>
       <div
         className={`fixed inset-0 bg-[#6d6d6d] transition-opacity duration-300 ${
-          isNavOpen ? "opacity-30" : "opacity-0 pointer-events-none"
+          isNavOpen ? "opacity-30" : "hidden opacity-0"
         } z-19`}
         onClick={toggleNav}
       ></div>

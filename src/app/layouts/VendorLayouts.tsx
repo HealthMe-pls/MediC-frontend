@@ -29,7 +29,7 @@ export default function VendorLayouts({
         toggleNav={toggleNav}
       />
 
-      <main className="flex-1 px-6  ">
+      <main className="flex-1 px-6 min-h-screen overflow-y-auto">
         <div className={`lg:hidden flex justify-between items-center p-4 z-20`}>
           <button
             onClick={toggleNav}
@@ -37,10 +37,10 @@ export default function VendorLayouts({
           >
             &#9776; {/* Hamburger icon */}
           </button>
-          <h1 className="fixed left-24 text-[150%]">{currentPage}</h1>
         </div>
-        <div>
-          <div className="max-h-full m-10">{children}</div>
+        <div className="lg:ml-[250px]">
+          <h1 className="mt-10 text-[150%]">{currentPage}</h1>
+          <div className="max-h-full m-10 ">{children}</div>
         </div>
       </main>
     </div>

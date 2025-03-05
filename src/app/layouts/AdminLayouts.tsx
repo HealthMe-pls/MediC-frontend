@@ -19,17 +19,14 @@ export default function AdminLayouts({
   };
 
   return (
-    <div
-      className="flex bg-[#F5F5F5] font-lexend text-[#4C4343]"
-      //   onClick={closeNav}
-    >
+    <div className="flex bg-[#F5F5F5] h-full font-lexend text-[#4C4343]">
       <AdminNavigation
         currentPage={currentPage}
         isNavOpen={isNavOpen}
         toggleNav={toggleNav}
       />
 
-      <main className="flex-1 px-6  ">
+      <main className="flex-1 px-6 min-h-screen overflow-y-auto">
         <div className={`lg:hidden flex justify-between items-center p-4 z-20`}>
           <button
             onClick={toggleNav}
@@ -39,7 +36,7 @@ export default function AdminLayouts({
           </button>
           <h1 className="fixed left-24 text-[150%]">{currentPage}</h1>
         </div>
-        <div>
+        <div className="lg:ml-[250px]">
           <h1 className=" text-[150%] mt-[40px] ml-4 hidden lg:block z-18">
             {currentPage}
           </h1>
