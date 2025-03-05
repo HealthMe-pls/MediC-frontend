@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import Footer from "@/app/layouts/Footer";
 import ImageBanner from "@/app/components/ImageBanner";
 import Header from "@/app/layouts/Header";
+import BackButton from "@/app/components/BackButton";
 
 const formatDate = (isoString: string | null): string => {
   if (!isoString) return "N/A";
@@ -24,6 +25,11 @@ const WorkshopDetail = () => {
   const [workshopDetail, setWorkshopDetail] = useState<Workshop | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [previousPage, setPreviousPage] = useState<string | "">("");
+
+  useEffect(() => {
+    setPreviousPage(sessionStorage.getItem("previousPage") || "");
+  }, []);
 
   useEffect(() => {
     if (id) {
@@ -46,7 +52,14 @@ const WorkshopDetail = () => {
 
   return (
     <div className="font-lexend text-[#4C4343] bg-[#FFF7EB] min-h-screen flex flex-col justify-between">
-      <Header />
+      <div className="hidden lg:block">
+        <Header />
+      </div>
+      <div className="lg:hidden">
+        {" "}
+        <BackButton previousPage={previousPage} />{" "}
+      </div>
+
       <div className="flex flex-row justify-between">
         <div></div>
         <div className="">

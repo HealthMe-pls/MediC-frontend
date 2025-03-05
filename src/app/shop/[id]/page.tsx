@@ -8,8 +8,9 @@ import CardProductDetail from "@/app/components/CardProductDetail";
 import Header from "@/app/layouts/Header";
 import ImageBanner from "@/app/components/ImageBanner";
 import Footer from "@/app/layouts/Footer";
-import { format, addDays, subDays  } from "date-fns";
+import { format, addDays, subDays } from "date-fns";
 import { isAfter, isBefore } from "date-fns";
+import BackButton from "@/app/components/BackButton";
 
 const formatDate = (isoString: string): string => {
   const date = new Date(isoString);
@@ -25,39 +26,48 @@ const ShopPage = () => {
   const [shopDetail, setShopDetail] = useState<ShopDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [previousPage, setPreviousPage] = useState<string>("");
+
+  useEffect(() => {
+    setPreviousPage(sessionStorage.getItem("previousPage") || "/");
+  }, []);
 
   const filteredDates = shopDetail?.shop_open_dates
-  .filter((date) => {
-    const startTime = new Date(date.start_time);
+    .filter((date) => {
+      const startTime = new Date(date.start_time);
+      const now = new Date();
+      const thirtyDaysFromNow = addDays(now, 30);
+      const oneDayBeforeNow = subDays(now, 1);
+
+      return startTime >= oneDayBeforeNow && startTime <= thirtyDaysFromNow;
+    })
+    .sort((a, b) => {
+      const startTimeA = new Date(a.start_time);
+      const startTimeB = new Date(b.start_time);
+
+      return startTimeA.getTime() - startTimeB.getTime();
+    });
+
+  const checkShopOpenStatus = () => {
+    if (
+      !shopDetail?.open_status ||
+      !filteredDates ||
+      filteredDates.length === 0
+    ) {
+      return false;
+    }
+
     const now = new Date();
-    const thirtyDaysFromNow = addDays(now, 30);
-    const oneDayBeforeNow = subDays(now, 1);
 
-    return startTime >= oneDayBeforeNow && startTime <= thirtyDaysFromNow;
-  })
-  .sort((a, b) => {
-    const startTimeA = new Date(a.start_time);
-    const startTimeB = new Date(b.start_time);
+    const isOpen = filteredDates.some((date) => {
+      const startTime = new Date(date.start_time);
+      const endTime = new Date(date.end_time);
 
-    return startTimeA.getTime() - startTimeB.getTime();
-  });
+      return isAfter(now, startTime) && isBefore(now, endTime);
+    });
 
-const checkShopOpenStatus = () => {
-  if (!shopDetail?.open_status || !filteredDates || filteredDates.length === 0) {
-    return false;
-  }
-
-  const now = new Date();
-
-  const isOpen = filteredDates.some((date) => {
-    const startTime = new Date(date.start_time);
-    const endTime = new Date(date.end_time);
-
-    return isAfter(now, startTime) && isBefore(now, endTime);
-  });
-
-  return isOpen ? true : false;
-};
+    return isOpen ? true : false;
+  };
 
   const shopStatus = checkShopOpenStatus();
 
@@ -85,6 +95,7 @@ const checkShopOpenStatus = () => {
     <div className="font-lexend text-[#4C4343] bg-[#FFF7EB] min-h-screen flex flex-col justify-between">
       {/*Mobile*/}
       <div className="sm:hidden ">
+        <BackButton previousPage={previousPage} />
         <div>
           {shopDetail ? (
             <div className=" font-lexend text-[#4C4343] flex-col justify-center  bg-[#FFF7EB]">
@@ -322,19 +333,19 @@ const checkShopOpenStatus = () => {
                     🕒 Business Hours
                   </h3>
                   <ul className="text-gray-600 text-sm">
-                  {filteredDates && filteredDates.length > 0 ? (
-                  <ul>
-                    {filteredDates.map((date, index) => (
-                      <li key={index} className="text-[14px] font-light">
-                        {`${formatDate(date.start_time)} ${formatTime(
-                          date.start_time
-                        )} - ${formatTime(date.end_time)}`}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-[14px] font-light">Not available</p>
-                )}
+                    {filteredDates && filteredDates.length > 0 ? (
+                      <ul>
+                        {filteredDates.map((date, index) => (
+                          <li key={index} className="text-[14px] font-light">
+                            {`${formatDate(date.start_time)} ${formatTime(
+                              date.start_time
+                            )} - ${formatTime(date.end_time)}`}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-[14px] font-light">Not available</p>
+                    )}
                   </ul>
                 </div>
 
