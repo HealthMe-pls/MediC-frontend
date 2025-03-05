@@ -8,9 +8,7 @@ interface ShopDetailsSectionProps {
   categories: ShopCategory[];
   entrepreneurs: Entrepreneur[];
   onChange: (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => void;
   disabled: boolean;
   isTemp: boolean;
@@ -34,7 +32,9 @@ const ShopDetailsSection: React.FC<ShopDetailsSectionProps> = ({
           value={formData.name}
           onChange={onChange}
           placeholder="Shop Name"
-          className="border p-2 rounded w-full"
+          className={`border p-2 rounded w-full ${
+            disabled ? "bg-white" : ""
+          }`}
           disabled={disabled}
         />
       </div>
@@ -44,7 +44,9 @@ const ShopDetailsSection: React.FC<ShopDetailsSectionProps> = ({
           name="shop_category_id"
           value={formData.shop_category_id}
           onChange={onChange}
-          className="border p-2 rounded w-full"
+          className={`border p-2 rounded w-full ${
+            disabled ? "bg-white" : ""
+          }`}
           disabled={disabled}
         >
           <option value="" disabled>
@@ -64,7 +66,9 @@ const ShopDetailsSection: React.FC<ShopDetailsSectionProps> = ({
           value={formData.description}
           onChange={onChange}
           placeholder="Description"
-          className="border p-2 rounded resize-y min-h-[150px] max-h-[300px] w-full"
+          className={`border p-2 rounded resize-y min-h-[150px] max-h-[300px] w-full ${
+            disabled ? "bg-white" : ""
+          }`}
           rows={3}
           disabled={disabled}
         />
@@ -76,7 +80,9 @@ const ShopDetailsSection: React.FC<ShopDetailsSectionProps> = ({
             name="entrepreneur_id"
             value={formData.entrepreneur_id}
             onChange={onChange}
-            className="border p-2 rounded w-full"
+            className={`border p-2 rounded w-full ${
+              disabled ? "bg-white" : ""
+            }`}
             disabled={disabled}
           >
             <option value="" disabled>
