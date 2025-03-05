@@ -5,10 +5,12 @@ import { fetchWorkshops, Workshop } from "../../utility/workshop";
 import Header from "../layouts/Header";
 import WorkshopCard from "../components/WorkshopCard";
 import Footer from "../layouts/Footer";
+
 export default function WorkshopsPage() {
   const [workshops, setWorkshops] = useState<Workshop[]>([]); // Ensure workshops is always an array
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [workshopsPerView, setWorkshopsPerView] = useState<number>(3); // Default to 3 columns
 
   useEffect(() => {
     fetchWorkshops()
@@ -20,12 +22,36 @@ export default function WorkshopsPage() {
         setError(err.message);
         setLoading(false);
       });
+
+    // Function to set the number of workshops per view based on window width
+    const handleResize = () => {
+      if (window.innerWidth >= 1700) {
+        setWorkshopsPerView(5);
+      } else if (window.innerWidth >= 1400) {
+        setWorkshopsPerView(4);
+      } else if (window.innerWidth >= 1100) {
+        setWorkshopsPerView(3);
+      } else if (window.innerWidth >= 800) {
+        setWorkshopsPerView(2);
+      } else {
+        setWorkshopsPerView(1);
+      }
+    };
+
+    // Add resize event listener and initialize it
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Call on component mount to set the initial value
+
+    // Cleanup on unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
-    <div className="font-lexend ">
+    <div className="font-lexend">
       <Header />
-      <main className="flex-grow p-8 bg-[#FFF7EB] font-lexend ">
+      <main className="flex-grow p-8 bg-[#FFF7EB] font-lexend">
         <h1 className="text-3xl mb-6 text-center">Highlighted Workshops</h1>
 
         {loading ? (
@@ -40,13 +66,24 @@ export default function WorkshopsPage() {
             </div>
           </div>
         ) : (
-          <div className="flex justify-center ml-8 overflow-hidden">
-            <div className="flex flex-wrap p-5 justify-start mx-2 w-fit h-fit">
+          <div className="flex justify-center  ">
+            <div
+              className={`grid gap-4 p-5 mx-2 ${
+                workshopsPerView === 1
+                  ? "grid-cols-1"
+                  : workshopsPerView === 2
+                  ? "grid-cols-2"
+                  : workshopsPerView === 3
+                  ? "grid-cols-3"
+                  : workshopsPerView === 4
+                  ? "grid-cols-4"
+                  : workshopsPerView === 5
+                  ? "grid-cols-5"
+                  : "grid-cols-6"
+              }`}
+            >
               {workshops.map((workshop) => (
-                <div
-                  key={workshop.id}
-                  className="justify-between p-5 flex-shrink-0"
-                >
+                <div key={workshop.id} className="p-5">
                   <WorkshopCard workshop={workshop} />
                 </div>
               ))}
