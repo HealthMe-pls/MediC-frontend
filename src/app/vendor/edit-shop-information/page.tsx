@@ -34,108 +34,93 @@ const EditShopInformation = () => {
     null
   );
 
-  const handleEditInformation = async (shopId: number | null) => {
-    if (shopId) {
-      try {
-        const shop = await fetchShopById(shopId);
-        if (shop) {
-          const newShopData: ShopFormData = {
-            id: shop.shop_id,
-            name: shop.name,
-            shop_category_id: shop.category_id,
-            description: shop.description || "",
-            entrepreneur_id: shop.entrepreneur_id,
-          };
-
-          const newPhotoData: PhotoForm = {
-            cover_id: shop.photos?.[0]?.photo_id || 0,
-            cover_img: shop.photos?.[0]
-              ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[0]?.pathfile}`
-              : "",
-            sec_id: shop.photos?.[1]?.photo_id || 0,
-            sec_img: shop.photos?.[1]
-              ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[1]?.pathfile}`
-              : "",
-            thr_id: shop.photos?.[2]?.photo_id || 0,
-            thr_img: shop.photos?.[2]
-              ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[2]?.pathfile}`
-              : "",
-          };
-
-          const newSocialData: SocialFormData[] = shop.social_media
-            ? shop.social_media
-                .filter((social) => social.is_public)
-                .map((social) => ({
-                  id: social.id,
-                  name: social.name,
-                  platform: social.platform,
-                  link: social.link,
-                  shop_id: shop.shop_id,
-                }))
-            : [];
-
-          const newMenuData: MenuFormData[] = shop.menus
-            ? shop.menus
-                .filter((menu) => menu.is_public) // กรองเฉพาะเมนูที่ isPublic เป็น true
-                .map((menu) => ({
-                  id: menu.id,
-                  idPhoto:
-                    menu.photos?.length > 0 ? menu.photos[0].photo_id : 0,
-                  img:
-                    menu.photos?.length > 0
-                      ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0].pathfile}`
-                      : "",
-                  product_name: menu.product_name,
-                  product_description: menu.product_description,
-                  price: menu.price,
-                  shop_id: shop.shop_id,
-                }))
-            : [];
-
-          const newTimeData: ShopOpenDates[] = shop.shop_open_dates
-            ? shop.shop_open_dates.map((time) => ({
-                id: time.id,
-                start_time: time.start_time,
-                end_time: time.end_time,
-                shop_id: shop.shop_id,
-                market_open_date_id: time.market_open_date_id,
-              }))
-            : [];
-
-          // ป้องกันการตั้งค่า state ถ้าข้อมูลไม่เปลี่ยน
-          setEditShopData((prev) =>
-            JSON.stringify(prev) === JSON.stringify(newShopData)
-              ? prev
-              : newShopData
-          );
-          setEditPhotoData((prev) =>
-            JSON.stringify(prev) === JSON.stringify(newShopData)
-              ? prev
-              : newPhotoData
-          );
-          setEditSocialData((prev) =>
-            JSON.stringify(prev) === JSON.stringify(newSocialData)
-              ? prev
-              : newSocialData
-          );
-          setEditMenuData((prev) =>
-            JSON.stringify(prev) === JSON.stringify(newMenuData)
-              ? prev
-              : newMenuData
-          );
-          setEditTimeData((prev) =>
-            JSON.stringify(prev) === JSON.stringify(newTimeData)
-              ? prev
-              : newTimeData
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching shop details:", error);
-      }
-    } else {
-      setEditShopData(null);
-      setEditSocialData([]); // รีเซ็ต social data เมื่อเป็นการเพิ่มร้านค้าใหม่
-    }
+  const handleEditInformation = async (temp: TempShopEn | null) => {
+    // if (temp) {
+    //   const newShopData: ShopFormData = {
+    //     id: temp.shop_id,
+    //     name: temp.name,
+    //     shop_category_id: temp.category_id,
+    //     description: temp.description || "",
+    //     entrepreneur_id: temp.entrepreneur_id,
+    //   };
+    //   const newPhotoData: PhotoForm = {
+    //     cover_id: temp.photos_shop?.[0]?.photo_id || 0,
+    //     cover_img: shop.photos?.[0]
+    //       ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[0]?.pathfile}`
+    //       : "",
+    //     sec_id: shop.photos?.[1]?.photo_id || 0,
+    //     sec_img: shop.photos?.[1]
+    //       ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[1]?.pathfile}`
+    //       : "",
+    //     thr_id: shop.photos?.[2]?.photo_id || 0,
+    //     thr_img: shop.photos?.[2]
+    //       ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${shop.photos[2]?.pathfile}`
+    //       : "",
+    //   };
+    //   const newSocialData: SocialFormData[] = shop.social_media
+    //     ? shop.social_media
+    //         .filter((social) => social.is_public)
+    //         .map((social) => ({
+    //           id: social.id,
+    //           name: social.name,
+    //           platform: social.platform,
+    //           link: social.link,
+    //           shop_id: shop.shop_id,
+    //         }))
+    //     : [];
+    //   const newMenuData: MenuFormData[] = shop.menus
+    //     ? shop.menus
+    //         .filter((menu) => menu.is_public) // กรองเฉพาะเมนูที่ isPublic เป็น true
+    //         .map((menu) => ({
+    //           id: menu.id,
+    //           idPhoto:
+    //             menu.photos?.length > 0 ? menu.photos[0].photo_id : 0,
+    //           img:
+    //             menu.photos?.length > 0
+    //               ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0].pathfile}`
+    //               : "",
+    //           product_name: menu.product_name,
+    //           product_description: menu.product_description,
+    //           price: menu.price,
+    //           shop_id: shop.shop_id,
+    //         }))
+    //     : [];
+    //   const newTimeData: ShopOpenDates[] = shop.shop_open_dates
+    //     ? shop.shop_open_dates.map((time) => ({
+    //         id: time.id,
+    //         start_time: time.start_time,
+    //         end_time: time.end_time,
+    //         shop_id: shop.shop_id,
+    //         market_open_date_id: time.market_open_date_id,
+    //       }))
+    //     : [];
+    //   // ป้องกันการตั้งค่า state ถ้าข้อมูลไม่เปลี่ยน
+    //   setEditShopData((prev) =>
+    //     JSON.stringify(prev) === JSON.stringify(newShopData)
+    //       ? prev
+    //       : newShopData
+    //   );
+    //   setEditPhotoData((prev) =>
+    //     JSON.stringify(prev) === JSON.stringify(newShopData)
+    //       ? prev
+    //       : newPhotoData
+    //   );
+    //   setEditSocialData((prev) =>
+    //     JSON.stringify(prev) === JSON.stringify(newSocialData)
+    //       ? prev
+    //       : newSocialData
+    //   );
+    //   setEditMenuData((prev) =>
+    //     JSON.stringify(prev) === JSON.stringify(newMenuData)
+    //       ? prev
+    //       : newMenuData
+    //   );
+    //   setEditTimeData((prev) =>
+    //     JSON.stringify(prev) === JSON.stringify(newTimeData)
+    //       ? prev
+    //       : newTimeData
+    //   );
+    // }
   };
 
   useEffect(() => {
@@ -158,7 +143,7 @@ const EditShopInformation = () => {
             // Set the first shop as the default selected shop
             if (response.temp_shops.length > 0) {
               setSelectedShop(response.temp_shops[0]);
-              handleEditInformation(response.temp_shops[0].shop_id);
+              handleEditInformation(response.temp_shops[0]);
             }
           }
         } catch (err) {
@@ -177,7 +162,7 @@ const EditShopInformation = () => {
       (shop) => shop.shop_id.toString() === selectedShopId
     ); // Convert shop_id to string
     setSelectedShop(shop || null);
-    if (shop) handleEditInformation(shop?.shop_id);
+    if (shop) handleEditInformation(shop);
   };
 
   const handleLogout = async () => {
