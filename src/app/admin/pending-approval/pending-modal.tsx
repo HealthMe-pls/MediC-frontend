@@ -2,7 +2,6 @@ import { fetchShopById, ShopDetail, ShopOpenDates } from "@/utility/shopDetail";
 import { TempShop } from "./pendingApproval";
 import { useEffect, useState } from "react";
 import { formatDate, formatTime } from "./pendingApproval";
-import Image from "next/image";
 
 export interface PendingModalProps {
   tempshop: TempShop;
@@ -136,23 +135,44 @@ export default function PendingModal({ onClose, tempshop }: PendingModalProps) {
 
                 <tbody>
                   {tempshop.menus &&
-                    tempshop.menus.map((menu, index) => (
-                      <tr key={index}>
-                        <td className="p-4">
-                          <Image
-                            src={`${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0].path_file}`}
-                            alt={menu.product_name}
-                            width={50}
-                            height={50}
-                          />
-                        </td>
-                        <td className="p-4">{menu.product_name.toString()}</td>
-                        <td className="p-4">
-                          {menu.product_description.toString()}
-                        </td>
-                        <td className="p-4">{menu.price.toString()}</td>
-                      </tr>
-                    ))}
+                    tempshop.menus.map((menu, index) => {
+                      const imageUrl =
+                        menu.photos &&
+                        menu.photos.length > 0 &&
+                        menu.photos[0].path_file
+                          ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0].path_file}`
+                          : "no image";
+
+                      console.log(imageUrl);
+                      return (
+                        <tr key={index}>
+                          <td className="p-4">
+                            {menu.photos &&
+                            menu.photos.length > 0 &&
+                            menu.photos[0].path_file ? (
+                              <div
+                                className={` w-24 h-24 rounded-lg`}
+                                style={{
+                                  backgroundImage: `url(${imageUrl})`,
+                                  backgroundSize: "cover",
+                                }}
+                              ></div>
+                            ) : (
+                              <div className="w-24 h-24 rounded-lg flex items-center justify-center bg-gray-200">
+                                No Image
+                              </div>
+                            )}
+                          </td>
+                          <td className="p-4">
+                            {menu.product_name.toString()}
+                          </td>
+                          <td className="p-4">
+                            {menu.product_description.toString()}
+                          </td>
+                          <td className="p-4">{menu.price.toString()}</td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
               </table>
             </div>
