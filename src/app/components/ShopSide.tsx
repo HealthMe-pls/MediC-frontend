@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchMapDetail, MapDetail } from "../../utility/maps";
 import { ShopDetail, fetchShopById } from "@/utility/shopDetail";
-import { format } from "date-fns";
+import { format, parseISO, addDays } from "date-fns";
 // import Link from "next/link";
 // import { se, th } from "date-fns/locale";
 import CardMenuSL from "./CardMenuSL";
@@ -13,14 +13,16 @@ interface block {
 }
 
 const formatDate = (isoString: string): string => {
-  const date = new Date(isoString); // ใช้ new Date() แทน parseISO
+  const date = parseISO(isoString);
   return format(date, "dd/MM/yyyy EEEE");
 };
+
 const formatTime = (isoString: string): string => {
-  const date = new Date(isoString); // ใช้ new Date() แทน parseISO
+  const date = parseISO(isoString);
   return format(date, "HH:mm");
 };
-const Shopside: React.FC<block> = ({ blockName }) => {
+
+const Shopside: React.FC<BlockProps> = ({ blockName }) => {
   const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
   const [selectedShopDetail, setSelectedShopDetail] = useState<ShopDetail>();
 
@@ -28,12 +30,12 @@ const Shopside: React.FC<block> = ({ blockName }) => {
     fetchMapDetail()
       .then((data) => setMapDetails(data))
       .catch((error) => console.error("Error fetching map details:", error));
-    // console.log("mapDetails: ", mapDetails);
   }, []);
 
   const selectedBlock = mapDetails.find(
     (block) => blockName === block.block_name
   );
+
   useEffect(() => {
     if (selectedBlock) {
       fetchShopById(selectedBlock.shop_id)
@@ -47,6 +49,14 @@ const Shopside: React.FC<block> = ({ blockName }) => {
     sessionStorage.setItem("previousPage", window.location.pathname);
     router.push(`/shop/${selectedShopDetail?.shop_id}`);
   };
+
+  // กรองเฉพาะวันที่อยู่ในช่วงปัจจุบันถึง 30 วันข้างหน้า
+  const filteredDates = selectedShopDetail?.shop_open_dates.filter((date) => {
+    const startTime = parseISO(date.start_time);
+    const now = new Date();
+    const thirtyDaysFromNow = addDays(now, 30);
+    return startTime >= now && startTime <= thirtyDaysFromNow;
+  });
 
   return (
     <div className="p-4 font-lexend text-[#4C4343] h-[100%]">
@@ -178,16 +188,15 @@ const Shopside: React.FC<block> = ({ blockName }) => {
               </svg>
               Business Hours
             </p>
-            {selectedShopDetail?.shop_open_dates ? (
+            {filteredDates && filteredDates.length > 0 ? (
               <ul>
-                {Array.isArray(selectedShopDetail.shop_open_dates) &&
-                  selectedShopDetail.shop_open_dates.map((date, index) => (
-                    <li key={index} className="text-[14px] font-light">
-                      {`${formatDate(date.start_time)} ${formatTime(
-                        date.start_time
-                      )} - ${formatTime(date.end_time)}`}
-                    </li>
-                  ))}
+                {filteredDates.map((date, index) => (
+                  <li key={index} className="text-[14px] font-light">
+                    {`${formatDate(date.start_time)} ${formatTime(
+                      date.start_time
+                    )} - ${formatTime(date.end_time)}`}
+                  </li>
+                ))}
               </ul>
             ) : (
               <p className="text-[14px] font-light">Not available</p>
