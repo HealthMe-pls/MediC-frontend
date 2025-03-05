@@ -12,11 +12,11 @@ import { format, addDays, subDays  } from "date-fns";
 import { isAfter, isBefore } from "date-fns";
 
 const formatDate = (isoString: string): string => {
-  const date = new Date(isoString); // ใช้ new Date() แทน parseISO
+  const date = new Date(isoString);
   return format(date, "dd/MM/yyyy EEEE");
 };
 const formatTime = (isoString: string): string => {
-  const date = new Date(isoString); // ใช้ new Date() แทน parseISO
+  const date = new Date(isoString);
   return format(date, "HH:mm");
 };
 
@@ -28,7 +28,7 @@ const ShopPage = () => {
 
   const filteredDates = shopDetail?.shop_open_dates
   .filter((date) => {
-    const startTime = new Date(date.start_time); // ใช้ new Date() แทน parseISO
+    const startTime = new Date(date.start_time);
     const now = new Date();
     const thirtyDaysFromNow = addDays(now, 30);
     const oneDayBeforeNow = subDays(now, 1);
@@ -36,8 +36,8 @@ const ShopPage = () => {
     return startTime >= oneDayBeforeNow && startTime <= thirtyDaysFromNow;
   })
   .sort((a, b) => {
-    const startTimeA = new Date(a.start_time); // ใช้ new Date() แทน parseISO
-    const startTimeB = new Date(b.start_time); // ใช้ new Date() แทน parseISO
+    const startTimeA = new Date(a.start_time);
+    const startTimeB = new Date(b.start_time);
 
     return startTimeA.getTime() - startTimeB.getTime();
   });
@@ -50,8 +50,8 @@ const checkShopOpenStatus = () => {
   const now = new Date();
 
   const isOpen = filteredDates.some((date) => {
-    const startTime = new Date(date.start_time); // ใช้ new Date() แทน parseISO
-    const endTime = new Date(date.end_time); // ใช้ new Date() แทน parseISO
+    const startTime = new Date(date.start_time);
+    const endTime = new Date(date.end_time);
 
     return isAfter(now, startTime) && isBefore(now, endTime);
   });
@@ -67,7 +67,6 @@ const checkShopOpenStatus = () => {
         try {
           const data = await fetchShopById(Number(id));
           setShopDetail(data);
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           setError("Failed to fetch shop details");
         } finally {
@@ -112,7 +111,7 @@ const checkShopOpenStatus = () => {
                     <p className="font-light">{shopDetail.category}</p>
                   </div>
                   <p className="text-green-500 font-light text-[14px]">
-                    {shopDetail?.open_status ? (
+                    {shopStatus ? (
                       <svg
                         width="73"
                         height="23"
@@ -156,16 +155,15 @@ const checkShopOpenStatus = () => {
                   </svg>
                   <p>Business Hours</p>
                 </div>
-                {shopDetail?.shop_open_dates ? (
+                {filteredDates && filteredDates.length > 0 ? (
                   <ul>
-                    {Array.isArray(shopDetail.shop_open_dates) &&
-                      shopDetail.shop_open_dates.map((date, index) => (
-                        <li key={index} className="text-[14px] font-light">
-                          {`${formatDate(date.start_time)} ${formatTime(
-                            date.start_time
-                          )} - ${formatTime(date.end_time)}`}
-                        </li>
-                      ))}
+                    {filteredDates.map((date, index) => (
+                      <li key={index} className="text-[14px] font-light">
+                        {`${formatDate(date.start_time)} ${formatTime(
+                          date.start_time
+                        )} - ${formatTime(date.end_time)}`}
+                      </li>
+                    ))}
                   </ul>
                 ) : (
                   <p className="text-[14px] font-light">Not available</p>
