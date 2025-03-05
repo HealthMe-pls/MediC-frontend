@@ -429,7 +429,10 @@ const ShopTable: React.FC<ShopTableProps> = ({
       const formattedShopHours = await Promise.all(
         shopHours.map(async (item) => {
           const date = await fetcMarketOpenDatesById(item.market_open_date_id);
-          const dateformatted = new Date(date.date).toISOString().split("T")[0];
+          const newDate = new Date(date.date);
+          newDate.setDate(newDate.getDate() + 1);
+
+          const dateformatted = newDate.toISOString().split("T")[0];
           return {
             ...item,
             start_time: `${dateformatted}T${item.start_time}+07:00`,

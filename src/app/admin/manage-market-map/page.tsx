@@ -15,6 +15,7 @@ import {
   SocialFormData,
   MenuFormData,
   PhotoForm,
+  ShopOpenDates,
 } from "@/app/components/types";
 import CategoryManager from "@/app/components/CategoryManager";
 import AdminLayouts from "@/app/layouts/AdminLayouts";
@@ -28,6 +29,8 @@ import {
   uploadPhotoMenuByAdmin,
   uploadPhotoShopByAdmin,
 } from "@/utility/photo";
+import { createShopTime } from "@/utility/manageshophour";
+import { fetcMarketOpenDatesById } from "@/utility/ManageMarketHours";
 
 export default function AdminPageComponent() {
   const [blocks, setBlocks] = useState<
@@ -118,24 +121,50 @@ export default function AdminPageComponent() {
     formData: ShopFormData,
     socialData: SocialFormData[],
     menuData: MenuFormData[],
-    PhotoData: PhotoForm
+    PhotoData: PhotoForm,
+    shopHours: ShopOpenDates[]
   ) => {
     try {
-      await createShopByAdmin(formData); // รอให้ API สร้างร้านค้าเสร็จ
-      const shop = await fetchShopByName(formData.name); // ใช้ await เพื่อรอข้อมูล
+      const shop = await createShopByAdmin(formData); // รอให้ API สร้างร้านค้าเสร็จ
 
-      console.log(shop);
-
-      if (shop && shop.id) {
+      if (shop && shop.shop_id) {
         // ตรวจสอบว่ามี id กลับมาหรือไม่
         for (const social of socialData) {
           const newSocial = {
             name: social.name,
             platform: social.platform,
             link: social.link,
-            shop_id: shop.id, // ใช้ id จาก response
+            shop_id: shop.shop_id, // ใช้ id จาก response
           };
           await createSocialByAdmin(newSocial); // เรียก API สำหรับ Social ทีละตัว
+        }
+
+        const formattedShopHours = await Promise.all(
+          shopHours.map(async (item) => {
+            const date = await fetcMarketOpenDatesById(
+              item.market_open_date_id
+            );
+            const newDate = new Date(date.date);
+            newDate.setDate(newDate.getDate() + 1);
+
+            const dateformatted = newDate.toISOString().split("T")[0];
+            return {
+              ...item,
+              start_time: `${dateformatted}T${item.start_time}+07:00`,
+              end_time: `${dateformatted}T${item.end_time}+07:00`,
+            };
+          })
+        );
+
+        for (const time of formattedShopHours) {
+          const createTime = {
+            start_time: time.start_time,
+            end_time: time.end_time,
+            market_open_date_id: time.market_open_date_id,
+            shop_id: shop.shop_id,
+          };
+          console.log(createTime);
+          await createShopTime(createTime);
         }
 
         for (const menu of menuData) {
@@ -143,10 +172,10 @@ export default function AdminPageComponent() {
             product_name: menu.product_name,
             product_description: menu.product_description,
             price: menu.price,
-            shop_id: shop.id, // ใช้ id จาก response
+            shop_id: shop.shop_id, // ใช้ id จาก response
           };
           await createMenuByAdmin(newMenu); // เรียก API สำหรับ Social ทีละตัว
-          const shopDe = await fetchShopById(shop.id);
+          const shopDe = await fetchShopById(shop.shop_id);
           const createdmenu = shopDe.menus.find(
             (m) => menu.product_name === m.product_name
           );
@@ -156,11 +185,11 @@ export default function AdminPageComponent() {
         }
 
         if (PhotoData.cover_img && PhotoData.cover_img instanceof File)
-          await uploadPhotoShopByAdmin(PhotoData.cover_img, shop.id);
+          await uploadPhotoShopByAdmin(PhotoData.cover_img, shop.shop_id);
         if (PhotoData.sec_img && PhotoData.sec_img instanceof File)
-          await uploadPhotoShopByAdmin(PhotoData.sec_img, shop.id);
+          await uploadPhotoShopByAdmin(PhotoData.sec_img, shop.shop_id);
         if (PhotoData.thr_img && PhotoData.thr_img instanceof File)
-          await uploadPhotoShopByAdmin(PhotoData.thr_img, shop.id);
+          await uploadPhotoShopByAdmin(PhotoData.thr_img, shop.shop_id);
 
         console.log("Shop created successfully!");
         setIsShopModalOpen(false);
