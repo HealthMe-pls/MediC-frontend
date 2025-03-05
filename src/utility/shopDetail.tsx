@@ -21,6 +21,7 @@ export interface ShopOpenDates {
   end_time: string;
   id: number;
   start_time: string;
+  market_open_date_id: number;
 }
 
 // Interface สำหรับข้อมูลเมนูร้านค้า (กรณีที่ต้องการรายละเอียดเมนู)

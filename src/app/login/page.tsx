@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginEntrepreneur, AuthResponse } from "@/utility/login";
 import styles from "./login.module.css";
-const Logo = "./public/assets/logo.png";
+import Logo from "../../../public/assets/logo.png";
 import Image from "next/image";
 
 const Login = () => {
@@ -34,7 +34,7 @@ const Login = () => {
   };
 
   const handleForgotPassword = () => {
-    alert("Forgot password feature is not implemented yet.");
+    router.push("/vendor/contactToAdmin");
   };
 
   return (
@@ -103,8 +103,8 @@ const Login = () => {
               src={Logo}
               alt="Logo"
               className={styles.logo}
-              width={100}
-              height={100}
+              width={200}
+              height={200}
             />
           </div>
 

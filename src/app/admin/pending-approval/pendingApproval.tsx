@@ -33,7 +33,7 @@ export interface TempMenu {
   price: number;
   shop_id: number;
   is_public: boolean;
-  photos: string[];
+  photos: Photo[];
 }
 
 export interface Photo {
