@@ -48,52 +48,46 @@ const MenuForm: React.FC<MenuFormProps> = ({
         <tbody>
           {menuFormData.map((menu, index) => (
             <tr key={menu.id}>
-              <td className="p-2 border">
+              <td className="p-2 border text-center align-middle">
                 <div
-                  className="relative w-24 h-24 border rounded flex items-center justify-center overflow-hidden cursor-pointer"
-                  onClick={() =>
-                    document.getElementById(`fileInput-${index}`)?.click()
-                  }
+                  className={`relative w-24 h-24 border rounded flex items-center justify-center overflow-hidden cursor-pointer mx-auto group ${
+                    disabled ? "" : "group-hover:opacity-100"
+                  }`}
+                  onClick={() => !disabled && document.getElementById(`fileInput-${index}`)?.click()}
                 >
+                  {/* ถ้ามีรูป */}
                   {menu.img ? (
-                    <div className="relative w-full h-full group">
-                      <Image
-                        src={
-                          menu.img instanceof File
-                            ? URL.createObjectURL(menu.img)
-                            : menu.img
-                        }
-                        alt="Preview"
-                        className="w-full h-full object-cover"
-                        width={200}
-                        height={200}
-                        onError={(
-                          e: React.SyntheticEvent<HTMLImageElement, Event>
-                        ) => {
-                          const target = e.currentTarget as HTMLImageElement;
-                          target.onerror = null;
-                          onMenuChange(index, "img", "");
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-black/25 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                        <span className="text-white">Upload</span>
-                      </div>
-                    </div>
+                    <Image
+                      src={
+                        menu.img instanceof File
+                          ? URL.createObjectURL(menu.img)
+                          : menu.img
+                      }
+                      alt="Preview"
+                      className={`w-full h-full object-cover transition-opacity duration-300 ${
+                        disabled ? "" : "group-hover:opacity-0.5"
+                      }`}
+                      width={200}
+                      height={200}
+                      onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                        const target = e.currentTarget as HTMLImageElement;
+                        target.onerror = null;
+                        onMenuChange(index, "img", "");
+                      }}
+                    />
                   ) : (
-                    <div>
-                      {disabled ? (
-                        <p className="text-gray-400 italic">No Image</p>
-                      ) : (
-                        <button
-                          type="button"
-                          className="bg-gray-200 text-gray-600 p-2 rounded"
-                        >
-                          Upload
-                        </button>
-                      )}
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-400 italic transition-opacity duration-300 opacity-0.5">
+                      No Image
+                    </div>
+                  )}
+
+                  {!disabled && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      Upload
                     </div>
                   )}
                 </div>
+                
                 <input
                   id={`fileInput-${index}`}
                   type="file"
@@ -107,18 +101,9 @@ const MenuForm: React.FC<MenuFormProps> = ({
                   disabled={disabled}
                 />
               </td>
-              <td className="p-2 border h-24">
-                <input
-                  type="text"
-                  value={menu.product_name}
-                  onChange={(e) =>
-                    onMenuChange(index, "product_name", e.target.value)
-                  }
-                  className="border p-1 w-full h-full"
-                  placeholder="Product Name"
-                  disabled={disabled}
-                />
-              </td>
+
+
+
               <td className="p-2 border relative">
                 <div className="relative">
                   <textarea
