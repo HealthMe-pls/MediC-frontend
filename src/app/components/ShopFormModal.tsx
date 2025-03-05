@@ -274,6 +274,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
           {initialData?.name ? "Edit Shop" : "Add Shop"}
         </h2>
 
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Shop Details Section */}
           <ShopDetailsSection

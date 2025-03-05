@@ -103,8 +103,8 @@ const Login = () => {
               src={Logo}
               alt="Logo"
               className={styles.logo}
-              width={200}
-              height={200}
+              width={100}
+              height={100}
             />
           </div>
 

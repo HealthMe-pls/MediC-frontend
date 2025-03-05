@@ -404,6 +404,8 @@ const ShopTable: React.FC<ShopTableProps> = ({
     }
   };
 
+  
+
   const handleSubmit = async (
     formData: ShopFormData,
     socialData: SocialFormData[],

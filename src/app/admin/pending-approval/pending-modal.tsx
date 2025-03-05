@@ -119,6 +119,31 @@ export default function PendingModal({ onClose, tempshop }: PendingModalProps) {
                   )
                 )}
               </ul>
+              <p>Updated Opening Schedule :</p>
+              <div className="flex flex-row">
+                <ul>
+                  {Array.isArray(shop.shop_open_dates) &&
+                    shop.shop_open_dates.map(
+                      (date: ShopOpenDates, index: number) => (
+                        <li key={index} className="text-[14px] font-light">
+                          {`${formatDate(date.start_time)} ${formatTime(
+                            date.start_time
+                          )} - ${formatTime(date.end_time)}`}
+                        </li>
+                      )
+                    )}
+                </ul>
+                <ul>
+                  {Array.isArray(tempshop.time) &&
+                    tempshop.time.map((date: ShopOpenDates, index: number) => (
+                      <li key={index} className="text-[14px] font-light">
+                        {`${formatDate(date.start_time)} ${formatTime(
+                          date.start_time
+                        )} - ${formatTime(date.end_time)}`}
+                      </li>
+                    ))}
+                </ul>
+              </div>
             </div>
             <p className="font-normal">Menu:</p>
             <div className="px-4">

@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import Footer from "@/app/layouts/Footer";
 import BackButton from "@/app/components/BackButton";
 import ImageBanner from "@/app/components/ImageBanner";
+import Header from "@/app/layouts/Header";
 
 const formatDate = (isoString: string | null): string => {
   if (!isoString) return "N/A";
@@ -52,14 +53,13 @@ const WorkshopDetail = () => {
 
   return (
     <div className="font-lexend text-[#4C4343] bg-[#FFF7EB] min-h-screen flex flex-col justify-between">
-      <BackButton previousPage={previousPage} />
-
+      <Header/>
       <div className="flex flex-row justify-between">
         <div></div>
-        <div className="md:mt-[75px] ">
+        <div className="">
           {workshopDetail ? (
-            <div className=" font-lexend text-[#4C4343] flex flex-col md:flex-row flex-auto mt-[55px] p-4 md:bg-white rounded-xl">
-              <div className="mt-7 ml-5">
+            <div className=" font-lexend text-[#4C4343] flex flex-col md:flex-row flex-auto p-4 md:bg-white rounded-xl">
+              <div className=" ml-5">
                 <h1 className=" mb-2 text-[25px]">{workshopDetail?.name}</h1>
                 <p className="mb-2 text-[#4C4343] text-[14px] font-light block md:hidden">
                   &emsp;&emsp;{workshopDetail?.description}

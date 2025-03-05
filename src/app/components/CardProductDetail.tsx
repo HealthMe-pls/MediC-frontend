@@ -36,7 +36,7 @@ const CardProductDetail: React.FC<CardMenuProps> = ({ menu }) => {
           )}
         </div>
         {/* รายละเอียดของสินค้า */}
-        <div className="flex flex-col justify-center content-start h-[100%]">
+        <div className="flex flex-col justify-center content-start h-[100%] w-[300px]">
           <h5 className="font-medium text-[14px]">{menu.product_name}</h5>
           <p className="font-medium text-[13px]">
             {menu.price.toFixed(2)} Baht

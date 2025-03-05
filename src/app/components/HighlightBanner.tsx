@@ -135,18 +135,18 @@ const HighlightBanner = () => {
         >
           {workshops.map((workshop, index) => (
             <div
-            key={workshop.id}
-            className={`relative flex-shrink-0 bg-white shadow-lg rounded-lg aspect-[21/30] max-w-[210px] max-h-[300px] hover:border hover:border-gray-300 ${
-              workshops.length < workshopsPerView ? "mx-3" : "mx-auto"
-            }`}
-            style={{
-              display:
-                index >= currentIndex && index < currentIndex + workshopsPerView
-                  ? "block"
-                  : "none",
-            }}
-          >
-      
+              key={workshop.id}
+              className={`relative flex-shrink-0 bg-white shadow-lg rounded-lg aspect-[21/30] max-w-[210px] max-h-[300px] hover:border hover:border-gray-300 ${
+                workshops.length < workshopsPerView ? "mx-3" : "mx-auto"
+              }`}
+              style={{
+                display:
+                  index >= currentIndex &&
+                  index < currentIndex + workshopsPerView
+                    ? "block"
+                    : "none",
+              }}
+            >
               <button
                 onClick={() => handleNavigation(workshop.id)}
                 className="mt-2 px-4 py-2 rounded-md"
@@ -157,8 +157,8 @@ const HighlightBanner = () => {
                       <Image
                         src={`${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`}
                         alt={workshop.name}
-                        width={180}
-                        height={180}
+                        width={80}
+                        height={80}
                         className="object-cover rounded-md w-full h-full max-w-[180px] max-h-[180px]"
                       />
                     ) : (

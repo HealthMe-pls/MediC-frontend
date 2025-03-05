@@ -65,6 +65,11 @@ export default function SearchBar({
     }
   };
 
+  // ฟังก์ชัน handleFocus
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+    event.preventDefault(); // หยุดการเลื่อนหน้า
+  };
+
   return (
     <div className="mb-1">
       {/* Search Bar */}
@@ -76,6 +81,7 @@ export default function SearchBar({
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           onKeyDown={handleKeyDown} // รองรับปุ่มลูกศรและ Enter
+          onFocus={handleFocus}
         />
       </div>
 
@@ -140,7 +146,9 @@ export default function SearchBar({
                       : ""
                   }
                 `}
-                onClick={() => shop?.shop_id !== undefined && handleSelectShop(shop.shop_id)}
+                onClick={() =>
+                  shop?.shop_id !== undefined && handleSelectShop(shop.shop_id)
+                }
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(-1)}
               >
