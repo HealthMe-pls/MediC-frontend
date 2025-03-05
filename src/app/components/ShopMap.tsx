@@ -17,24 +17,12 @@ export default function Map({
   mapUpdate: number;
 }) {
   const [mapDetails, setMapDetails] = useState<MapDetail[]>([]);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   useEffect(() => {
     fetchMapDetail()
       .then(setMapDetails)
       .catch((error) => console.error("Error fetching map details:", error));
   }, [mapUpdate]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
-
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const points = [
     { name: "A1", top: "81.5%", left: "58%" },
@@ -116,7 +104,6 @@ export default function Map({
           pointerEvents: "none" as React.CSSProperties["pointerEvents"],
         };
       }
-    } else {
     }
 
     let style: React.CSSProperties = {};
@@ -128,6 +115,28 @@ export default function Map({
         opacity: 0,
         pointerEvents: "none" as React.CSSProperties["pointerEvents"],
       };
+      if (role == "ipad") {
+        if (pointLetter === "A") {
+          style = {
+            ...style,
+            backgroundColor: "#FFEF9E",
+            pointerEvents: "none",
+          };
+        } else if (pointLetter === "B") {
+          style = {
+            ...style,
+            backgroundColor: "#D5EBD6",
+            pointerEvents: "none",
+          };
+        } else if (pointLetter === "C") {
+          style = {
+            ...style,
+            backgroundColor: "#CAE5F3",
+            pointerEvents: "none",
+          };
+        }
+        return style;
+      }
     } else if (matchShopID === 0) {
       if (categoryId === selectedCate || selectedCate === 0) {
         if (pointLetter === "A") {
@@ -164,11 +173,7 @@ export default function Map({
   };
 
   return (
-    // console.log("MapDetails", mapDetails),
-    <div
-      className="relative flex justify-center items-center"
-      style={{ pointerEvents: isMobile ? "none" : "auto" }}
-    >
+    <div className="relative flex justify-center items-center">
       <img
         src="/assets/MarketMap.png"
         alt="Map"
@@ -184,15 +189,16 @@ export default function Map({
         return (
           <button
             key={point.name}
-            className={`ellipse ${point.name[0].toLowerCase()} sm:cursor-pointer sm:pointer-events-auto transition-transform`}
+            className={`ellipse ${point.name[0].toLowerCase()} sm:cursor-pointer sm:pointer-events-auto pointer-events-none transition-transform`}
             style={{
               top: point.top,
               left: point.left,
               ...getStyleForPoint(point.name, categoryId, shopId, matchShopID),
             }}
             onClick={() => {
-              // console.log(`Clicked on ${point.name}`);
-              setSelectedBlock(point.name);
+              if (role !== "ipad") {
+                setSelectedBlock(point.name);
+              }
             }}
           >
             <span className="ellipse-text">{point.name}</span>

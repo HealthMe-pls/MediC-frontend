@@ -1,6 +1,5 @@
 "use client";
-/* eslint-disable */
-import Link from "next/link";
+
 import { useEffect, useState, useRef } from "react";
 import { fetchMapDetail, MapDetail } from "../utility/maps";
 import Header from "./layouts/Header";
@@ -34,43 +33,19 @@ export default function Home() {
     setShowGif(false);
   };
 
-  function useWindowWidth() {
-    const [width, setWidth] = useState<number | null>(null);
-
-    useEffect(() => {
-      if (typeof window === "undefined") return;
-
-      const handleResize = () => {
-        setWidth(window.innerWidth);
-      };
-
-      // Set initial width when component mounts
-      setWidth(window.innerWidth);
-
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }, []);
-
-    return width;
-  }
-
-  const windowWidth = useWindowWidth() || 0;
-
   useEffect(() => {
     if (matchShopID !== 0) {
       setTimeout(() => {
-        // เลื่อนแค่ shopListRef เมื่อ matchShopID เปลี่ยน
         shopListRef.current?.scrollIntoView({
           behavior: "smooth",
           block: "start",
           inline: "nearest",
         });
 
-        // ลบ window.scrollTo ออกเพื่อไม่ให้หน้าจอเลื่อน
-        // window.scrollTo({
-        //   top: 850,
-        //   behavior: "smooth",
-        // });
+        window.scrollTo({
+          top: 850,
+          behavior: "smooth",
+        });
       }, 300);
     }
   }, [matchShopID]);
@@ -107,9 +82,6 @@ export default function Home() {
   }, [selectedCate, matchShopID]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    // ป้องกันการรีเฟรชหน้าและการเลื่อน
-    event.preventDefault();
-    event.stopPropagation();
     const newSelectedCate = Number(event.target.value);
     setSelectedCate(newSelectedCate);
     setMatchShopID(0);
@@ -119,19 +91,6 @@ export default function Home() {
     setSelectedCate(categoryId);
     setMatchShopID(0);
   };
-
-  // ป้องกันไม่ให้เกิดการเลื่อนหน้าจอโดยอัตโนมัติ
-  const handleFocus = (event: React.FocusEvent<HTMLSelectElement>) => {
-    // ตั้งค่า event.preventDefault() เพื่อหยุดการเลื่อนหน้าเมื่อเลือก
-    event.preventDefault();
-  };
-
-  useEffect(() => {
-    // เมื่อเลือก category แล้ว จะทำให้หน้าจอไม่เลื่อน
-    if (selectedCate !== 0) {
-      window.scrollTo(0, 0); // รีเซ็ตตำแหน่งของหน้าจอไปที่ด้านบน
-    }
-  }, [selectedCate]); // ฟังก์ชันนี้จะทำงานเมื่อ selectedCate เปลี่ยนแปลง
 
   useEffect(() => {
     if (matchShopID !== 0) {
@@ -160,7 +119,7 @@ export default function Home() {
           Market Map
         </h2>
         <div className="mobile-view">
-          <div className="mb-6 mt-2 z-[9999]">
+          <div className="mb-6 mt-2 ">
             <div>
               <SearchBar
                 setSelectedCate={setSelectedCate}
@@ -176,65 +135,25 @@ export default function Home() {
             />
           </div>
         </div>
-
-        {windowWidth >= 1025 ? (
-          <div className="sm:flex hidden w-full gap-8 flex-wrap lg:flex-nowrap justify-center mb-[32px]">
-            <div className="w-[600px] min-w-[600px] flex justify-center z-index-10">
-              <Map
-                selectedCate={selectedCate}
-                setSelectedBlock={setSelectedBlock}
-                matchShopID={matchShopID}
-                role=""
-                mapUpdate={Date.now()}
-              />
-            </div>
-
-            <div className="relative w-[570px] min-w-[500px] flex justify-center flex-wrap flex-col overflow-visible">
-              <div className="absolute z-50 top-8 left-6 flex flex-wrap desktop-view mx-auto">
-                <div className="flex-1 mr-2">
-                  <SearchBar
-                    setSelectedCate={setSelectedCate}
-                    setMatchShopID={setMatchShopID}
-                  />
-                </div>
-                <div className="flex-1 ml-2">
-                  <Filter
-                    shopCategory={shopCategory}
-                    selectedCate={selectedCate}
-                    onSelectCategory={handleCategorySelect}
-                    setMatchShopID={setMatchShopID}
-                  />
-                </div>
-              </div>
-              <div className="w-full pt-16">
-                {showGif && !selectedBlock ? (
-                  <div className="relative  w-full z-index-1">
-                    <Image
-                      src={Mapguide}
-                      alt="GIF"
-                      width={800}
-                      height={600}
-                      unoptimized
-                      className="w-full h-auto max-h-[570px] object-contain mapguide-hidden"
-                    />
-                    <button
-                      onClick={handleCloseGif}
-                      className="absolute top-2 right-16 p-1 rounded-full mr-2 mt-2"
-                      aria-label="Close"
-                    >
-                      <span className="text-opacity-50 text-black text-[50px] mapguide-hidden">
-                        ×
-                      </span>
-                    </button>
-                  </div>
-                ) : (
-                  <Shopside blockName={selectedBlock} />
-                )}
-              </div>
-            </div>
+        <div className="flex flex-wrap ipad-view w-[575px] justify-center mx-auto">
+          <div className="flex-1 mr-2">
+            <SearchBar
+              setSelectedCate={setSelectedCate}
+              setMatchShopID={setMatchShopID}
+            />
           </div>
-        ) : (
-          <div className="mobile-view block">
+          <div className="flex-1 ml-2">
+            <Filter
+              shopCategory={shopCategory}
+              selectedCate={selectedCate}
+              onSelectCategory={handleCategorySelect}
+              setMatchShopID={setMatchShopID}
+            />
+          </div>
+        </div>
+
+        <div className="sm:flex hidden w-full gap-8 flex-wrap lg:flex-nowrap justify-center mb-[32px]">
+          <div className="desktop-view w-[600px] min-w-[600px] flex justify-center z-index-10">
             <Map
               selectedCate={selectedCate}
               setSelectedBlock={setSelectedBlock}
@@ -243,9 +162,81 @@ export default function Home() {
               mapUpdate={Date.now()}
             />
           </div>
-        )}
+          <div className="ipad-view mx-auto w-[600px] min-w-[600px] flex justify-center z-index-10">
+            <Map
+              selectedCate={selectedCate}
+              setSelectedBlock={setSelectedBlock}
+              matchShopID={matchShopID}
+              role="ipad"
+              mapUpdate={Date.now()}
+            />
+          </div>
 
-        <div className="mt-6 mobile-view" ref={shopListRef}>
+          <div className="relative w-[570px] min-w-[500px] flex justify-center flex-wrap flex-col overflow-visible">
+            <div className="absolute z-50 top-8 left-6 flex flex-wrap desktop-view mx-auto">
+              <div className="flex-1 mr-2">
+                <SearchBar
+                  setSelectedCate={setSelectedCate}
+                  setMatchShopID={setMatchShopID}
+                />
+              </div>
+              <div className="flex-1 ml-2">
+                <Filter
+                  shopCategory={shopCategory}
+                  selectedCate={selectedCate}
+                  onSelectCategory={handleCategorySelect}
+                  setMatchShopID={setMatchShopID}
+                />
+              </div>
+            </div>
+            <div className="w-full absolute top-24">
+              {showGif && !selectedBlock ? (
+                <div className="relative w-full z-index-1">
+                  <Image
+                    src={Mapguide}
+                    alt="GIF"
+                    width={800}
+                    height={600}
+                    unoptimized
+                    className="w-full h-auto max-h-[570px] object-contain mapguide-hidden"
+                  />
+                  <button
+                    onClick={handleCloseGif}
+                    className="absolute top-2 right-16 p-1 rounded-full mr-2 mt-2"
+                    aria-label="Close"
+                  >
+                    <span className="text-opacity-50 text-black text-[50px] mapguide-hidden">
+                      ×
+                    </span>
+                  </button>
+                </div>
+              ) : (
+                <Shopside blockName={selectedBlock} />
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="mt-6 ipad-view ref={shopListRef}">
+          <Shoplist
+            label=""
+            onCateChange={handleSearchChange}
+            Cateid={selectedCate}
+            setMatchShopID={setMatchShopID}
+            matchShop={matchShopID}
+          />
+        </div>
+
+        <div className="mobile-view block">
+          <Map
+            selectedCate={selectedCate}
+            setSelectedBlock={setSelectedBlock}
+            matchShopID={matchShopID}
+            role=""
+            mapUpdate={Date.now()}
+          />
+        </div>
+
+        <div className="mt-6 mobile-view ref={shopListRef}">
           <Shoplist
             label=""
             onCateChange={handleSearchChange}

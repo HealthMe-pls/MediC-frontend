@@ -96,38 +96,23 @@ img {
   }
 }
 
-/* @media (min-width: 1024px) {
-  .ipad-view, .mobile-view {
-    display: none;
-  }
-} */
-
-/* @media (max-width: 1024px) and (min-width: 640px) {
-  .desktop-view, .mobile-view {
-    display: none;
-  }
-} */
-
-/* @media (max-width: 640px) {
-  .desktop-view, .ipad-view {
-    display: none;
-  }
-} */
-
-.ipad-view {
-  display: none;
-}
-
-/* Desktop view for screens 1025px and up */
 @media (min-width: 1024px) {
+  .ipad-view,
   .mobile-view {
     display: none;
   }
 }
 
-/* Mobile view for screens 1024px and down */
-@media (max-width: 1025px) {
-  .desktop-view {
+@media (max-width: 1024px) and (min-width: 640px) {
+  .desktop-view,
+  .mobile-view {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .desktop-view,
+  .ipad-view {
     display: none;
   }
 }
