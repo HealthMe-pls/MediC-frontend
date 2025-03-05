@@ -3,7 +3,7 @@
 import { useState } from "react";
 // import { createMail } from "../../../utility/contactToAdmin";
 import { Dialog } from "@headlessui/react";
-import Logo from "../../../../../public/assets/logo.png";
+import Logo from "../../../../public/assets/logo.png";
 import Image from "next/image";
 
 export default function ManageVendor() {

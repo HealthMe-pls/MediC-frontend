@@ -11,6 +11,7 @@ interface MenuFormProps {
     value: string | number | File
   ) => void;
   onRemoveMenu: (index: number) => void;
+  disabled: boolean;
 }
 
 const MenuForm: React.FC<MenuFormProps> = ({
@@ -18,18 +19,21 @@ const MenuForm: React.FC<MenuFormProps> = ({
   onAddMenu,
   onMenuChange,
   onRemoveMenu,
+  disabled = false,
 }) => {
   return (
     <div>
       <div className="flex flex-row items-center mt-4 mb-4">
         <p className="mr-3">Menus:</p>
-        <button
-          type="button"
-          onClick={onAddMenu}
-          className="bg-green-200 w-[50px] h-[30px] rounded ml-4"
-        >
-          Add
-        </button>
+        {!disabled && (
+          <button
+            type="button"
+            onClick={onAddMenu}
+            className="bg-green-200 w-[50px] h-[30px] rounded ml-4"
+          >
+            Add
+          </button>
+        )}
       </div>
       <table className="w-full border">
         <thead>
@@ -38,7 +42,7 @@ const MenuForm: React.FC<MenuFormProps> = ({
             <th className="p-2 border">Product Name</th>
             <th className="p-2 border">Description</th>
             <th className="p-2 border">Price</th>
-            <th className="p-2 border">Actions</th>
+            {!disabled && <th className="p-2 border">Actions</th>}
           </tr>
         </thead>
         <tbody>
@@ -76,12 +80,18 @@ const MenuForm: React.FC<MenuFormProps> = ({
                       </div>
                     </div>
                   ) : (
-                    <button
-                      type="button"
-                      className="bg-gray-200 text-gray-600 p-2 rounded"
-                    >
-                      Upload
-                    </button>
+                    <div>
+                      {disabled ? (
+                        <p className="text-gray-400 italic">No Image</p>
+                      ) : (
+                        <button
+                          type="button"
+                          className="bg-gray-200 text-gray-600 p-2 rounded"
+                        >
+                          Upload
+                        </button>
+                      )}
+                    </div>
                   )}
                 </div>
                 <input
@@ -94,6 +104,7 @@ const MenuForm: React.FC<MenuFormProps> = ({
                     }
                   }}
                   className="hidden"
+                  disabled={disabled}
                 />
               </td>
               <td className="p-2 border h-24">
@@ -105,6 +116,7 @@ const MenuForm: React.FC<MenuFormProps> = ({
                   }
                   className="border p-1 w-full h-full"
                   placeholder="Product Name"
+                  disabled={disabled}
                 />
               </td>
               <td className="p-2 border relative">
@@ -124,6 +136,7 @@ const MenuForm: React.FC<MenuFormProps> = ({
                     onBlur={() => (document.body.style.overflow = "auto")}
                     className="border p-2 w-full h-24 resize-none pr-10 scrollbar-hide"
                     placeholder="Description (Max 200 characters)"
+                    disabled={disabled}
                   />
                   <span className="absolute bottom-1 right-2 text-xs text-gray-500 mb-2">
                     {menu.product_description.length}/200
@@ -140,17 +153,21 @@ const MenuForm: React.FC<MenuFormProps> = ({
                   }}
                   className="border p-1 w-full appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   placeholder="Price"
+                  disabled={disabled}
                 />
               </td>
-              <td className="p-2 border text-center">
-                <button
-                  type="button"
-                  onClick={() => onRemoveMenu(index)}
-                  className="bg-red-500 text-white p-1 rounded"
-                >
-                  Remove
-                </button>
-              </td>
+              {!disabled && (
+                <td className="p-2 border text-center">
+                  <button
+                    type="button"
+                    onClick={() => onRemoveMenu(index)}
+                    className="bg-red-500 text-white p-1 rounded"
+                    disabled={disabled}
+                  >
+                    Remove
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

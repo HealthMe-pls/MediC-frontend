@@ -12,6 +12,8 @@ interface ShopDetailsSectionProps {
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => void;
+  disabled: boolean;
+  isTemp: boolean;
 }
 
 const ShopDetailsSection: React.FC<ShopDetailsSectionProps> = ({
@@ -19,6 +21,8 @@ const ShopDetailsSection: React.FC<ShopDetailsSectionProps> = ({
   categories,
   entrepreneurs,
   onChange,
+  disabled = false,
+  isTemp = false,
 }) => {
   return (
     <>
@@ -31,6 +35,7 @@ const ShopDetailsSection: React.FC<ShopDetailsSectionProps> = ({
           onChange={onChange}
           placeholder="Shop Name"
           className="border p-2 rounded w-full"
+          disabled={disabled}
         />
       </div>
       <div className="flex flex-row items-center">
@@ -40,6 +45,7 @@ const ShopDetailsSection: React.FC<ShopDetailsSectionProps> = ({
           value={formData.shop_category_id}
           onChange={onChange}
           className="border p-2 rounded w-full"
+          disabled={disabled}
         >
           <option value="" disabled>
             Select Category
@@ -60,26 +66,30 @@ const ShopDetailsSection: React.FC<ShopDetailsSectionProps> = ({
           placeholder="Description"
           className="border p-2 rounded resize-y min-h-[150px] max-h-[300px] w-full"
           rows={3}
+          disabled={disabled}
         />
       </div>
-      <div className="flex flex-row w-full items-center">
-        <p className="mr-2 w-[150px]">Owned By: </p>
-        <select
-          name="entrepreneur_id"
-          value={formData.entrepreneur_id}
-          onChange={onChange}
-          className="border p-2 rounded w-full"
-        >
-          <option value="" disabled>
-            Select Entrepreneur
-          </option>
-          {entrepreneurs.map((entrepreneur) => (
-            <option key={entrepreneur.id} value={entrepreneur.id}>
-              {entrepreneur.username}
+      {!isTemp && (
+        <div className="flex flex-row w-full items-center">
+          <p className="mr-2 w-[150px]">Owned By: </p>
+          <select
+            name="entrepreneur_id"
+            value={formData.entrepreneur_id}
+            onChange={onChange}
+            className="border p-2 rounded w-full"
+            disabled={disabled}
+          >
+            <option value="" disabled>
+              Select Entrepreneur
             </option>
-          ))}
-        </select>
-      </div>
+            {entrepreneurs.map((entrepreneur) => (
+              <option key={entrepreneur.id} value={entrepreneur.id}>
+                {entrepreneur.username}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
     </>
   );
 };

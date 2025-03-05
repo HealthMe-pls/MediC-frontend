@@ -12,12 +12,14 @@ interface ImageUploadProps {
     key: "cover_img" | "sec_img" | "thr_img"
   ) => void;
   handleRemoveImage: (key: "cover_img" | "sec_img" | "thr_img") => void;
+  disabled: boolean;
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
   formImg,
   handleImageChange,
   handleRemoveImage,
+  disabled = false,
 }) => {
   const imageKeys: ("cover_img" | "sec_img" | "thr_img")[] = [
     "cover_img",
@@ -61,12 +63,18 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                   </div>
                 </div>
               ) : (
-                <button
-                  type="button"
-                  className="bg-gray-200 text-gray-600 p-2 rounded"
-                >
-                  Upload
-                </button>
+                <div>
+                  {disabled ? (
+                    <p className="text-gray-400 italic">No Image</p>
+                  ) : (
+                    <button
+                      type="button"
+                      className="bg-gray-200 text-gray-600 p-2 rounded"
+                    >
+                      Upload
+                    </button>
+                  )}
+                </div>
               )}
             </div>
             <input
@@ -75,12 +83,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               accept="image/*"
               onChange={(e) => handleImageChange(e, key)}
               className="hidden"
+              disabled={disabled}
             />
           </div>
           {formImg[key] && formImg[key] !== "" && (
             <button
               type="button"
               onClick={() => handleRemoveImage(key)}
+              disabled={disabled}
               className="mt-2 bg-white border border-red-500 text-red-500 px-3 py-1 rounded-lg hover:bg-red-500 hover:text-white transition"
             >
               Remove Image

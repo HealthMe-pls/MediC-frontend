@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginEntrepreneur, AuthResponse } from "@/utility/login";
 import styles from "./login.module.css";
-const Logo = "./public/assets/logo.png";
+import Logo from "../../../public/assets/logo.png";
 import Image from "next/image";
 
 const Login = () => {

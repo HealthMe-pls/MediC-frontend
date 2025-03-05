@@ -12,9 +12,7 @@ import MarketHoursTable from "./MarketHoursTable";
 import { ShopOpenDates } from "./types";
 import { it } from "date-fns/locale";
 
-export interface ShopFormModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+export interface TempShopFormProps {
   onSubmit: (
     data: ShopFormData,
     socialData: SocialFormData[],
@@ -29,9 +27,7 @@ export interface ShopFormModalProps {
   initialShopHours?: ShopOpenDates[];
 }
 
-const ShopFormModal: React.FC<ShopFormModalProps> = ({
-  isOpen,
-  onClose,
+const TempShopForm: React.FC<TempShopFormProps> = ({
   onSubmit,
   initialData,
   initialSocialData = [],
@@ -53,6 +49,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
   );
   const [categories, setCategories] = useState<ShopCategory[]>([]);
   const [entrepreneurs, setEntrepreneurs] = useState<Entrepreneur[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
   const [formImg, setFormImg] = useState<PhotoForm>(
     initialPhotoData || {
       cover_id: 0,
@@ -159,44 +156,31 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
         thr_img: "",
       }
     );
-    // ไม่รีเซ็ต savedShopHours เพื่อให้ค่าที่แก้ไขไว้คงอยู่
-    // setSavedShopHours(initialShopHours || []);
   };
 
   useEffect(() => {
-    if (isOpen && !(initialData ?? null)) {
+    if (!(initialData ?? null)) {
       resetForm();
     }
-  }, [isOpen, initialData ?? null]);
+  }, [initialData ?? null]);
 
   useEffect(() => {
-    if (isOpen) {
-      const fetchData = async () => {
-        try {
-          const [categoriesData, entrepreneursData] = await Promise.all([
-            fetchShopCategory(),
-            fetchEntrepreneur(),
-          ]);
-          setCategories(categoriesData);
-          setEntrepreneurs(entrepreneursData);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
+    const fetchData = async () => {
+      try {
+        const [categoriesData, entrepreneursData] = await Promise.all([
+          fetchShopCategory(),
+          fetchEntrepreneur(),
+        ]);
+        setCategories(categoriesData);
+        setEntrepreneurs(entrepreneursData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
-  }, [isOpen]);
+
+    // ทำการเรียก fetchData เพียงครั้งเดียวหลังจาก component mount
+    fetchData();
+  }, []); // เพิ่ม array ว่าง [] เพื่อให้มันทำงานแค่ครั้งเดียว
 
   useEffect(() => {
     if (initialData) {
@@ -263,83 +247,67 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
       formImg,
       filteredShopHours
     );
-    onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[full] ml-[234px] relative max-h-[650px] overflow-y-auto scrollbar-hide">
-        <h2 className="text-xl mb-4">
-          {initialData?.name ? "Edit Shop" : "Add Shop"}
-        </h2>
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {/* Shop Details Section */}
-          <ShopDetailsSection
-            formData={formData}
-            categories={categories}
-            entrepreneurs={entrepreneurs}
-            onChange={handleChange}
-            disabled={false}
-            isTemp={false}
-          />
-
-          {/* Social Media Section */}
-          <SocialMediaForm
-            socialFormData={socialFormData}
-            onAddSocial={handleAddSocial}
-            onSocialChange={handleSocialChange}
-            onRemoveSocial={handleRemoveSocial}
-            disabled={false}
-          />
-          {/* Market Hours Section */}
+    <div>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-5">
+        {/* Disable input fields when not editing */}
+        <ShopDetailsSection
+          formData={formData}
+          categories={categories}
+          entrepreneurs={entrepreneurs}
+          onChange={handleChange}
+          disabled={!isEditing}
+          isTemp={true}
+        />
+        <SocialMediaForm
+          socialFormData={socialFormData}
+          onAddSocial={handleAddSocial}
+          onSocialChange={handleSocialChange}
+          onRemoveSocial={handleRemoveSocial}
+          disabled={!isEditing}
+        />
+        {isEditing && (
           <MarketHoursTable
             shopId={initialData?.id || 0}
             initialShopHours={initialShopHours}
             onShopHoursChange={handleShopHoursChange}
           />
-          <div className="my-1 ml-4">
-            <p className="mb-1">Shop Image :</p>
-            <ImageUpload
-              formImg={formImg}
-              handleImageChange={handleImageChange}
-              handleRemoveImage={handleRemoveImage}
-              disabled={false}
-            />
-          </div>
-          {/* Menu Section */}
-          <MenuForm
-            menuFormData={menuFormData}
-            onAddMenu={handleAddMenu}
-            onMenuChange={handleMenuChange}
-            onRemoveMenu={handleRemoveMenu}
-            disabled={false}
-          />
+        )}
+        <p className="mb-1">Shop Image :</p>
+        <ImageUpload
+          formImg={formImg}
+          handleImageChange={handleImageChange}
+          handleRemoveImage={handleRemoveImage}
+          disabled={!isEditing}
+        />
 
-          <div className="flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                resetForm();
-                onClose();
-              }}
-              className="p-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Save
-            </button>
-          </div>
-        </form>
-      </div>
+        <MenuForm
+          menuFormData={menuFormData}
+          onAddMenu={handleAddMenu}
+          onMenuChange={handleMenuChange}
+          onRemoveMenu={handleRemoveMenu}
+          disabled={!isEditing}
+        />
+        <div className="flex justify-center gap-2">
+          <button
+            type="submit"
+            onClick={() => {
+              setIsEditing(!isEditing);
+            }}
+            className={`p-2 rounded-[22px] text-[20px] w-[100px] h-[50px] ${
+              isEditing
+                ? "bg-blue-200 hover:bg-blue-300"
+                : "bg-gray-200 hover:bg-gray-300"
+            }`}
+          >
+            {isEditing ? "Save" : "Edit"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
 
-export default ShopFormModal;
+export default TempShopForm;

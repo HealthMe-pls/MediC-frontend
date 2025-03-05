@@ -137,7 +137,7 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
     setSelectedMonth((prev) => (prev === 11 ? 0 : prev + 1));
     if (selectedMonth === 11) setSelectedYear((prev) => prev + 1);
   };
-  
+
   const filteredDates = marketOpenDates.filter((item) => {
     const dateObj = new Date(item.date);
     return (
