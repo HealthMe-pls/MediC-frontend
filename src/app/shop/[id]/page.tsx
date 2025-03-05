@@ -24,13 +24,6 @@ const ShopPage = () => {
   const [shopDetail, setShopDetail] = useState<ShopDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [previousPage, setPreviousPage] = useState<string>("");
-
-  useEffect(() => {
-    setPreviousPage(sessionStorage.getItem("previousPage") || "/");
-
-    // console.log("previous shopdetail page: ", previousPage);
-  }, []);
 
   useEffect(() => {
     if (id) {
@@ -54,9 +47,7 @@ const ShopPage = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    
     <div className="font-lexend text-[#4C4343] bg-[#FFF7EB] min-h-screen flex flex-col justify-between">
-      
       {/*Mobile*/}
       <div className="sm:hidden ">
         <div>
@@ -221,7 +212,7 @@ const ShopPage = () => {
       </div>
 
       {/*Desktop*/}
-      <div className="hidden md:block"> 
+      <div className="hidden md:block">
         <Header />
         {shopDetail ? (
           <div className="bg-[#FFF7EB] flex flex-col items-center ">
@@ -274,27 +265,28 @@ const ShopPage = () => {
                     )}
                   </p>
                 </div>
-                {shopDetail.photos?.filter((photo) => photo.is_public)?.length >
-                  0 && (
-                  <div className="">
-                    <ImageBanner
-                      photos={shopDetail.photos.filter(
-                        (photo) => photo.is_public
-                      )}
-                      basePath="http://127.0.0.1:3000/"
-                    />
-                  </div>
-                )}
+                <ImageBanner
+                  photos={
+                    shopDetail.photos && shopDetail.photos.length != 0
+                      ? shopDetail.photos.filter((photo) => photo.is_public)
+                      : []
+                  }
+                  basePath="http://127.0.0.1:3000/"
+                />
               </div>
               {/* Right Section: Details */}
               <div className="pr-4">
                 <div className="mt-4">
                   <h3 className="text-lg  text-gray-700  ">Details</h3>
-                  <p className="text-[14px] font-light break-words whitespace-pre-wrap w-[500px] ">&nbsp;&nbsp;&nbsp;&nbsp;{shopDetail.description}</p>
+                  <p className="text-[14px] font-light break-words whitespace-pre-wrap w-[500px] ">
+                    &nbsp;&nbsp;&nbsp;&nbsp;{shopDetail.description}
+                  </p>
                 </div>
                 {/* Business Hours */}
                 <div className="mt-4">
-                  <h3 className="text-lg  text-gray-700  ">🕒 Business Hours</h3>
+                  <h3 className="text-lg  text-gray-700  ">
+                    🕒 Business Hours
+                  </h3>
                   <ul className="text-gray-600 text-sm">
                     {shopDetail?.shop_open_dates ? (
                       <ul>
@@ -383,12 +375,11 @@ const ShopPage = () => {
         ) : (
           <p>No shop details found</p>
         )}
-        <div >
-        </div>
+        <div></div>
       </div>
-          <div className="flex flex-col justify-end mt-8">
-            <Footer/>
-          </div>
+      <div className="flex flex-col justify-end mt-8">
+        <Footer />
+      </div>
     </div>
   );
 };

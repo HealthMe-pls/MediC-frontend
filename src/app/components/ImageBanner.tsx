@@ -4,15 +4,13 @@ import Image from "next/image";
 export interface Photo {
   pathfile: string;
   photo_id: number;
+  is_public: boolean;
 }
 
 interface ImageBannerProps {
   photos: Photo[];
   basePath?: string;
 }
-
-// const NEXT_API = process.env.NEXT_URL;
-// const NEXT_API = "http://127.0.0.1:3000";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ImageBanner: React.FC<ImageBannerProps> = ({ photos, basePath = "" }) => {
@@ -71,7 +69,11 @@ const ImageBanner: React.FC<ImageBannerProps> = ({ photos, basePath = "" }) => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {photos.length > 0 ? (
+          {photos.length === 0 ? (
+            <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-[10px]">
+              <p className="text-gray-500">No Images Available</p>
+            </div>
+          ) : (
             <Image
               src={`${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${photos[currentIndex]?.pathfile}`}
               alt={`Slide ${currentIndex + 1}`}
@@ -79,10 +81,6 @@ const ImageBanner: React.FC<ImageBannerProps> = ({ photos, basePath = "" }) => {
               height={216}
               className="w-full h-full max-w-[350px] max-h-[216px]  object-cover transition-all duration-500 rounded-[10px]"
             />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-200">
-              <p className="text-gray-500">No Images Available</p>
-            </div>
           )}
 
           {/* พื้นที่กดด้านซ้าย */}
