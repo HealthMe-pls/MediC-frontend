@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { fetchMarketOpenDates, MarketOpenDate } from "@/utility/ManageMarketHours";
+import {
+  fetchMarketOpenDates,
+  MarketOpenDate,
+} from "@/utility/ManageMarketHours";
 import { ShopOpenDates } from "./types";
 import "./styles/HoursTable.css";
 
@@ -41,9 +44,15 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
   onShopHoursChange,
 }) => {
   const [marketOpenDates, setMarketOpenDates] = useState<MarketOpenDate[]>([]);
-  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth());
-  const [shopHours, setShopHours] = useState<{ [id: number]: ShopOpenDates }>({});
+  const [selectedYear, setSelectedYear] = useState<number>(
+    new Date().getFullYear()
+  );
+  const [selectedMonth, setSelectedMonth] = useState<number>(
+    new Date().getMonth()
+  );
+  const [shopHours, setShopHours] = useState<{ [id: number]: ShopOpenDates }>(
+    {}
+  );
   const initializedRef = useRef(false);
 
   useEffect(() => {
@@ -62,25 +71,40 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
       );
   }, []);
 
-  useEffect(() => {
-    console.log(shopHours)
-  })
+  // useEffect(() => {
+  //   console.log(shopHours);
+  // });
 
   useEffect(() => {
     if (marketOpenDates.length === 0 || initializedRef.current) return;
-  
+
     const newShopHours: { [id: number]: ShopOpenDates } = {};
-  
+
     if (initialShopHours && initialShopHours.length > 0) {
       marketOpenDates.forEach((date) => {
         const matching = initialShopHours.find(
           (item) => item.market_open_date_id === date.id
         );
+
         if (matching) {
-          newShopHours[date.id] = matching;
+          newShopHours[date.id] = {
+            ...matching,
+            start_time:
+              new Date(matching.start_time).toLocaleTimeString("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              }) + ":00",
+            end_time:
+              new Date(matching.end_time).toLocaleTimeString("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              }) + ":00",
+          };
         } else {
           newShopHours[date.id] = {
-            id: date.id,
+            id: Date.now(),
             start_time: "",
             end_time: "",
             shop_id: shopId,
@@ -90,18 +114,22 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
       });
     } else {
       marketOpenDates.forEach((date) => {
-        const fromTimeStr = new Date(date.start_time).toLocaleTimeString("en-GB", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        });
+        const fromTimeStr = new Date(date.start_time).toLocaleTimeString(
+          "en-GB",
+          {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          }
+        );
         const toTimeStr = new Date(date.end_time).toLocaleTimeString("en-GB", {
           hour: "2-digit",
           minute: "2-digit",
           hour12: false,
         });
+
         newShopHours[date.id] = {
-          id: date.id,
+          id: Date.now(),
           start_time: `${fromTimeStr}:00`,
           end_time: `${toTimeStr}:00`,
           shop_id: shopId,
@@ -148,7 +176,11 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
     );
   });
 
-  const currentMonthDisplay = new Date(selectedYear, selectedMonth, 1).toLocaleDateString("en-US", {
+  const currentMonthDisplay = new Date(
+    selectedYear,
+    selectedMonth,
+    1
+  ).toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
   });
@@ -169,16 +201,21 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
       } else {
         const marketDate = marketOpenDates.find((d) => d.id === marketDateId);
         if (marketDate) {
-          const fromTimeStr = new Date(marketDate.start_time).toLocaleTimeString("en-GB", {
+          const fromTimeStr = new Date(
+            marketDate.start_time
+          ).toLocaleTimeString("en-GB", {
             hour: "2-digit",
             minute: "2-digit",
             hour12: false,
           });
-          const toTimeStr = new Date(marketDate.end_time).toLocaleTimeString("en-GB", {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-          });
+          const toTimeStr = new Date(marketDate.end_time).toLocaleTimeString(
+            "en-GB",
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
+            }
+          );
           return {
             ...prev,
             [marketDateId]: {
@@ -218,7 +255,9 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
         }) + ":00";
       const minAllowed = parseTime(marketFromTimeStr);
       const maxAllowed = parseTime(marketToTimeStr);
-      let currentTimeStr = field.startsWith("start") ? current.start_time : current.end_time;
+      let currentTimeStr = field.startsWith("start")
+        ? current.start_time
+        : current.end_time;
       const parts = currentTimeStr.split(":");
       let currentHour = parseInt(parts[0], 10);
       let currentMinute = parseInt(parts[1], 10);
@@ -258,7 +297,11 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
     <div className="mt-6">
       <h3 className="text-lg font-bold mb-4">Open Schedule</h3>
       <div className="flex items-center justify-between mb-4">
-        <button type="button" onClick={handlePreviousMonth} className="text-2xl">
+        <button
+          type="button"
+          onClick={handlePreviousMonth}
+          className="text-2xl"
+        >
           &lt;
         </button>
         <span className="text-lg font-medium">{currentMonthDisplay}</span>
@@ -279,12 +322,16 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
           <tbody>
             {filteredDates.length > 0 ? (
               filteredDates.map((date) => {
-                const defaultFromTimeStr = new Date(date.start_time).toLocaleTimeString("en-GB", {
+                const defaultFromTimeStr = new Date(
+                  date.start_time
+                ).toLocaleTimeString("en-GB", {
                   hour: "2-digit",
                   minute: "2-digit",
                   hour12: false,
                 });
-                const defaultToTimeStr = new Date(date.end_time).toLocaleTimeString("en-GB", {
+                const defaultToTimeStr = new Date(
+                  date.end_time
+                ).toLocaleTimeString("en-GB", {
                   hour: "2-digit",
                   minute: "2-digit",
                   hour12: false,
@@ -293,19 +340,26 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
                 const defaultFromMinute = defaultFromTimeStr.split(":")[1];
                 const defaultToHour = defaultToTimeStr.split(":")[0];
                 const defaultToMinute = defaultToTimeStr.split(":")[1];
-                const shopHourForDate =
-                  shopHours[date.id] ?? {
-                    id: date.id,
-                    start_time: "",
-                    end_time: "",
-                    shop_id: shopId,
-                    market_open_date_id: date.id,
-                  };
+                const shopHourForDate = shopHours[date.id] ?? {
+                  id: date.id,
+                  start_time: "",
+                  end_time: "",
+                  shop_id: shopId,
+                  market_open_date_id: date.id,
+                };
                 const isOpen = shopHourForDate.start_time !== "";
-                const startHourValue = isOpen ? shopHourForDate.start_time.split(":")[0] : "";
-                const startMinuteValue = isOpen ? shopHourForDate.start_time.split(":")[1] : "";
-                const endHourValue = isOpen ? shopHourForDate.end_time.split(":")[0] : "";
-                const endMinuteValue = isOpen ? shopHourForDate.end_time.split(":")[1] : "";
+                const startHourValue = isOpen
+                  ? shopHourForDate.start_time.split(":")[0]
+                  : "";
+                const startMinuteValue = isOpen
+                  ? shopHourForDate.start_time.split(":")[1]
+                  : "";
+                const endHourValue = isOpen
+                  ? shopHourForDate.end_time.split(":")[0]
+                  : "";
+                const endMinuteValue = isOpen
+                  ? shopHourForDate.end_time.split(":")[1]
+                  : "";
                 return (
                   <tr key={date.id} className="border-b">
                     <td className="px-4 py-2">
@@ -329,24 +383,36 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
                           type="number"
                           value={startHourValue}
                           onChange={(e) =>
-                            handleTimeChange(date.id, "startHour", e.target.value)
+                            handleTimeChange(
+                              date.id,
+                              "startHour",
+                              e.target.value
+                            )
                           }
                           min={defaultFromHour}
                           max={defaultToHour}
                           disabled={!isOpen}
-                          className={`w-10 border p-1 rounded text-center ${!isOpen ? "bg-gray-200" : ""}`}
+                          className={`w-10 border p-1 rounded text-center ${
+                            !isOpen ? "bg-gray-200" : ""
+                          }`}
                         />
                         <span className="px-1">:</span>
                         <input
                           type="number"
                           value={startMinuteValue}
                           onChange={(e) =>
-                            handleTimeChange(date.id, "startMinute", e.target.value)
+                            handleTimeChange(
+                              date.id,
+                              "startMinute",
+                              e.target.value
+                            )
                           }
                           min="0"
                           max="59"
                           disabled={!isOpen}
-                          className={`w-10 border p-1 rounded text-center ${!isOpen ? "bg-gray-200" : ""}`}
+                          className={`w-10 border p-1 rounded text-center ${
+                            !isOpen ? "bg-gray-200" : ""
+                          }`}
                         />
                       </div>
                     </td>
@@ -361,19 +427,27 @@ const MarketHoursTable: React.FC<MarketHoursTableProps> = ({
                           min={defaultFromHour}
                           max={defaultToHour}
                           disabled={!isOpen}
-                          className={`w-10 border p-1 rounded text-center ${!isOpen ? "bg-gray-200" : ""}`}
+                          className={`w-10 border p-1 rounded text-center ${
+                            !isOpen ? "bg-gray-200" : ""
+                          }`}
                         />
                         <span className="px-1">:</span>
                         <input
                           type="number"
                           value={endMinuteValue}
                           onChange={(e) =>
-                            handleTimeChange(date.id, "endMinute", e.target.value)
+                            handleTimeChange(
+                              date.id,
+                              "endMinute",
+                              e.target.value
+                            )
                           }
                           min="0"
                           max="59"
                           disabled={!isOpen}
-                          className={`w-10 border p-1 rounded text-center ${!isOpen ? "bg-gray-200" : ""}`}
+                          className={`w-10 border p-1 rounded text-center ${
+                            !isOpen ? "bg-gray-200" : ""
+                          }`}
                         />
                       </div>
                     </td>

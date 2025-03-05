@@ -45,7 +45,7 @@ export interface ShopDetail {
   name: string;
   photos: Photo[];
   shop_id: number;
-  shop_open_dates: ShopOpenDates; // ใช้ interface ของเวลาเปิด-ปิด
+  shop_open_dates: ShopOpenDates[]; // ใช้ interface ของเวลาเปิด-ปิด
   social_media: SocialMedia[]; // ใช้ interface ของ Social Media
   open_status: boolean;
 }

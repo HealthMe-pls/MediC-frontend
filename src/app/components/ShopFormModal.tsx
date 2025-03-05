@@ -7,9 +7,10 @@ import { ShopFormData, SocialFormData, MenuFormData, PhotoForm } from "./types";
 import ShopDetailsSection from "./ShopDetailsSection";
 import SocialMediaForm from "./SocialMediaForm";
 import MenuForm from "./MenuForm";
-import ImageUpload from "./ImageUpload";  
+import ImageUpload from "./ImageUpload";
 import MarketHoursTable from "./MarketHoursTable";
 import { ShopOpenDates } from "./types";
+import { it } from "date-fns/locale";
 
 export interface ShopFormModalProps {
   isOpen: boolean;
@@ -44,8 +45,12 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
     description: "",
     entrepreneur_id: 1,
   });
-  const [socialFormData, setSocialFormData] = useState<SocialFormData[]>(initialSocialData || []);
-  const [menuFormData, setMenuFormData] = useState<MenuFormData[]>(initialMenuData || []);
+  const [socialFormData, setSocialFormData] = useState<SocialFormData[]>(
+    initialSocialData || []
+  );
+  const [menuFormData, setMenuFormData] = useState<MenuFormData[]>(
+    initialMenuData || []
+  );
   const [categories, setCategories] = useState<ShopCategory[]>([]);
   const [entrepreneurs, setEntrepreneurs] = useState<Entrepreneur[]>([]);
   const [formImg, setFormImg] = useState<PhotoForm>(
@@ -58,7 +63,9 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
       thr_img: "",
     }
   );
-  const [savedShopHours, setSavedShopHours] = useState<ShopOpenDates[]>(initialShopHours || []);
+  const [savedShopHours, setSavedShopHours] = useState<ShopOpenDates[]>(
+    () => initialShopHours || []
+  );
 
   const handleAddSocial = () => {
     setSocialFormData([
@@ -113,7 +120,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
         shop_id: 0,
       },
     ]);
-  };  
+  };
 
   const handleMenuChange = (
     index: number,
@@ -244,16 +251,16 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     const filteredShopHours = savedShopHours.filter(
       (shopHour) => shopHour.start_time !== ""
     );
-  
+
     onSubmit(
-      formData, 
-      socialFormData, 
-      menuFormData, 
-      formImg, 
+      formData,
+      socialFormData,
+      menuFormData,
+      formImg,
       filteredShopHours
     );
     onClose();
@@ -303,7 +310,7 @@ const ShopFormModal: React.FC<ShopFormModalProps> = ({
           {/* Market Hours Section */}
           <MarketHoursTable
             shopId={initialData?.id || 0}
-            initialShopHours={savedShopHours}
+            initialShopHours={initialShopHours}
             onShopHoursChange={handleShopHoursChange}
           />
 

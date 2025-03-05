@@ -34,3 +34,20 @@ export async function fetchMarketOpenDates(): Promise<MarketOpenDatesResponse> {
     throw error;
   }
 }
+
+export async function fetcMarketOpenDatesById(id: number): Promise<MarketOpenDate> {
+  try {
+    const response = await axios.get<MarketOpenDate>(`/api/marketDate/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch MarketOpenDate by id");
+    }
+    return response.data as MarketOpenDate;
+  } catch (error) {
+    throw error;
+  }
+}
