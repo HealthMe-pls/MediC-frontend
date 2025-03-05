@@ -30,11 +30,13 @@ export default function PendingCard({ tempshop }: PendingCardProps) {
         <button
           className="bg-white border-[#E77577] text-[#E77577] border-[1px] w-[145px] h-[35px] rounded-[20px]"
           onClick={() => {
-            axios.put(`/api/tempshops/${tempshop.id}`, {
-              headers: { "Content-Type": "application/json" },
-            }).then(() => {
-              window.location.reload();
-            });
+            axios
+              .put(`/api/waitingShops/${tempshop.id}`, {
+                headers: { "Content-Type": "application/json" },
+              })
+              .then(() => {
+                window.location.reload();
+              });
           }}
         >
           Decline
@@ -42,11 +44,13 @@ export default function PendingCard({ tempshop }: PendingCardProps) {
         <button
           className="bg-[#D5EBD6] w-[145px] h-[35px] rounded-[20px]"
           onClick={() => {
-            axios.get(`/api/tempshops/${tempshop.id}`, {
-              headers: { "Content-Type": "application/json" },
-            }).then(() => {
-              window.location.reload();
-            });
+            axios
+              .get(`/api/waitingShops/${tempshop.id}`, {
+                headers: { "Content-Type": "application/json" },
+              })
+              .then(() => {
+                window.location.reload();
+              });
           }}
         >
           Approve

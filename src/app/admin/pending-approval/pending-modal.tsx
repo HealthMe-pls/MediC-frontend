@@ -1,4 +1,5 @@
 import { fetchShopById, ShopDetail, ShopOpenDates } from "@/utility/shopDetail";
+import { fetchShopCategory } from "@/utility/shopcate";
 import { TempShop } from "./pendingApproval";
 import { useEffect, useState } from "react";
 import { formatDate, formatTime } from "./pendingApproval";
@@ -10,6 +11,7 @@ export interface PendingModalProps {
 
 export default function PendingModal({ onClose, tempshop }: PendingModalProps) {
   const [shop, setShop] = useState<ShopDetail>();
+  const [shopCategory, setShopCategory] = useState<string>("");
 
   // Create a set of market_open_dates_id from editTime and deleteTime
   const editAndDeleteIds = new Set([
@@ -40,6 +42,15 @@ export default function PendingModal({ onClose, tempshop }: PendingModalProps) {
   useEffect(() => {
     fetchShopById(tempshop.shop_id).then((data) => setShop(data));
   }, [tempshop.shop_id]);
+
+  useEffect(() => {
+    fetchShopCategory().then((data) => {
+      const category = data.find(
+        (category) => category.id === tempshop.category_id
+      );
+      setShopCategory(category?.name || "");
+    });
+  }, [tempshop.category_id]);
   return (
     <div
       className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center"
@@ -52,21 +63,21 @@ export default function PendingModal({ onClose, tempshop }: PendingModalProps) {
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-normal">Information pending approval</h2>
         </div>
-        {shop && (
+        {tempshop && (
           <div className="p-4 flex flex-col gap-4">
             <table className="w-full border-collapse">
               <tbody>
                 <tr className="flex flex-row gap-4">
                   <th className="font-normal text-left">Shop Name:</th>
-                  <td>{shop.name}</td>
+                  <td>{tempshop.name}</td>
                 </tr>
                 <tr className="flex flex-row gap-4">
                   <th className="font-normal text-left">Shop Category:</th>
-                  <td>{shop.category}</td>
+                  <td>{shopCategory}</td>
                 </tr>
                 <tr className="flex flex-row gap-4">
                   <th className="font-normal text-left">Description:</th>
-                  <td>{shop.description}</td>
+                  <td>{tempshop.description}</td>
                 </tr>
               </tbody>
             </table>
@@ -119,31 +130,6 @@ export default function PendingModal({ onClose, tempshop }: PendingModalProps) {
                   )
                 )}
               </ul>
-              <p>Updated Opening Schedule :</p>
-              <div className="flex flex-row">
-                <ul>
-                  {Array.isArray(shop.shop_open_dates) &&
-                    shop.shop_open_dates.map(
-                      (date: ShopOpenDates, index: number) => (
-                        <li key={index} className="text-[14px] font-light">
-                          {`${formatDate(date.start_time)} ${formatTime(
-                            date.start_time
-                          )} - ${formatTime(date.end_time)}`}
-                        </li>
-                      )
-                    )}
-                </ul>
-                <ul>
-                  {Array.isArray(tempshop.time) &&
-                    tempshop.time.map((date: ShopOpenDates, index: number) => (
-                      <li key={index} className="text-[14px] font-light">
-                        {`${formatDate(date.start_time)} ${formatTime(
-                          date.start_time
-                        )} - ${formatTime(date.end_time)}`}
-                      </li>
-                    ))}
-                </ul>
-              </div>
             </div>
             <p className="font-normal">Menu:</p>
             <div className="px-4">

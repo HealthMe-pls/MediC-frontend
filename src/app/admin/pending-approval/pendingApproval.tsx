@@ -55,6 +55,8 @@ export interface Time {
 export interface TempShop {
   id: number;
   name: string;
+  description: string;
+  category_id: number;
   shop_id: number;
   deleteSocials?: Social[];
   socials: Social[];
@@ -73,7 +75,7 @@ export interface Response {
 
 export const fetchTempShop = async (): Promise<Response> => {
   try {
-    const url = `/api/tempshops`;
+    const url = `/api/waitingShops`;
 
     const response = await axios.get<Response>(url, {
       headers: {

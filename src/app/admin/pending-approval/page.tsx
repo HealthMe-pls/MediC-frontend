@@ -16,6 +16,7 @@ export default function PendingApprovalPage() {
     const fetchData = async () => {
       try {
         const response = await fetchTempShop();
+        console.log("response", response);
         setTempShops(response.temp_shops);
       } catch (error) {
         setError(`Failed to fetch TempShops: ${(error as Error).message}`);
