@@ -2,17 +2,102 @@
 
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import { jsPDF } from "jspdf";
-import { autoTable } from "jspdf-autotable";
 import isBetween from "dayjs/plugin/isBetween";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+
 import AdminLayouts from "@/app/layouts/AdminLayouts";
 import { fetchShopOpenDates, ShopOpenDates } from "@/utility/shopHourSummary";
 import {
   fetchMarketOpenDates,
   MarketOpenDate,
 } from "@/utility/ManageMarketHours";
+import autoTable from "jspdf-autotable";
 
 dayjs.extend(isBetween);
+
+// PDF Export Function
+const exportAsPDF = (
+  filterType: 'week' | 'month', 
+  currentDate: dayjs.Dayjs, 
+  filteredShops: ShopOpenDates[], 
+  filteredMarkets: MarketOpenDate[]
+) => {
+  // Create a new jsPDF instance
+  const doc = new jsPDF('landscape');
+
+  // Set document title
+  const startDate = currentDate.startOf(filterType);
+  const endDate = currentDate.endOf(filterType);
+  const title = `Shop Hours Summary (${startDate.format('DD MMM YYYY')} - ${endDate.format('DD MMM YYYY')})`;
+  
+  // Add title to the document
+  doc.setFontSize(16);
+  doc.text(title, 14, 15);
+
+  // Prepare table headers
+  const headers = [
+    'Shop Name',
+    ...filteredMarkets
+      .sort((a, b) => dayjs(a.start_time).isBefore(dayjs(b.start_time)) ? -1 : 1)
+      .map(market => `${dayjs(market.start_time).format('ddd')} ${dayjs(market.start_time).format('D MMM')}`)
+  ];
+
+  // Group shop data by shop.id so thatแต่ละร้านมีแถวเดียวกัน
+  const groupedShops = Object.values(
+    filteredShops.reduce((acc, record) => {
+      if (!acc[record.shop.id]) {
+        acc[record.shop.id] = { shop: record.shop, openTimes: [] };
+      }
+      acc[record.shop.id].openTimes.push(record.start_time);
+      return acc;
+    }, {} as Record<number, { shop: typeof filteredShops[0]['shop'], openTimes: string[] }>)
+  );
+
+  // Prepare table rows based on grouped shop data
+  const rows = groupedShops.map((group) => {
+    return [
+      group.shop.name,
+      ...filteredMarkets
+        .sort((a, b) => dayjs(a.start_time).isBefore(dayjs(b.start_time)) ? -1 : 1)
+        .map(marketDate => 
+          group.openTimes.some((openTime) =>
+            dayjs(openTime).isSame(dayjs(marketDate.start_time), 'day')
+          )
+            ? ' '
+            : ''
+        )
+    ];
+  });
+
+  // Generate the table
+  autoTable(doc, {
+    startY: 25,
+    head: [headers],
+    body: rows,
+    theme: 'striped',
+    styles: { 
+      fontSize: 10,
+      cellPadding: 3,
+      valign: 'middle',
+      halign: 'center'
+    },
+    columnStyles: {
+      0: { halign: 'left' }
+    },
+    didParseCell: function (data) {
+      if (data.column.index === 0) return;
+      if (data.cell.raw === ' ') {
+        data.cell.styles.fillColor = [206, 206, 206];
+        data.cell.styles.textColor = [0, 0, 0];
+      }
+    }
+  });
+
+  // Save the PDF file
+  doc.save(`shop_hours_summary_${startDate.format('YYYY-MM-DD')}_to_${endDate.format('YYYY-MM-DD')}.pdf`);
+};
+
 
 const ShopHoursSummaryPage = () => {
   const [filterType, setFilterType] = useState<"week" | "month">("week");
@@ -27,10 +112,10 @@ const ShopHoursSummaryPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetchShopOpenDates();
-        console.log("Fetched response:", response);
-        const [marketDateData] = await Promise.all([fetchMarketOpenDates()]);
-        const [shopDateData] = await Promise.all([fetchShopOpenDates()]);
+        const [marketDateData, shopDateData] = await Promise.all([
+          fetchMarketOpenDates(),
+          fetchShopOpenDates()
+        ]);
 
         const shopData = shopDateData.shop_open_dates;
         const marketData = marketDateData.market_open_dates;
@@ -38,8 +123,6 @@ const ShopHoursSummaryPage = () => {
         setMarketOpenDate(marketData);
         setShopOpenDate(shopData);
 
-        // console.log("Fetched market data:", marketData);
-        // console.log("Fetched shop data:", shopData);
       } catch (error) {
         console.error("Error fetching shop open date data:", error);
       }
@@ -59,62 +142,13 @@ const ShopHoursSummaryPage = () => {
   const handlePrev = () => setCurrentDate(currentDate.subtract(1, filterType));
   const handleNext = () => setCurrentDate(currentDate.add(1, filterType));
 
-  const exportAsPDF = () => {
-    const doc = new jsPDF();
-
-    // ดึงตารางจาก DOM
-    const table = document.querySelector("table");
-    if (!table) {
-      console.error("Table not found!");
-      return;
-    }
-
-    // สร้างข้อมูลสำหรับ autoTable
-    const headers = Array.from(table.querySelectorAll("thead th")).map(
-      (th: Element) => (th as HTMLElement).innerText.trim()
-    );
-    const data = Array.from(table.querySelectorAll("tbody tr")).map(
-      (tr: Element) => {
-        return Array.from(tr.querySelectorAll("td")).map((td: Element) =>
-          (td as HTMLElement).innerText.trim()
-        );
-      }
-    );
-
-    // ดึงสไตล์จาก CSS
-    const headerStyles = {
-      fillColor: [240, 240, 240], // สีพื้นหลัง header
-      textColor: 0, // สีข้อความ header
-      fontStyle: "bold" as "bold" | "italic" | "normal", // ปรับ type ให้ตรงกับ FontStyle
-      lineWidth: 0.5,
-      lineColor: [200, 200, 200],
-    };
-    const bodyStyles = {
-      lineWidth: 0.5,
-      lineColor: [200, 200, 200],
-      textColor: 0, // สีข้อความ body
-    };
-
-    // ใช้ autoTable เพื่อแสดงข้อมูลลงใน PDF
-    autoTable(doc, {
-      head: [headers],
-      body: data,
-      startY: 20,
-      styles: { fontSize: 10, cellPadding: 4 },
-      alternateRowStyles: { fillColor: [245, 245, 245] }, // สีสลับแถว
-      headStyles: headerStyles,
-      bodyStyles: bodyStyles,
-      columnStyles: { 0: { halign: "center" } }, // การจัดแนวข้อมูลของคอลัมน์แรก
-    });
-
-    // ดาวน์โหลด PDF
-    doc.save("Shop_Hours_Summary.pdf");
+  const handleExportPDF = () => {
+    exportAsPDF(filterType, currentDate, filteredShops, filteredMarkets);
   };
 
   return (
     <>
       <AdminLayouts currentPage="Shop Hours Summary">
-        {/* Content Area */}
         <section className="flex-1 p-6 bg-gray-50">
           <div className="flex justify-end items-center mb-8">
             <div className="flex items-center space-x-4 mr-10">
@@ -131,8 +165,8 @@ const ShopHoursSummaryPage = () => {
               </select>
             </div>
             <button
-              onClick={exportAsPDF}
-              className="border border-gray-300 text-grey  py-2 px-4 rounded-xl"
+              onClick={handleExportPDF}
+              className="border border-gray-300 text-grey py-2 px-4 rounded-xl"
             >
               Export as PDF
             </button>
@@ -161,12 +195,12 @@ const ShopHoursSummaryPage = () => {
                 <tr className="bg-gray-100">
                   <th className="border px-4 py-2">Shop Name</th>
                   {filteredMarkets.length > 0 ? (
-                    [...filteredMarkets] // ✅ สร้างสำเนาของ filteredMarkets
+                    [...filteredMarkets]
                       .sort((a, b) =>
                         dayjs(a.start_time).isBefore(dayjs(b.start_time))
                           ? -1
                           : 1
-                      ) // ✅ เรียงตาม start_time
+                      )
                       .map((marketDate) => (
                         <th key={marketDate.id} className="border px-4 py-2">
                           <div>
@@ -188,71 +222,52 @@ const ShopHoursSummaryPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredShops.length > 0 ? (
-                  [...filteredShops] // ✅ สร้างสำเนาของ filteredShops
-                    .sort((a, b) => {
-                      if (a.shop.id === b.shop.id) {
-                        // ถ้า shop.id เท่ากัน, ให้เรียงตาม start_time
-                        return dayjs(a.start_time).isBefore(dayjs(b.start_time))
-                          ? -1
-                          : 1;
+                {(() => {
+                  // จัดกลุ่มข้อมูลร้านค้าโดยใช้ shop.id เป็น key
+                  const groupedShops = Object.values(
+                    filteredShops.reduce((acc, record) => {
+                      if (!acc[record.shop.id]) {
+                        acc[record.shop.id] = { shop: record.shop, openTimes: [] };
                       }
-                      // เรียงตาม shop.id
-                      return a.shop.id - b.shop.id;
-                    })
-                    .map((time, index, arr) => {
-                      const isFirstOccurrence =
-                        index === 0 ||
-                        arr[index - 1].shop.name !== time.shop.name;
-
-                      return (
-                        <tr key={time.id} className="h-[50px]">
-                          {/* กำหนดความสูงของแถว */}
-                          {/* แสดงชื่อร้านเฉพาะเมื่อไม่ตรงกับข้างบน */}
-                          {isFirstOccurrence ? (
-                            <td className="border px-4 py-2 text-center">
-                              {time.shop.name}
-                            </td>
-                          ) : (
-                            <td className="border px-4 py-2 text-center"></td>
-                          )}
-                          {filteredMarkets
-                            .sort((a, b) =>
-                              dayjs(a.start_time).isBefore(dayjs(b.start_time))
-                                ? -1
-                                : 1
-                            ) // ✅ เรียงตาม start_time
-                            .map((marketDate) => {
-                              const isOpen = dayjs(time.start_time).isSame(
-                                dayjs(marketDate.start_time),
-                                "day"
-                              );
-                              return (
-                                <td
-                                  key={marketDate.id}
-                                  className={`border px-4 py-2 text-center text-white ${
-                                    isOpen ? "bg-gray-200" : ""
-                                  }`}
-                                >
-                                  <p className="text-gray-200">
-                                    {isOpen ? "open" : ""}
-                                  </p>
-                                </td>
-                              );
-                            })}
-                        </tr>
-                      );
-                    })
-                ) : (
-                  <tr>
-                    <td
-                      colSpan={filteredMarkets.length + 2}
-                      className="text-center py-4"
-                    >
-                      No shop openings found
-                    </td>
-                  </tr>
-                )}
+                      acc[record.shop.id].openTimes.push(record.start_time);
+                      return acc;
+                    }, {})
+                  );
+                
+                  return groupedShops.length > 0 ? (
+                    groupedShops.map((group) => (
+                      <tr key={group.shop.id} className="h-[50px]">
+                        <td className="border px-4 py-2 text-center">{group.shop.name}</td>
+                        {filteredMarkets
+                          .sort((a, b) =>
+                            dayjs(a.start_time).isBefore(dayjs(b.start_time)) ? -1 : 1
+                          )
+                          .map((marketDate) => {
+                            // ตรวจสอบว่าใน openTimes ของร้านมีเวลาไหนตรงกับ marketDate หรือไม่
+                            const isOpen = group.openTimes.some((openTime) =>
+                              dayjs(openTime).isSame(dayjs(marketDate.start_time), "day")
+                            );
+                            return (
+                              <td
+                                key={marketDate.id}
+                                className={`border px-4 py-2 text-center ${
+                                  isOpen ? "bg-[#CECECE] text-black" : ""
+                                }`}
+                              >
+                                {isOpen ? " " : ""}
+                              </td>
+                            );
+                          })}
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={filteredMarkets.length + 1} className="text-center py-4">
+                        No shop openings found
+                      </td>
+                    </tr>
+                  );
+                })()}
               </tbody>
             </table>
           </div>
