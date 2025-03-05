@@ -149,24 +149,22 @@ const HighlightBanner = () => {
       
               <button
                 onClick={() => handleNavigation(workshop.id)}
-                className="mt-2 px-4 py-2 rounded-md"
+                className="px-6 py-6 rounded-md"
               >
-                <div className="relative w-full max-w-[180px] mx-auto mt-[15px] flex items-center justify-center">
-                  <div className="w-full aspect-[10/10] flex items-center justify-center">
-                    {workshop.photos?.length ? (
-                      <Image
-                        src={`${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`}
-                        alt={workshop.name}
-                        width={180}
-                        height={180}
-                        className="object-cover rounded-md w-full h-full max-w-[180px] max-h-[180px]"
-                      />
-                    ) : (
-                      <div className="bg-gray-300 flex items-center justify-center rounded-md min-h-[180px] min-w-[180px]">
-                        No Image Available
-                      </div>
-                    )}
-                  </div>
+                <div className="flex justify-center">
+                  {workshop.photos?.length ? (
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${workshop.photos[0]?.pathfile}`}
+                      alt={workshop.name}
+                      width={180}
+                      height={180}
+                      className="w-64 h-32 aspect-[10/10] rounded-md"
+                    />
+                  ) : (
+                    <div className="bg-gray-300 flex items-center justify-center rounded-md min-h-[180px] min-w-[180px]">
+                      No Image Available
+                    </div>
+                  )}
                 </div>
                 <div className="p-4">
                   <h3 className="text-lg truncate">{workshop.name}</h3>
