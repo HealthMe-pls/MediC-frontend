@@ -86,13 +86,20 @@ export default function EditAccountInformation() {
           // เก็บข้อมูลใหม่ใน localStorage
           localStorage.setItem("username", response.username);
           localStorage.setItem("password", response.password);
+
         }
       } catch (err) {
         setError(`Failed to update account: ${String(err)}`);
       }
     }
   };
-
+  useEffect(() => {
+    if (success) {
+      setTimeout(() => {
+        router.push("/login");
+      }, 1500); // Redirect after 1.5 seconds
+    }
+  }, [success, router]);
   return (
     <VendorLayouts currentPage="Edit Account Information">
       <div className="flex justify-start items-start p-5">
