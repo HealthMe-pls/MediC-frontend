@@ -1,164 +1,66 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { loginEntrepreneur, AuthResponse } from "@/utility/login";
-import styles from "./login.module.css";
-const Logo = "./public/assets/logo.png";
-import Image from "next/image";
+import { loginWithInfomaniak } from "@/utility/auth"; // Import your utility function
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    const response: AuthResponse = await loginEntrepreneur({
-      username: email, // Assuming email is used as username in your API
-      password,
-    });
-
-    if (response.error) {
-      setError(response.error);
-    } else {
-      setToken(response.token || "");
-      if (response.token) {
-        localStorage.setItem("authToken", response.token);
-        router.push("/vendor");
+const LoginPage = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
+  
+    const handleLogin = async () => {
+      if (!email || !password) {
+        setError("Please enter both email and password.");
+        return;
       }
-    }
-  };
-
-  const handleForgotPassword = () => {
-    alert("Forgot password feature is not implemented yet.");
-  };
-
-  return (
-    <div>
-      <div className="block md:hidden justify-center items-center min-h-screen">
-        <div className={styles.container}>
-          {/* Left Block */}
-
-          {/* Login Container */}
-          <div className={styles.loginContainer}>
-            <form onSubmit={handleLogin} className={styles.form}>
-              <div className={styles.inputGroup}>
-                <h1 className={styles.loginTitle}>Log in</h1>
-                <label htmlFor="email" className={styles.label}>
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="text"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className={styles.inputField}
-                />
-              </div>
-              <div className={styles.inputGroup}>
-                <label htmlFor="password" className={styles.label}>
-                  Password
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className={styles.inputField}
-                />
-                <div
-                  onClick={handleForgotPassword}
-                  className={styles.forgotPassword}
-                >
-                  Forgot your password?
-                </div>
-              </div>
-
-              <button type="submit" className={styles.submitButton}>
-                Log in
-              </button>
-            </form>
-
-            {error && <div className={styles.errorMessage}>{error}</div>}
-            {token && (
-              <div className={styles.successMessage}>
-                Login successful! Token: {token}
-              </div>
-            )}
-          </div>
+  
+      try {
+        // Call the login function (which makes the backend API request)
+        const result = await loginWithInfomaniak(email, password);
+  
+        // Handle the result of the login attempt
+        if (result.success) {
+          // Redirect to dashboard if login is successful
+          router.push("/profile");
+        } else {
+          setError(result.error || "Invalid credentials.");
+        }
+      } catch (error) {
+        console.error("Error logging in:", error);
+        setError("An error occurred while logging in.");
+      }
+    };
+  
+    return (
+      <div>
+        <h1>Login</h1>
+        {error && <div style={{ color: "red" }}>{error}</div>}
+  
+        <div>
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
-      </div>
-
-      <div className="hidden md:block">
-        <div className={styles.container}>
-          {/* Left Block */}
-          <div className={styles.leftBlock}>
-            <Image
-              src={Logo}
-              alt="Logo"
-              className={styles.logo}
-              width={100}
-              height={100}
-            />
-          </div>
-
-          {/* Login Container */}
-          <div className={styles.loginContainer}>
-            <form onSubmit={handleLogin} className={styles.form}>
-              <div className={styles.inputGroup}>
-                <h1 className={styles.loginTitle}>Log in</h1>
-                <label htmlFor="email" className={styles.label}>
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="text"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className={styles.inputField}
-                />
-              </div>
-              <div className={styles.inputGroup}>
-                <label htmlFor="password" className={styles.label}>
-                  Password
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className={styles.inputField}
-                />
-                <div
-                  onClick={handleForgotPassword}
-                  className={styles.forgotPassword}
-                >
-                  Forgot your password?
-                </div>
-              </div>
-
-              <button type="submit" className={styles.submitButton}>
-                Log in
-              </button>
-            </form>
-
-            {error && <div className={styles.errorMessage}>{error}</div>}
-            {token && (
-              <div className={styles.successMessage}>Login successful!</div>
-            )}
-          </div>
+  
+        <div>
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
+  
+        <button onClick={handleLogin}>Login</button>
       </div>
-    </div>
-  );
-};
-
-export default Login;
+    );
+  };
+  
+  export default LoginPage;
