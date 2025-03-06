@@ -79,7 +79,7 @@ const Hamburger: React.FC<HamburgerProps> = ({ isMenuOpen, setIsMenuOpen }) => {
               </Link>
             </li>
 
-            <li>
+            {/* <li>
               <Link
                 href="/admin/manage-market-map"
                 className="hover:text-gray-300"
@@ -89,7 +89,7 @@ const Hamburger: React.FC<HamburgerProps> = ({ isMenuOpen, setIsMenuOpen }) => {
                   <p className="ml-5">Admin page</p>
                 </div>
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 href="./"

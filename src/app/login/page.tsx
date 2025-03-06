@@ -34,7 +34,7 @@ const Login = () => {
   };
 
   const handleForgotPassword = () => {
-    router.push("/vendor/contactToAdmin");
+    router.push("/contactToAdmin");
   };
 
   return (

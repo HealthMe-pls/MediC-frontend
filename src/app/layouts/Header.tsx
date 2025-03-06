@@ -29,9 +29,9 @@ export default function Header() {
           </h1> */}
         </div>
         <CustomerNavigation />
-        <div className="flex justify-aroud ">
+        <div className="flex justify-aroud  ">
           {/* <div className="text-sm sm:text-lg flex"> */}
-          <div className="flex">
+          <div className="flex opacity-0">
             <button
               className={`${
                 selectedLanguage === "Eng"
@@ -43,8 +43,8 @@ export default function Header() {
               English
             </button>
           </div>
-          <div className="flex mt-5">| </div>
-          <div className="flex">
+          <div className="flex mt-5 opacity-0">| </div>
+          <div className="flex opacity-0">
             <button
               className={`${
                 selectedLanguage === "TH" ? "text-[#4C4343] " : "text-[#9C9C9C]"
