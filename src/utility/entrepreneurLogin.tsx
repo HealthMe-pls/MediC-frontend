@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Entrepreneur } from "@/utility/entrepreneur";
 import { ShopOpenDates } from "@/utility/shopDetail";
 import {
   Social,
@@ -51,3 +52,28 @@ export const getShopDetailsByLoggedInEntrepreneur = async (): Promise<
     throw error;
   }
 };
+
+export async function fetchEntrepreneurLoginById(): Promise<Entrepreneur> {
+  const token = localStorage.getItem("authToken");
+
+  if (!token) {
+    throw new Error("No token found. Please log in.");
+  }
+
+  try {
+    const response = await axios.get<Entrepreneur>("/api/entrepreneurLogin/edit", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch entrepreneur");
+    }
+
+    return response.data as Entrepreneur;
+  } catch (error) {
+    throw error;
+  }
+}

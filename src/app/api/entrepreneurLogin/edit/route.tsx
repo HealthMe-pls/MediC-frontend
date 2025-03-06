@@ -1,0 +1,66 @@
+import { setCorsHeaders } from "@/utility/corsUtils";
+import { NextResponse } from "next/server";
+
+export async function GET(req: Request) {
+  try {
+    console.log("Received Request:", req); // Debug: Log the full request object
+
+    // Set up headers and CORS
+    const headers = new Headers();
+    setCorsHeaders(headers); // Apply CORS headers
+
+    // Extract the Authorization header (Bearer token)
+    const token = req.headers.get("Authorization")?.replace("Bearer ", "");
+    console.log("Extracted Token:", token); // Debug: Log the extracted token
+
+    if (!token) {
+      throw new Error("Authorization token is missing");
+    }
+
+    // Call the backend API to fetch the entrepreneur details using the token
+    console.log("Trying to connect to the API route..."); // Debug: Log attempt to connect to the external API
+    const response = await fetch(`${process.env.NEXT_PUBLIC_GO_API_URL}/entrepreneurGetbyId`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+        ...Object.fromEntries(headers), // Include any other headers if needed
+      },
+    });
+
+    console.log("API Response Status:", response.status); // Debug: Log API response status
+
+    // If the response is not OK, log the response body
+    if (!response.ok) {
+      const errorResponse = await response.text();  // Get the response text if not ok
+      console.log("Error response body:", errorResponse); // Debug: Show error details from response
+      throw new Error("Failed to fetch entrepreneur details");
+    }
+
+    // Parse the entrepreneur details from the response
+    const entrepreneurDetails = await response.json();
+    console.log("Entrepreneur Details:", entrepreneurDetails); // Debug: Log the fetched entrepreneur details
+
+    // Return the entrepreneur details in the response
+    return NextResponse.json(entrepreneurDetails, { status: 200 });
+  } catch (error: unknown) {
+    // Type assertion: Assert that the error is an instance of Error
+    if (error instanceof Error) {
+      console.error("Error in GET Route:", error.message);
+      console.error("Error Stack:", error.stack); // Log error stack for more detail
+
+      // Return a detailed error message in the response
+      return NextResponse.json(
+        { message: "Failed to fetch entrepreneur details", error: error.message },
+        { status: 500 }
+      );
+    }
+
+    // Handle unknown errors (if not an instance of Error)
+    console.error("Unexpected error:", error);
+    return NextResponse.json(
+      { message: "An unknown error occurred" },
+      { status: 500 }
+    );
+  }
+}
