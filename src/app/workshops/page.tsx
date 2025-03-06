@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { fetchWorkshops, Workshop } from "../../utility/workshop";
 import Header from "../layouts/Header";
 import WorkshopCard from "../components/WorkshopCard";

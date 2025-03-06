@@ -1,4 +1,4 @@
-import { fetchShopById, ShopDetail, ShopOpenDates } from "@/utility/shopDetail";
+import { ShopOpenDates } from "@/utility/shopDetail";
 import { fetchShopCategory } from "@/utility/shopcate";
 import { TempShop } from "./pendingApproval";
 import { useEffect, useState } from "react";
@@ -10,7 +10,8 @@ export interface PendingModalProps {
 }
 
 export default function PendingModal({ onClose, tempshop }: PendingModalProps) {
-  const [shop, setShop] = useState<ShopDetail>();
+  // const [shop, setShop] = useState<ShopDetail>();
+
   const [shopCategory, setShopCategory] = useState<string>("");
 
   // Create a set of market_open_dates_id from editTime and deleteTime
@@ -40,7 +41,7 @@ export default function PendingModal({ onClose, tempshop }: PendingModalProps) {
   );
 
   useEffect(() => {
-    fetchShopById(tempshop.shop_id).then((data) => setShop(data));
+    // fetchShopById(tempshop.shop_id).then((data) => setShop(data));
   }, [tempshop.shop_id]);
 
   useEffect(() => {

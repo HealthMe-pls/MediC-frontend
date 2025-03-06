@@ -2,8 +2,8 @@
 import axios from "axios";
 import {
   TempMenu,
-  TempSocial,
-  Photo,
+  // TempSocial,
+  // Photo,
 } from "@/app/admin/pending-approval/pendingApproval";
 
 export interface TempShopForm {

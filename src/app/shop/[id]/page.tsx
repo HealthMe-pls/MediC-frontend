@@ -78,7 +78,7 @@ const ShopPage = () => {
           const data = await fetchShopById(Number(id));
           setShopDetail(data);
         } catch (error) {
-          setError("Failed to fetch shop details");
+          setError(`Failed to fetch shop details: ${error}`);
         } finally {
           setLoading(false);
         }

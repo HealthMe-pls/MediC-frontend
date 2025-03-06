@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { setCorsHeaders } from "@/utility/corsUtils";
 
 export async function PUT(

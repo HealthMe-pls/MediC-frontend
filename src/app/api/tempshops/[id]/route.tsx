@@ -3,9 +3,9 @@ import { setCorsHeaders } from "@/utility/corsUtils";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const id = (await context.params).id;
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_GO_API_URL}/tempshops/${id}`
@@ -18,7 +18,7 @@ export async function GET(
     return NextResponse.json(data, { status: 200, headers });
   } catch (error) {
     return NextResponse.json(
-      { message: "Failed to fetch temp shop" },
+      { message: "Failed to fetch temp shop", error },
       { status: 500 }
     );
   }
@@ -27,9 +27,9 @@ export async function GET(
 // PUT - Update TempShop
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const id = (await context.params).id;
   const body = await req.json();
   try {
     const response = await fetch(
@@ -49,7 +49,7 @@ export async function PUT(
     return NextResponse.json(data, { status: 200, headers });
   } catch (error) {
     return NextResponse.json(
-      { message: "Failed to update temp shop" },
+      { message: "Failed to update temp shop", error },
       { status: 500 }
     );
   }
@@ -58,9 +58,9 @@ export async function PUT(
 // DELETE
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const id = (await context.params).id;
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_GO_API_URL}/tempshops/${id}`,
@@ -72,7 +72,7 @@ export async function DELETE(
     return NextResponse.json({ message: "Temp shop deleted" }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Failed to delete temp shop" },
+      { message: "Failed to delete temp shop", error },
       { status: 500 }
     );
   }

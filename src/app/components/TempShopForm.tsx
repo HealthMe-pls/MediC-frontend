@@ -268,7 +268,7 @@ const TempShopForm: React.FC<TempShopFormProps> = ({
     });
   };
 
-  const displayData = (data: any[]) => {
+  const displayData = (data: ShopOpenDates[]) => {
     const sortedData = data.sort(
       (a, b) =>
         new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
