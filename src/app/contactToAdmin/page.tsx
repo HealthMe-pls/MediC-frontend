@@ -5,7 +5,6 @@ import { useState } from "react";
 import { Dialog } from "@headlessui/react";
 // import Logo from "../../../../public/assets/logo.png";
 // import Image from "next/image";
-import VendorLayouts from "@/app/layouts/VendorLayouts";
 import Image from "next/image";
 import Logo from "../../../public/assets/logo.png";
 
