@@ -407,7 +407,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
       // อัปเดตร้านค้า
       const formDataNew ={
         name: formData.name,
-        category_id: Number(formData.shop_category_id),
+        shop_category_id: Number(formData.shop_category_id),
         description: formData.description,
         entrepreneur_id: formData.entrepreneur_id,
       }
