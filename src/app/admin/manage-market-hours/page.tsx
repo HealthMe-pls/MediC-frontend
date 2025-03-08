@@ -89,7 +89,7 @@ const ManageMaketHours = () => {
     setEndHourError("");
     setEndMinuteError("");
   };
-  
+
   const openAddModal = () => {
     resetForm();
     setIsModalOpen(true);
@@ -353,7 +353,9 @@ const ManageMaketHours = () => {
                   <p className="text-red-500 text-xs mt-1">{startHourError}</p>
                 )}
                 {startMinuteError && (
-                  <p className="text-red-500 text-xs mt-1">{startMinuteError}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {startMinuteError}
+                  </p>
                 )}
               </div>
               <div>
