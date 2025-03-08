@@ -17,13 +17,12 @@ export default function EditAccountInformation() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  // const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (!token) {
-      setIsLoggedIn(false);
       router.push("/login");
       return;
     } else {
@@ -32,7 +31,10 @@ export default function EditAccountInformation() {
           const response = await fetchEntrepreneurLoginById();
 
           setEntrepreneurData(response);
-          setEditAccountData(response);
+          setEditAccountData({
+            ...response,
+            password: "", // Set initial password to empty
+          });
 
           if (
             !localStorage.getItem("username") &&
@@ -56,13 +58,13 @@ export default function EditAccountInformation() {
   useEffect(() => {
     if (editAccountData === null) {
       const storedUsername = localStorage.getItem("username");
-      const storedPassword = localStorage.getItem("password");
+      // const storedPassword = localStorage.getItem("password");
 
-      if (storedUsername && storedPassword) {
+      if (storedUsername) {
         setEditAccountData({
           ...entrepreneurData!,
           username: storedUsername,
-          password: storedPassword,
+          password: "", // Set initial password to empty
         });
       }
     }
@@ -87,19 +89,15 @@ export default function EditAccountInformation() {
           localStorage.setItem("username", response.username);
           localStorage.setItem("password", response.password);
 
+          // Redirect to login page after successful save
+          router.push("/login");
         }
       } catch (err) {
         setError(`Failed to update account: ${String(err)}`);
       }
     }
   };
-  useEffect(() => {
-    if (success) {
-      setTimeout(() => {
-        router.push("/login");
-      }, 1500); // Redirect after 1.5 seconds
-    }
-  }, [success, router]);
+
   return (
     <VendorLayouts currentPage="Edit Account Information">
       <div className="flex justify-start items-start p-5">
@@ -109,6 +107,7 @@ export default function EditAccountInformation() {
           </h1>
 
           {error && <div style={{ color: "red" }}>{error}</div>}
+          {success && <div style={{ color: "green" }}>{success}</div>}
 
           {isLoading ? (
             <p>Loading your account data...</p>

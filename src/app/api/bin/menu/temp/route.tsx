@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     }
 
     const newMenu = await response.json();
-    console.log(newMenu);
+    // console.log(newMenu);
     const headers = new Headers();
     setCorsHeaders(headers);
     return NextResponse.json(newMenu, { status: 201, headers });

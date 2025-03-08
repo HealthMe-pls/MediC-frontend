@@ -185,7 +185,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
 
       for (const social of deletedSocials || []) {
         if (social.id) {
-          console.log("delete social id : " + social.id);
+          // console.log("delete social id : " + social.id);
           await deleteSocialMedia(social.id);
         }
       }
@@ -201,7 +201,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
       );
 
       for (const social of updatedSocials) {
-        console.log("update social id : " + social.id);
+        // console.log("update social id : " + social.id);
         await updateSocialByAdmin(social.id!, social);
       }
 
@@ -217,7 +217,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
           link: social.link,
           shop_id: shopId,
         };
-        console.log("create new social for shop : " + shopId);
+        // console.log("create new social for shop : " + shopId);
         await createSocialByAdmin(newSocial);
       }
     } catch (error) {
@@ -233,7 +233,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
 
       for (const menu of deletedMenus || []) {
         if (menu.id) {
-          console.log("delete menuid : " + menu.id);
+          // console.log("delete menuid : " + menu.id);
           await deleteMenu(menu.id);
           // const response_menu = await deleteMenu(menu.id);
           // console.log("response from del menu" + response_menu);
@@ -258,11 +258,11 @@ const ShopTable: React.FC<ShopTableProps> = ({
           price: menu.price,
           shop_id: shopId,
         };
-        console.log("update menuid : " + menu.id);
+        // console.log("update menuid : " + menu.id);
         await updateMenuByAdmin(menu.id!, upMenu);
 
         if (menu.img instanceof File && menu.id) {
-          console.log(menu.idPhoto);
+          // console.log(menu.idPhoto);
           if (menu.idPhoto) await deletePhoto(menu.idPhoto);
           await uploadPhotoMenuByAdmin(menu.img, menu.id);
         }
@@ -300,12 +300,12 @@ const ShopTable: React.FC<ShopTableProps> = ({
           await uploadPhotoShopByAdmin(photoData.cover_img, shopId);
       } else {
         if (photoData.cover_img instanceof File) {
-          console.log(editPhotoData.cover_id);
+          // console.log(editPhotoData.cover_id);
           await deletePhoto(editPhotoData.cover_id);
           await uploadPhotoShopByAdmin(photoData.cover_img, shopId);
         }
         if (photoData.cover_img === "") {
-          console.log(editPhotoData.cover_id);
+          // console.log(editPhotoData.cover_id);
           await deletePhoto(editPhotoData.cover_id);
         }
       }
@@ -314,12 +314,12 @@ const ShopTable: React.FC<ShopTableProps> = ({
           await uploadPhotoShopByAdmin(photoData.sec_img, shopId);
       } else {
         if (photoData.sec_img instanceof File) {
-          console.log(editPhotoData.sec_id);
+          // console.log(editPhotoData.sec_id);
           await deletePhoto(editPhotoData.sec_id);
           await uploadPhotoShopByAdmin(photoData.sec_img, shopId);
         }
         if (photoData.sec_img === "") {
-          console.log(editPhotoData.sec_id);
+          // console.log(editPhotoData.sec_id);
           await deletePhoto(editPhotoData.sec_id);
         }
       }
@@ -328,12 +328,12 @@ const ShopTable: React.FC<ShopTableProps> = ({
           await uploadPhotoShopByAdmin(photoData.thr_img, shopId);
       } else {
         if (photoData.thr_img instanceof File) {
-          console.log(editPhotoData.thr_id);
+          // console.log(editPhotoData.thr_id);
           await deletePhoto(editPhotoData.thr_id);
           await uploadPhotoShopByAdmin(photoData.thr_img, shopId);
         }
         if (photoData.thr_img === "") {
-          console.log(editPhotoData.thr_id);
+          // console.log(editPhotoData.thr_id);
           await deletePhoto(editPhotoData.thr_id);
         }
       }
@@ -351,7 +351,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
 
       for (const time of deletedTimes || []) {
         if (time.id) {
-          console.log("delete shop time id : " + time.id);
+          // console.log("delete shop time id : " + time.id);
           await deleteShopTime(time.id);
         }
       }
@@ -367,7 +367,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
       );
 
       for (const time of updatedTime) {
-        console.log("update shop time id : " + time.id);
+        // console.log("update shop time id : " + time.id);
         await updateShopTime(time.id!, time);
       }
 
@@ -382,7 +382,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
           market_open_date_id: time.market_open_date_id,
           shop_id: shopId,
         };
-        console.log(createTime);
+        // console.log(createTime);
         await createShopTime(createTime);
       }
     } catch (error) {
@@ -406,7 +406,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
     try {
       // อัปเดตร้านค้า
       await updateShopByAdmin(editShopData.id, formData);
-      console.log("Shop updated successfully!");
+      // console.log("Shop updated successfully!");
 
       // จัดการ Social Data
       await handleSocialUpdate(editShopData.id, socialData);
@@ -428,7 +428,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
         })
       );
 
-      console.log(formattedShopHours);
+      // console.log(formattedShopHours);
 
       await handleTimeUpdate(editShopData.id, formattedShopHours);
 

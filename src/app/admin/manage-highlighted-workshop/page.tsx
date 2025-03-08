@@ -215,7 +215,7 @@ const ManageHighlightedWorkshop = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
+    // console.log(formData);
 
     if (
       !formData.name ||
@@ -244,7 +244,7 @@ const ManageHighlightedWorkshop = () => {
         handlePhotoUpdate(currentWorkshopId, formImg);
       } else {
         const response = await createWorkshop(formattedData);
-        console.log(response);
+        // console.log(response);
         if (response.id) {
           if (formImg.cover_img instanceof File)
             await uploadPhotoWorkshops(formImg.cover_img, response.id);
@@ -268,12 +268,12 @@ const ManageHighlightedWorkshop = () => {
           await uploadPhotoWorkshops(photoData.cover_img, id);
       } else {
         if (photoData.cover_img instanceof File) {
-          console.log(originalFormImg.cover_id);
+          // console.log(originalFormImg.cover_id);
           await deletePhoto(originalFormImg.cover_id);
           await uploadPhotoWorkshops(photoData.cover_img, id);
         }
         if (photoData.cover_img === "") {
-          console.log(originalFormImg.cover_id);
+          // console.log(originalFormImg.cover_id);
           await deletePhoto(originalFormImg.cover_id);
         }
       }
@@ -282,12 +282,12 @@ const ManageHighlightedWorkshop = () => {
           await uploadPhotoWorkshops(photoData.sec_img, id);
       } else {
         if (photoData.sec_img instanceof File) {
-          console.log(originalFormImg.sec_id);
+          // console.log(originalFormImg.sec_id);
           await deletePhoto(originalFormImg.sec_id);
           await uploadPhotoWorkshops(photoData.sec_img, id);
         }
         if (photoData.sec_img === "") {
-          console.log(originalFormImg.sec_id);
+          // console.log(originalFormImg.sec_id);
           await deletePhoto(originalFormImg.sec_id);
         }
       }
@@ -296,12 +296,12 @@ const ManageHighlightedWorkshop = () => {
           await uploadPhotoWorkshops(photoData.thr_img, id);
       } else {
         if (photoData.thr_img instanceof File) {
-          console.log(originalFormImg.thr_id);
+          // console.log(originalFormImg.thr_id);
           await deletePhoto(originalFormImg.thr_id);
           await uploadPhotoWorkshops(photoData.thr_img, id);
         }
         if (photoData.thr_img === "") {
-          console.log(originalFormImg.thr_id);
+          // console.log(originalFormImg.thr_id);
           await deletePhoto(originalFormImg.thr_id);
         }
       }

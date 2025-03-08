@@ -27,8 +27,8 @@ const ShopHoursSummaryPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetchShopOpenDates();
-        console.log("Fetched response:", response);
+        // const response = await fetchShopOpenDates();
+        // console.log("Fetched response:", response);
         const [marketDateData] = await Promise.all([fetchMarketOpenDates()]);
         const [shopDateData] = await Promise.all([fetchShopOpenDates()]);
 
@@ -81,30 +81,50 @@ const ShopHoursSummaryPage = () => {
       }
     );
 
-    // ดึงสไตล์จาก CSS
     const headerStyles = {
-      fillColor: [240, 240, 240] as [number, number, number], // สีพื้นหลัง header
-      textColor: 0, // สีข้อความ header
-      fontStyle: "bold" as "bold" | "italic" | "normal", // ปรับ type ให้ตรงกับ FontStyle
+      fillColor: [240, 240, 240] as [number, number, number],
+      textColor: 0, // ✅ ค่าเดี่ยวใช้ได้เลย
+      fontStyle: "bold" as "bold" | "italic" | "normal",
       lineWidth: 0.5,
       lineColor: [200, 200, 200] as [number, number, number],
     };
+
     const bodyStyles = {
       lineWidth: 0.5,
       lineColor: [200, 200, 200] as [number, number, number],
-      textColor: 0, // สีข้อความ body
+      textColor: 0,
     };
 
-    // ใช้ autoTable เพื่อแสดงข้อมูลลงใน PDF
+    // ใช้ autoTable และเปลี่ยนช่องที่มีข้อความให้เป็นช่องทึบ
     autoTable(doc, {
       head: [headers],
       body: data,
       startY: 20,
       styles: { fontSize: 10, cellPadding: 4 },
-      alternateRowStyles: { fillColor: [245, 245, 245] }, // สีสลับแถว
+      alternateRowStyles: { fillColor: [245, 245, 245] }, // สีพื้นหลังแถวสลับกัน
       headStyles: headerStyles,
       bodyStyles: bodyStyles,
-      columnStyles: { 0: { halign: "center" } }, // การจัดแนวข้อมูลของคอลัมน์แรก
+      columnStyles: { 0: { halign: "center" } }, // จัดกึ่งกลางคอลัมน์แรก
+      didParseCell: (data) => {
+        // ตรวจสอบว่าเป็นแถวข้อมูล (ไม่ใช่ header) และไม่ใช่คอลัมน์แรก (คอลัมน์ 0)
+        if (
+          data.section === "body" &&
+          data.cell.raw &&
+          data.column.index !== 0
+        ) {
+          // ถ้ามีข้อความในเซลล์ที่ไม่ใช่คอลัมน์แรก
+          const cellValue = data.cell.raw?.toString().trim();
+          if (cellValue && cellValue !== "") {
+            // ถ้ามีข้อความให้ตั้งสีพื้นหลังเป็นเทาเข้มและข้อความเป็นขาว
+            data.cell.styles.fillColor = [130, 130, 130]; // สีพื้นหลังทึบ
+            data.cell.styles.textColor = [130, 130, 130]; // สีข้อความเป็นขาว
+          } else {
+            // ถ้าเซลล์ไม่มีข้อความให้ไม่เปลี่ยนพื้นหลัง
+            data.cell.styles.fillColor = [255, 255, 255]; // พื้นหลังเป็นสีขาว
+            data.cell.styles.textColor = [0, 0, 0]; // ข้อความสีดำ
+          }
+        }
+      },
     });
 
     // ดาวน์โหลด PDF
@@ -161,92 +181,82 @@ const ShopHoursSummaryPage = () => {
                 <tr className="bg-gray-100">
                   <th className="border px-4 py-2">Shop Name</th>
                   {filteredMarkets.length > 0 ? (
-                    [...filteredMarkets] // ✅ สร้างสำเนาของ filteredMarkets
+                    [...filteredMarkets]
                       .sort((a, b) =>
                         dayjs(a.start_time).isBefore(dayjs(b.start_time))
                           ? -1
                           : 1
-                      ) // ✅ เรียงตาม start_time
+                      )
                       .map((marketDate) => (
                         <th key={marketDate.id} className="border px-4 py-2">
                           <div>
                             {dayjs(marketDate.start_time).format("ddd")}
                           </div>
                           <div>
-                            {dayjs(marketDate.start_time).format("D MMM ")}
+                            {dayjs(marketDate.start_time).format("D MMM")}
                           </div>
                         </th>
                       ))
                   ) : (
-                    <td
-                      colSpan={filteredMarkets.length}
-                      className="text-center py-4"
-                    >
+                    <th colSpan={2} className="text-center py-4">
                       No market openings found
-                    </td>
+                    </th>
                   )}
                 </tr>
               </thead>
               <tbody>
                 {filteredShops.length > 0 ? (
-                  [...filteredShops] // ✅ สร้างสำเนาของ filteredShops
+                  [...filteredShops]
                     .sort((a, b) => {
                       if (a.shop.id === b.shop.id) {
-                        // ถ้า shop.id เท่ากัน, ให้เรียงตาม start_time
                         return dayjs(a.start_time).isBefore(dayjs(b.start_time))
                           ? -1
                           : 1;
                       }
-                      // เรียงตาม shop.id
                       return a.shop.id - b.shop.id;
                     })
-                    .map((time, index, arr) => {
-                      const isFirstOccurrence =
-                        index === 0 ||
-                        arr[index - 1].shop.name !== time.shop.name;
-
-                      return (
-                        <tr key={time.id} className="h-[50px]">
-                          {/* กำหนดความสูงของแถว */}
-                          {/* แสดงชื่อร้านเฉพาะเมื่อไม่ตรงกับข้างบน */}
-                          {isFirstOccurrence ? (
-                            <td className="border px-4 py-2 text-center">
-                              {time.shop.name}
-                            </td>
-                          ) : (
-                            <td className="border px-4 py-2 text-center"></td>
-                          )}
-                          {filteredMarkets
-                            .sort((a, b) =>
-                              dayjs(a.start_time).isBefore(dayjs(b.start_time))
-                                ? -1
-                                : 1
-                            ) // ✅ เรียงตาม start_time
-                            .map((marketDate) => {
-                              const isOpen = dayjs(time.start_time).isSame(
-                                dayjs(marketDate.start_time),
-                                "day"
-                              );
-                              return (
-                                <td
-                                  key={marketDate.id}
-                                  className={`border px-4 py-2 text-center text-white ${
-                                    isOpen ? "bg-gray-200" : ""
-                                  }`}
-                                >
-                                  <p className="text-gray-200">
-                                    {isOpen ? "open" : ""}
-                                  </p>
-                                </td>
-                              );
-                            })}
-                        </tr>
+                    .reduce<
+                      { shop: ShopOpenDates["shop"]; times: ShopOpenDates[] }[]
+                    >((acc, time) => {
+                      const shopIndex = acc.findIndex(
+                        (group) => group.shop.id === time.shop.id
                       );
-                    })
+                      if (shopIndex > -1) {
+                        acc[shopIndex].times.push(time);
+                      } else {
+                        acc.push({ shop: time.shop, times: [time] });
+                      }
+                      return acc;
+                    }, [])
+                    .map(({ shop, times }) => (
+                      <tr key={shop.id} className="h-[50px]">
+                        <td className="border px-4 py-2 text-center">
+                          {shop.name}
+                        </td>
+                        {filteredMarkets.map((marketDate) => {
+                          const isOpen = times.some((time) =>
+                            dayjs(time.start_time).isSame(
+                              dayjs(marketDate.start_time),
+                              "day"
+                            )
+                          );
+                          return (
+                            <td
+                              key={marketDate.id}
+                              className={`border px-4 py-2 text-center ${
+                                isOpen ? "bg-gray-200 text-gray-200" : ""
+                              }`}
+                            >
+                              {isOpen ? "X" : ""}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))
                 ) : (
                   <tr>
                     <td
-                      colSpan={filteredMarkets.length + 2}
+                      colSpan={filteredMarkets.length + 1}
                       className="text-center py-4"
                     >
                       No shop openings found

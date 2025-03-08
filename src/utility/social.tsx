@@ -46,7 +46,7 @@ export const createSocialByAdmin = async (
 ): Promise<SocialMedia> => {
   try {
     const url = `/api/social`;
-    console.log(socialmediaData);
+    // console.log(socialmediaData);
     const response = await axios.post<SocialMedia>(url, socialmediaData, {
       headers: {
         "Content-Type": "application/json",

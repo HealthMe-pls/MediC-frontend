@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     }
 
     const token = authHeader.replace("Bearer ", "");
-    console.log("Logout request with token:", token);
+    // console.log("Logout request with token:", token);
 
     // Send logout request to Go backend
     const goApiUrl = process.env.NEXT_PUBLIC_GO_API_URL;

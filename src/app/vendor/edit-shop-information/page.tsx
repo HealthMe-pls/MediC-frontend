@@ -198,7 +198,7 @@ const EditShopInformation = () => {
 
       for (const menu of deletedMenus || []) {
         if (menu.id && selectedShop) {
-          console.log("delete menuid : " + menu.id);
+          // console.log("delete menuid : " + menu.id);
           const deleteMenu = {
             menu_id: menu.id,
             temp_id: selectedShop?.id,
@@ -227,7 +227,7 @@ const EditShopInformation = () => {
           price: menu.price,
           shop_id: shopId,
         };
-        console.log("update menuid : " + menu.id);
+        // console.log("update menuid : " + menu.id);
         await updateTempMenu(menu.id!, upMenu);
 
         // if (menu.img instanceof File && menu.id) {
@@ -274,7 +274,7 @@ const EditShopInformation = () => {
       description: formData.description,
       shop_category_id: Number(formData.shop_category_id) || 0,
     };
-    console.log(newData);
+    // console.log(newData);
     if (selectedShop) {
       await updateTempShop(selectedShop.shop_id, newData);
       await handleMenuUpdate(selectedShop.shop_id, menuData);

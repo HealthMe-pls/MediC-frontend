@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
-    console.log("Received Request:", req); // Debug: Log the full request object
+    // console.log("Received Request:", req); // Debug: Log the full request object
 
     // Set up headers and CORS
     const headers = new Headers();
@@ -11,14 +11,14 @@ export async function GET(req: Request) {
 
     // Extract the Authorization header (Bearer token)
     const token = req.headers.get("Authorization")?.replace("Bearer ", "");
-    console.log("Extracted Token:", token); // Debug: Log the extracted token
+    // console.log("Extracted Token:", token); // Debug: Log the extracted token
 
     if (!token) {
       throw new Error("Authorization token is missing");
     }
 
     // Call the backend API to fetch the entrepreneur details using the token
-    console.log("Trying to connect to the API route..."); // Debug: Log attempt to connect to the external API
+    // console.log("Trying to connect to the API route..."); // Debug: Log attempt to connect to the external API
     const response = await fetch(`${process.env.NEXT_PUBLIC_GO_API_URL}/entrepreneurGetbyId`, {
       method: "GET",
       headers: {
@@ -28,18 +28,18 @@ export async function GET(req: Request) {
       },
     });
 
-    console.log("API Response Status:", response.status); // Debug: Log API response status
+    // console.log("API Response Status:", response.status); // Debug: Log API response status
 
     // If the response is not OK, log the response body
     if (!response.ok) {
       const errorResponse = await response.text();  // Get the response text if not ok
-      console.log("Error response body:", errorResponse); // Debug: Show error details from response
+      console.error("Error response body:", errorResponse); // Debug: Show error details from response
       throw new Error("Failed to fetch entrepreneur details");
     }
 
     // Parse the entrepreneur details from the response
     const entrepreneurDetails = await response.json();
-    console.log("Entrepreneur Details:", entrepreneurDetails); // Debug: Log the fetched entrepreneur details
+    // console.log("Entrepreneur Details:", entrepreneurDetails); // Debug: Log the fetched entrepreneur details
 
     // Return the entrepreneur details in the response
     return NextResponse.json(entrepreneurDetails, { status: 200 });

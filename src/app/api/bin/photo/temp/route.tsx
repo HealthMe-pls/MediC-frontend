@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     }
 
     const newphoto = await response.json();
-    console.log(newphoto);
+    // console.log(newphoto);
     const headers = new Headers();
     setCorsHeaders(headers);
     return NextResponse.json(newphoto, { status: 201, headers });

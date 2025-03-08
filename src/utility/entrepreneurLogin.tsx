@@ -37,7 +37,7 @@ export const getShopDetailsByLoggedInEntrepreneur = async (): Promise<
   }
 
   try {
-    console.log("try to sent route");
+    // console.log("try to sent route");
     const url = "/api/entrepreneurLogin"; // Ensure this matches the API route
     const response = await axios.get<Response>(url, {
       headers: {

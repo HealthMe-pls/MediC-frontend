@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     const headers = new Headers();
     setCorsHeaders(headers);
     const body = await req.json();
-    console.log("Login request body:", body); // Log the incoming data
+    // console.log("Login request body:", body); // Log the incoming data
 
     // Send the login request to Go backend using axios
     const response = await axios.post(
