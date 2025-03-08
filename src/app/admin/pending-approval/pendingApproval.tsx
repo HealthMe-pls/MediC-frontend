@@ -82,7 +82,7 @@ export const fetchTempShop = async (): Promise<Response> => {
         "Content-Type": "application/json",
       },
     });
-    console.log("response", response.data.temp_shops);
+    // console.log("response", response.data.temp_shops);
     return response.data as Response;
   } catch (error) {
     console.error("Error fetching TempShop:", error);

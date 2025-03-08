@@ -154,7 +154,7 @@ export default function PendingModal({ onClose, tempshop }: PendingModalProps) {
                           ? `${process.env.NEXT_PUBLIC_GO_API_URL}/upload/${menu.photos[0].path_file}`
                           : "no image";
 
-                      console.log(imageUrl);
+                      // console.log(imageUrl);
                       return (
                         <tr key={index}>
                           <td className="p-4">
