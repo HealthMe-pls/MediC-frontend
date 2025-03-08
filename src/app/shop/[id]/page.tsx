@@ -361,7 +361,9 @@ const ShopPage = () => {
                         .map((media, index) => (
                           <li key={index} className="text-[14px] font-light">
                             {media.platform}:{" "}
-                            <a href={media.link}>{media.link}</a>
+                            <a href={media.link} className="underline">
+                              {media.name}
+                            </a>
                           </li>
                         ))}
                     </ul>
