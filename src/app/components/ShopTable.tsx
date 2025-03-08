@@ -405,7 +405,13 @@ const ShopTable: React.FC<ShopTableProps> = ({
 
     try {
       // อัปเดตร้านค้า
-      await updateShopByAdmin(editShopData.id, formData);
+      const formDataNew ={
+        name: formData.name,
+        category_id: Number(formData.shop_category_id),
+        description: formData.description,
+        entrepreneur_id: formData.entrepreneur_id,
+      }
+      await updateShopByAdmin(editShopData.id, formDataNew);
       console.log("Shop updated successfully!");
 
       // จัดการ Social Data
