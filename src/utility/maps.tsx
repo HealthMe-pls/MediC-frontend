@@ -50,7 +50,7 @@ export const ChangeMap = async (mapChanged: MapChanged[]): Promise<void> => {
     throw new Error("Account data is required");
   }
 
-  console.log("mapChanged: ", mapChanged);
+  // console.log("mapChanged: ", mapChanged);
 
   const header = new Headers();
   setCorsHeaders(header);

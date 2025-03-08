@@ -29,7 +29,7 @@ export async function GET() {
 export async function PUT(req: Request) {
   try {
     const mapData = await req.json();
-    console.log("mapData: ", mapData);
+    // console.log("mapData: ", mapData);
 
     const response = await axios.put(
       `${process.env.NEXT_PUBLIC_GO_API_URL}/Allmap`,

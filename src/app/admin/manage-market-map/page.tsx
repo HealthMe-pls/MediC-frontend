@@ -125,7 +125,7 @@ export default function AdminPageComponent() {
   ) => {
     try {
       const shop = await createShopByAdmin(formData); // รอให้ API สร้างร้านค้าเสร็จ
-      console.log(shop);
+      // console.log(shop);
 
       if (shop && shop.shop_id) {
         // ตรวจสอบว่ามี id กลับมาหรือไม่
@@ -163,7 +163,7 @@ export default function AdminPageComponent() {
             market_open_date_id: time.market_open_date_id,
             shop_id: shop.shop_id,
           };
-          console.log(createTime);
+          // console.log(createTime);
           await createShopTime(createTime);
         }
 
@@ -191,7 +191,7 @@ export default function AdminPageComponent() {
         if (PhotoData.thr_img && PhotoData.thr_img instanceof File)
           await uploadPhotoShopByAdmin(PhotoData.thr_img, shop.shop_id);
 
-        console.log("Shop created successfully!");
+        // console.log("Shop created successfully!");
         setIsShopModalOpen(false);
         fetchData();
       } else {
@@ -245,7 +245,7 @@ export default function AdminPageComponent() {
         },
       ]);
 
-      console.log("Shop updated successfully!");
+      // console.log("Shop updated successfully!");
       fetchData();
     } catch (error) {
       console.error("Error updating shop:", error);
@@ -256,7 +256,7 @@ export default function AdminPageComponent() {
   const handleRemoveShop = async (blockId: number) => {
     const confirmRemove = window.confirm(`Remove shop from block ${blockId}?`);
     if (confirmRemove) {
-      console.log("remove");
+      // console.log("remove");
       setBlocks((prevBlocks) => ({
         ...prevBlocks,
         [blockId]: {

@@ -45,7 +45,7 @@ export const createMenuByAdmin = async (
 ): Promise<Menu> => {
   try {
     const url = `/api/menu`;
-    console.log(menuData);
+    // console.log(menuData);
     const response = await axios.post<Menu>(url, menuData, {
       headers: {
         "Content-Type": "application/json",

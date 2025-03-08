@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     }
 
     const newsocial = await response.json();
-    console.log(newsocial);
+    // console.log(newsocial);
     const headers = new Headers();
     setCorsHeaders(headers);
     return NextResponse.json(newsocial, { status: 201, headers });

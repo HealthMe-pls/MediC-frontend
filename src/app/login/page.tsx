@@ -5,7 +5,6 @@ import { loginEntrepreneur, AuthResponse } from "@/utility/login";
 import styles from "./login.module.css";
 import Logo from "../../../public/assets/logo.png";
 import Image from "next/image";
-import { AxiosError, isAxiosError } from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,13 +16,13 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-  
+
     try {
       const response: AuthResponse = await loginEntrepreneur({
         username: email,
         password,
       });
-  
+
       if (response.error) {
         setError("รหัสผ่านหรือ username ไม่ถูกต้อง");
       } else {
@@ -32,30 +31,21 @@ const Login = () => {
           // บันทึก token ลง localStorage
           localStorage.setItem("authToken", response.token);
           // หาก response มีข้อมูลผู้ใช้ (response.user) ให้เก็บ entrepreneurId ด้วย
-          if (response.user) {
-            const user = response.user;
-            localStorage.setItem("entrepreneurId", user.id.toString());  // เก็บ entrepreneurId ที่ถูกต้อง
-            localStorage.setItem("username", user.username);
-            localStorage.setItem("password", user.password);
-          }
+          // if (response.user) {
+          //   const user = response.user;
+          //   localStorage.setItem("entrepreneurId", user.id.toString());  // เก็บ entrepreneurId ที่ถูกต้อง
+          //   localStorage.setItem("username", user.username);
+          //   localStorage.setItem("password", user.password);
+          // }
           router.push("/vendor");
         }
       }
     } catch (error) {
-      if (isAxiosError(error)) {
-        const err = error as AxiosError;
-        if (err.response) {
-          setError("เกิดข้อผิดพลาดที่เซิร์ฟเวอร์ กรุณาลองใหม่อีกครั้ง");
-        } else {
-          setError("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้");
-        }
-      } else {
-        setError("เกิดข้อผิดพลาดบางประการ");
-      }
+      console.error("Login failed:", error);
+      setError("เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
     }
   };
-  
-  
+
   const handleForgotPassword = () => {
     router.push("/contactToAdmin");
   };
@@ -110,9 +100,7 @@ const Login = () => {
 
             {error && <div className={styles.errorMessage}>{error}</div>}
             {token && (
-              <div className={styles.successMessage}>
-                Login successful! Token: {token}
-              </div>
+              <div className={styles.successMessage}>Login successful!</div>
             )}
           </div>
         </div>
