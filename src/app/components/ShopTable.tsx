@@ -45,6 +45,7 @@ interface ShopTableProps {
     selectedShop: { shop_id: number; shop_name: string }
   ) => void;
   handleRemoveShop: (blockId: number) => void;
+  fetchData: () => Promise<void>;
 }
 
 const ShopTable: React.FC<ShopTableProps> = ({
@@ -52,6 +53,7 @@ const ShopTable: React.FC<ShopTableProps> = ({
   ShopIdName,
   handleShopSelect,
   handleRemoveShop,
+  fetchData,
 }) => {
   const [blockStatus, setBlockStatus] = useState<Record<number, boolean>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -389,7 +391,6 @@ const ShopTable: React.FC<ShopTableProps> = ({
       console.error("Error updating social media:", error);
     }
   };
-  
 
   const handleSubmit = async (
     formData: ShopFormData,
@@ -405,12 +406,12 @@ const ShopTable: React.FC<ShopTableProps> = ({
 
     try {
       // อัปเดตร้านค้า
-      const formDataNew ={
+      const formDataNew = {
         name: formData.name,
         shop_category_id: Number(formData.shop_category_id),
         description: formData.description,
-        entrepreneur_id: formData.entrepreneur_id,
-      }
+        entrepreneur_id: Number(formData.entrepreneur_id),
+      };
       await updateShopByAdmin(editShopData.id, formDataNew);
       console.log("Shop updated successfully!");
 
@@ -438,9 +439,11 @@ const ShopTable: React.FC<ShopTableProps> = ({
 
       await handleTimeUpdate(editShopData.id, formattedShopHours);
 
-      setIsModalOpen(false);
+      fetchData();
     } catch (error) {
       console.error("Error updating shop:", error);
+    } finally {
+      setIsModalOpen(false);
     }
   };
 
