@@ -15,7 +15,7 @@ export async function GET(request: Request) {
 
     // เรียก API Backend จริง (แก้ URL ตาม Backend ของคุณ)
     const apiResponse = await fetch(
-      `http://localhost:8080/search-shops?keyword=${encodeURIComponent(
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/search-shops?keyword=${encodeURIComponent(
         keyword
       )}`
     );

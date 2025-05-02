@@ -3,7 +3,6 @@ export interface Account {
     password?: string;
   }
   
-  const NEXT_API = "http://localhost:8080";
   
   export const createAccount = async (account: Account): Promise<void> => {
     if (!account) {
@@ -12,7 +11,7 @@ export interface Account {
   
     // console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}`);
   
-    const response = await fetch(`${NEXT_API}/entrepreneur`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_GO_API_URL}/entrepreneur`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

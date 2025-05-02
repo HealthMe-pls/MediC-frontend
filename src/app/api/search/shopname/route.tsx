@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     }
 
     const apiResponse = await fetch(
-      `http://localhost:8080/shopid?shopidkeyword=${encodeURIComponent(
+      `${process.env.NEXT_PUBLIC_GO_API_URL}/shopid?shopidkeyword=${encodeURIComponent(
         keyword
       )}`
     );

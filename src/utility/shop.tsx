@@ -15,7 +15,7 @@ export interface ShopIdName {
 
 export async function fetchShopDetail(): Promise<ShopDetail[]> {
   try {
-    const response = await fetch(`http://127.0.0.1:8080/shop`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_GO_API_URL}/shop`);
     // console.log("fetch admin response" + response.json());
     if (!response.ok) {
       throw new Error("Failed to fetch shop");
