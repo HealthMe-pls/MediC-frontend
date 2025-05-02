@@ -32,9 +32,12 @@ export default function PendingApprovalPage() {
     setSearchQuery(event.target.value);
   };
 
-  const filteredShops = tempShops.filter((shop) =>
-    shop.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredShops =
+    tempShops != null
+      ? tempShops.filter((shop) =>
+          shop.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : null;
 
   if (loading) {
     return <div>Loading...</div>;
@@ -51,9 +54,13 @@ export default function PendingApprovalPage() {
           <SearchPending onChanges={handleSearchChange} />
 
           <div className="p-8 grid grid-cols-1 gap-4 max-h-[650px] overflow-y-auto scrollbar-hide">
-            {filteredShops.map((shop) => (
-              <PendingCard key={shop.id} tempshop={shop} />
-            ))}
+            {filteredShops !== null ? (
+              filteredShops.map((shop) => (
+                <PendingCard key={shop.id} tempshop={shop} />
+              ))
+            ) : (
+              <>no approval request</>
+            )}
           </div>
         </div>
       </AdminLayouts>
