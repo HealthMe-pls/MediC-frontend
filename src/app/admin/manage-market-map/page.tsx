@@ -124,7 +124,13 @@ export default function AdminPageComponent() {
     shopHours: ShopOpenDates[]
   ) => {
     try {
-      const shop = await createShopByAdmin(formData); // รอให้ API สร้างร้านค้าเสร็จ
+      const formDataNew = {
+        name: formData.name,
+        shop_category_id: Number(formData.shop_category_id),
+        description: formData.description,
+        entrepreneur_id: Number(formData.entrepreneur_id),
+      };
+      const shop = await createShopByAdmin(formDataNew); // รอให้ API สร้างร้านค้าเสร็จ
       // console.log(shop);
 
       if (shop && shop.shop_id) {
@@ -343,6 +349,7 @@ export default function AdminPageComponent() {
               ShopIdName,
               handleShopSelect,
               handleRemoveShop,
+              fetchData
             }}
           />
 
