@@ -1,7 +1,7 @@
 // import { headers } from "next/headers";
 import axios from "axios";
 import {
-  TempMenu,
+  // TempMenu,
   // TempSocial,
   // Photo,
 } from "@/app/admin/pending-approval/pendingApproval";
